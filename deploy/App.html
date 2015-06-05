@@ -9,6 +9,7 @@
 
   <script type ="text/javascript" src="/apps/1.32/sdk.js"></script>
   <script type ="text/javascript">
+    /*global rally, document */
     var iterDropdown;
     var rallyDataSource;
     
@@ -19,7 +20,7 @@
         var taskTable, defectTable, storyTable;
         var abbrev = {'User Story': 'ar', 'Defect': 'df', 'Task': 'tk', 'TestCase': 'tc'};
     
-        function indentedItem(content, color) {
+        function indentedItem(content/*, color*/) {
             var indentationDiv = '<div style="margin-left: 20px;">' + content + '</div>';
             return indentationDiv;
         }
@@ -47,66 +48,129 @@
             link = link.replace('_TEXT_', linkText);
             return link;
         }
-    
-        function showStories(stories, contentDiv) {
-            var story,    storyLink,    storyInfo;
-            var task,     taskLink,     taskInfo,     indentedTask;
-            var defect,   defectLink,   defectInfo,   indentedDefect;
-            var testCase, testCaseLink, tcInfo, indentedTestCase;
-            var tableData = [];
-            var tblConfig;
-    
-            for (var i = 0; i < stories.length; i++) {
-                story = stories[i];
-                storyLink = artifactLink('User Story', story);
-                storyInfo = { 'itemLink' : '<div style="font-weight: bold;">' + storyLink + '</div>',
-                    'status'   : '<b>' + story.ScheduleState + '</b>',
-                    'userName' : ownerIfKnown(story)
-                };
-                tableData.push(storyInfo);
-    
-                for (var t = 0; t < story.Tasks.length; t++) {
-                    task = story.Tasks[t];
-                    taskLink = artifactLink('Task', task);
-                    indentedTask = indentedItem(taskLink);
-                    taskInfo = { 'itemLink' : indentedTask,
-                        'status'   : task.State,
-                        'userName' : ownerIfKnown(task)
-                    };
-                    if (task.State != 'Completed' && task.State != 'Accepted') {
-                        tableData.push(taskInfo);
+        function getBlockedHtml(item) {
+            var rv = '';
+            if (item.Blocked) {
+                if (item.BlockedReason && item.BlockedReason.match(/pr/i)) {
+                    rv = item.BlockedReason;
+                }
+                else {
+                    rv = item.BlockedReason;
+                    if (! rv) {
+                        rv = 'Blocked';
                     }
                 }
-    
-                for (var d = 0; d < story.Defects.length; d++) {
-                    defect = story.Defects[d];
-                    defectLink = artifactLink('Defect', defect);
-                    indentedDefect = indentedItem(defectLink);
-                    defectInfo = { 'itemLink' : indentedDefect,
-                        'status'   : defect.ScheduleState,
-                        'userName' : ownerIfKnown(defect)
-                    };
-                    var schedState = defect.ScheduleState;
-                    if (schedState != 'Completed' && schedState != 'Accepted') {
-                        tableData.push(defectInfo);
+                rv = '<b style="color:red">' + rv + '</b>';
+            }
+            return rv;
+        }
+        function displayChild(item, tableData, tableInfo, parentInfo) {
+            if (item.State === 'Completed' || item.ScheduleState === 'Completed') {
+                if (item.Blocked) {
+                    if (parentInfo && ! parentInfo.displayed) {
+                        tableData.push(parentInfo);
+                        parentInfo.displayed = true;
                     }
-                }
-    
-                for (var tc = 0; tc < story.TestCases.length; tc++) {
-                    testCase = story.TestCases[tc];
-                    testCaseLink = artifactLink('TestCase', testCase);
-                    indentedTestCase = indentedItem(testCaseLink);
-                    tcInfo = { 'itemLink' : indentedTestCase,
-                        'status'   : testCase.LastVerdict,
-                        'userName' : ownerIfKnown(testCase)
-                    };
-                    // consider testing on testCase.LastVerdict != 'Pass' to decide whether to show in table
-                    tableData.push(tcInfo);
+                    tableData.push(tableInfo);
                 }
             }
-            tblConfig = { 'columnKeys'     : ['itemLink', 'status', 'userName'],
-                'columnHeaders'  : ['Artifact', 'Status', 'Owner'   ],
-                'columnWidths'   : ['400px',    '100px',  '100px'   ],
+            else {
+                if (parentInfo && ! parentInfo.displayed) {
+                    tableData.push(parentInfo);
+                    parentInfo.displayed = true;
+                }
+                tableData.push(tableInfo);
+            }
+        }
+    
+        function itemSort(left, rite) {
+            var computedValue = function(item) {
+                var rv = 0;
+    
+                if (item.State === 'Completed' || item.ScheduleState === 'Completed') {
+                    rv += 1000;
+                }
+                else if (item.State === 'In-Progress' || item.ScheduleState === 'In-Progress') {
+                    rv += 2000;
+                }
+                else {
+                    rv += 3000;
+                }
+    
+                if (! item.Blocked) {
+                    rv += 100;
+                }
+    
+                return rv;
+            };
+    
+            var rv = computedValue(left) - computedValue(rite);
+            if (rv === 0) {
+                    var leftOwner = ownerIfKnown(left),
+                        riteOwner = ownerIfKnown(rite);
+                    rv = leftOwner.localeCompare(riteOwner);
+    
+                if (rv === 0) {
+                    rv = left.FormattedID.localeCompare(rite.FormattedID);
+                }
+            }
+            return rv;
+        }
+    
+        function showStories(stories, contentDiv) {
+            var     storyLink,    storyInfo;
+            var     taskLink,     taskInfo,     indentedTask;
+            var     defectLink,   defectInfo,   indentedDefect;
+            var tableData = [];
+            var tblConfig, emptyStory;
+    
+            stories.forEach(function(story) {
+                emptyStory = true;
+                storyLink = artifactLink('User Story', story);
+                storyInfo = {
+                    'itemLink' : '<div style="font-weight: bold;">' + storyLink + '</div>',
+                    'status'   : '',
+                    'blocked'  : '',
+                    'userName' : ''
+                };
+    
+                story.Tasks.sort(itemSort).forEach(function(task) {
+                    emptyStory = false;
+                    taskLink = artifactLink('Task', task);
+                    indentedTask = indentedItem(taskLink);
+                    taskInfo = {
+                        'itemLink' : indentedTask,
+                        'status'   : task.State,
+                        'blocked'  : getBlockedHtml(task),
+                        'userName' : ownerIfKnown(task)
+                    };
+    
+                    displayChild(task, tableData, taskInfo, storyInfo);
+                });
+    
+                story.Defects.sort(itemSort).forEach(function(defect) {
+                    emptyStory = false;
+                    defectLink = artifactLink('Defect', defect);
+                    indentedDefect = indentedItem(defectLink);
+                    defectInfo = {
+                        'itemLink' : indentedDefect,
+                        'status'   : defect.ScheduleState,
+                        'blocked'  : getBlockedHtml(defect),
+                        'userName' : ownerIfKnown(defect)
+                    };
+    
+                    displayChild(defect, tableData, defectInfo, storyInfo);
+                });
+    
+                if (emptyStory) {
+                    tableData.push(storyInfo);
+                }
+    
+            });
+            tblConfig = {
+                'columnKeys'     : ['itemLink', 'status', 'blocked', 'userName'],
+                'columnHeaders'  : ['Artifact', 'Status', 'Blocked', 'Owner'   ],
+                'columnWidths'   : ['600px',    '100px',  '200px',   '150px'   ],
                 'sortingEnabled' : false
             };
     
@@ -115,48 +179,25 @@
             storyTable.display(contentDiv);
         }
     
-        function showTasks(tasks, contentDiv) {
-            var tableData = [];
-            var tblConfig;
-            var task, taskLink, taskInfo;
-    
-            for (var t = 0; t < tasks.length; t++) {
-                task = tasks[t];
-                taskLink = artifactLink('Task', task);
-                taskInfo = { 'taskLink' : taskLink,
-                    'status'     : task.State,
-                    'userName'   : ownerIfKnown(task)
-                };
-                tableData.push(taskInfo);
-            }
-            tblConfig = { 'columnKeys'     : ['taskLink', 'status', 'userName'],
-                'columnHeaders'  : ['Task',     'Status', 'Owner'   ],
-                'columnWidths'   : ['400px',    '100px',  '100px'   ],
-                'sortingEnabled' : false
-            };
-    
-            taskTable = new rally.sdk.ui.Table(tblConfig);
-            taskTable.addRows(tableData);
-            taskTable.display(contentDiv);
-        }
-    
         function showDefects(defects, contentDiv) {
             var tableData = [];
             var tblConfig;
-            var defect, defectLink, defectInfo;
+            var defectLink, defectInfo;
     
-            for (var d = 0; d < defects.length; d++) {
-                defect = defects[d];
+            defects.sort(itemSort).forEach(function(defect) {
                 defectLink = artifactLink('Defect', defect);
                 defectInfo = { 'defectLink' : defectLink,
                     'status'     : defect.ScheduleState,
+                    'blocked'    : getBlockedHtml(defect),
                     'userName'   : ownerIfKnown(defect)
                 };
-                tableData.push(defectInfo);
-            }
-            tblConfig = { 'columnKeys'     : ['defectLink', 'status', 'userName'],
-                'columnHeaders'  : ['Defect',     'Status', 'Owner'   ],
-                'columnWidths'   : ['400px',      '100px',  '100px'   ],
+    
+                displayChild(defect, tableData, defectInfo);
+            });
+            tblConfig = {
+                'columnKeys'     : ['defectLink', 'status', 'blocked', 'userName'],
+                'columnHeaders'  : ['Defect',     'Status', 'Blocked', 'Owner'   ],
+                'columnWidths'   : ['600px',      '100px',  '200px',   '150px'   ],
                 'sortingEnabled' : false
             };
     
@@ -166,9 +207,7 @@
         }
     
         function showResults(results) {
-            document.getElementById("UserNameHeader").innerHTML = "Open Items for __USER_NAME__";
             document.getElementById("stories_count").innerHTML = "";
-            document.getElementById("tasks_count").innerHTML = "";
             document.getElementById("defects_count").innerHTML = "";
             if(busySpinner) {
                 busySpinner.hide();
@@ -181,12 +220,6 @@
                 showStories(ownedStories, "stories");
             }
     
-            var ownedTasks = results.tasks;
-            document.getElementById("tasks_count").innerHTML = "Tasks: " + ownedTasks.length;
-            if (ownedTasks.length > 0) {
-                showTasks(ownedTasks, "tasks");
-            }
-    
             var ownedDefects = results.defects;
             document.getElementById("defects_count").innerHTML = "Defects: " + ownedDefects.length;
             if (ownedDefects.length > 0) {
@@ -197,32 +230,22 @@
         that.onIterationSelected = function() {
             var targetIterationName = iterDropdown.getSelectedName();
             var iterCond = '(Iteration.Name = "_ITER_TARGET_")'.replace('_ITER_TARGET_', targetIterationName);
-            var ownerCondition = '(Owner.UserName = "__USER_NAME__")';
-            var scheduleStateCondition = '((ScheduleState != "Completed") AND (ScheduleState != "Accepted"))';
-            var taskStateCondition = '(State != "Completed")';
-            var storyCriteria = '(' + iterCond + ' AND ' +
-                    '(' + ownerCondition + ' AND ' + scheduleStateCondition + '))';
-            var taskCriteria = '(' + iterCond + ' AND ' +
-                    '(' + ownerCondition + ' AND ' + taskStateCondition + '))';
-            var defectCriteria = '(' + iterCond + ' AND ' +
-                    '(' + ownerCondition + ' AND ' + scheduleStateCondition + '))';
+            var scheduleStateCondition = '(ScheduleState != "Accepted")';
+            var storyCriteria = '(' + iterCond + ' AND ' + scheduleStateCondition + ')';
+            var defectCriteria = '(' + iterCond + ' AND ' + scheduleStateCondition + ')';
             var queryConfigs = [];
-            queryConfigs[0] = { type : 'hierarchicalrequirement',
+    
+            queryConfigs[0] = {
+                type : 'hierarchicalrequirement',
                 key  : 'stories',
-                fetch: 'ObjectID,FormattedID,Name,ScheduleState,State,' +
-                        'Owner,UserName,DisplayName,Tasks,Defects,TestCases,LastVerdict',
+                fetch: 'ObjectID,FormattedID,Name,ScheduleState,State,Owner,Blocked,BlockedReason,DisplayName,Tasks,Defects',
                 query: storyCriteria,
                 order: 'Rank desc'
             };
-            queryConfigs[1] = { type : 'task',
-                key  : 'tasks',
-                fetch: 'ObjectID,FormattedID,Name,Owner,UserName,DisplayName,State',
-                query: taskCriteria,
-                order: 'FormattedID'
-            };
-            queryConfigs[2] = { type : 'defect',
+            queryConfigs[1] = {
+                type : 'defect',
                 key  : 'defects',
-                fetch: 'ObjectID,FormattedID,Name,Owner,UserName,DisplayName,ScheduleState',
+                fetch: 'ObjectID,FormattedID,Name,Owner,UserName,DisplayName,ScheduleState,Blocked,BlockedReason',
                 query: defectCriteria,
                 order: 'FormattedID'
             };
@@ -242,9 +265,11 @@
                 defectTable = null;
             }
     
+            rallyDataSource.setApiVersion("1.43");
             rallyDataSource.findAll(queryConfigs, showResults);
         };
     }
+
   </script>
 
   <style type="text/css">
@@ -292,20 +317,19 @@
 </head>
 
 <body>
-  <div id="iterations"></div>
-  <div id="wait"></div>
-  <h4 id="UserNameHeader">Open Items</h4>
+    <div style="margin: 10px; padding: 10px; border:solid silver 2px">
+        <div id="iterations"></div>
+        <div id="wait"></div>
+        <br><br>
+        <div class="count" id="defects_count"></div>
+        <div id="defects"></div>
 
-  <div class="count" id="stories_count"></div>
-  <div id="stories"></div>
-  <br><br>
+        <br>
 
-  <div class="count" id="tasks_count"></div>
-  <div id="tasks"></div>
-  <br><br>
+        <div class="count" id="stories_count"></div>
+        <div id="stories"></div>
+    </div>
 
-  <div class="count" id="defects_count"></div>
-  <div id="defects"></div>
 </body>
 </html>
 
