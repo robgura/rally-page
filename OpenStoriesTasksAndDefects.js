@@ -4,7 +4,7 @@ var rallyDataSource;
 
 function OpenStoriesTasksAndDefects() {
     var that = this;
-    
+
     var busySpinner;
     var taskTable, defectTable, storyTable;
     var abbrev = {'User Story': 'ar', 'Defect': 'df', 'Task': 'tk', 'TestCase': 'tc'};
@@ -159,7 +159,7 @@ function OpenStoriesTasksAndDefects() {
         tblConfig = {
             'columnKeys'     : ['itemLink', 'status', 'blocked', 'userName'],
             'columnHeaders'  : ['Artifact', 'Status', 'Blocked', 'Owner'   ],
-            'columnWidths'   : ['600px',    '100px',  '200px',   '150px'   ],
+            'columnWidths'   : ['600px',    '100px',  '200px',   '170px'   ],
             'sortingEnabled' : false
         };
 
@@ -186,7 +186,7 @@ function OpenStoriesTasksAndDefects() {
         tblConfig = {
             'columnKeys'     : ['defectLink', 'status', 'blocked', 'userName'],
             'columnHeaders'  : ['Defect',     'Status', 'Blocked', 'Owner'   ],
-            'columnWidths'   : ['600px',      '100px',  '200px',   '150px'   ],
+            'columnWidths'   : ['600px',      '100px',  '200px',   '170px'   ],
             'sortingEnabled' : false
         };
 
@@ -227,7 +227,7 @@ function OpenStoriesTasksAndDefects() {
         queryConfigs[0] = {
             type : 'hierarchicalrequirement',
             key  : 'stories',
-            fetch: 'ObjectID,FormattedID,Name,ScheduleState,State,Owner,Blocked,BlockedReason,DisplayName,Tasks,Defects',
+            fetch: 'ObjectID,FormattedID,Name,ScheduleState,State,Owner,Blocked,BlockedReason,DisplayName,UserName,Tasks,Defects',
             query: storyCriteria,
             order: 'Rank desc'
         };
