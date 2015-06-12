@@ -117,7 +117,7 @@ function OpenStoriesTasksAndDefects() {
             emptyStory = true;
             storyLink = artifactLink('User Story', story);
             storyInfo = {
-                'itemLink' : '<div style="font-weight: bold;">' + storyLink + '</div>',
+                'itemLink' : '<div style="font-weight: bold; font-size: 18px;">' + storyLink + '</div>',
                 'status'   : '',
                 'blocked'  : '',
                 'userName' : ''
