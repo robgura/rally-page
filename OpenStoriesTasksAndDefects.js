@@ -100,7 +100,16 @@ function OpenStoriesTasksAndDefects() {
                 rv = leftOwner.localeCompare(riteOwner);
 
             if (rv === 0) {
-                rv = left.FormattedID.localeCompare(rite.FormattedID);
+                if (left.TaskIndex && rite.TaskIndex) {
+                    rv = left.TaskIndex - rite.TaskIndex;
+                }
+                else if (left.Rank && rite.Rank) {
+                    rv = left.TaskIndex - rite.TaskIndex;
+                }
+
+                if (rv === 0) {
+                    rv = left.FormattedID.localeCompare(rite.FormattedID);
+                }
             }
         }
         return rv;
@@ -227,16 +236,14 @@ function OpenStoriesTasksAndDefects() {
         queryConfigs[0] = {
             type : 'hierarchicalrequirement',
             key  : 'stories',
-            fetch: 'ObjectID,FormattedID,Name,ScheduleState,State,Owner,Blocked,BlockedReason,DisplayName,UserName,Tasks,Defects',
-            query: storyCriteria,
-            order: 'Rank desc'
+            fetch: 'ObjectID,FormattedID,Name,TaskIndex,Rank,ScheduleState,State,Owner,Blocked,BlockedReason,DisplayName,UserName,Tasks,Defects',
+            query: storyCriteria
         };
         queryConfigs[1] = {
             type : 'defect',
             key  : 'defects',
-            fetch: 'ObjectID,FormattedID,Name,Owner,UserName,DisplayName,ScheduleState,Blocked,BlockedReason',
-            query: defectCriteria,
-            order: 'FormattedID'
+            fetch: 'ObjectID,FormattedID,Name,TaskIndex,Rank,Owner,UserName,DisplayName,ScheduleState,Blocked,BlockedReason',
+            query: defectCriteria
         };
         busySpinner = new rally.sdk.ui.basic.Wait({});
         busySpinner.display("wait");
