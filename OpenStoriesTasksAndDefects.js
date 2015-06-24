@@ -15,7 +15,7 @@ function OpenStoriesTasksAndDefects() {
     }
 
     function ownerIfKnown(arti) {
-        var owner = "";
+        var owner = '';
         if (arti.Owner) {
             if (arti.Owner.DisplayName) {
                 owner = arti.Owner.DisplayName;
@@ -28,10 +28,10 @@ function OpenStoriesTasksAndDefects() {
     }
 
     function artifactLink(artifactName, artifact) {
-        var artUrl = "__SERVER_URL__/detail/_ABBREV_/_OID_";
+        var artUrl = '__SERVER_URL__/detail/_ABBREV_/_OID_';
         artUrl = artUrl.replace('_ABBREV_', abbrev[artifactName]);
         artUrl = artUrl.replace('_OID_', artifact.ObjectID);
-        var linkText = artifact.FormattedID + " " + artifact.Name;
+        var linkText = artifact.FormattedID + ' ' + artifact.Name;
         var link = '<a href="_URL_" target="_blank">_TEXT_</a>';
         link = link.replace('_URL_', artUrl);
         link = link.replace('_TEXT_', linkText);
@@ -205,23 +205,23 @@ function OpenStoriesTasksAndDefects() {
     }
 
     function showResults(results) {
-        document.getElementById("stories_count").innerHTML = "";
-        document.getElementById("defects_count").innerHTML = "";
-        if(busySpinner) {
+        document.getElementById('stories_count').innerHTML = '';
+        document.getElementById('defects_count').innerHTML = '';
+        if (busySpinner) {
             busySpinner.hide();
             busySpinner = null;
         }
 
         var ownedStories = results.stories;
-        document.getElementById("stories_count").innerHTML = "Stories: " + ownedStories.length;
+        document.getElementById('stories_count').innerHTML = 'Stories: ' + ownedStories.length;
         if (ownedStories.length > 0) {
-            showStories(ownedStories, "stories");
+            showStories(ownedStories, 'stories');
         }
 
         var ownedDefects = results.defects;
-        document.getElementById("defects_count").innerHTML = "Defects: " + ownedDefects.length;
+        document.getElementById('defects_count').innerHTML = 'Defects: ' + ownedDefects.length;
         if (ownedDefects.length > 0) {
-            showDefects(ownedDefects, "defects");
+            showDefects(ownedDefects, 'defects');
         }
     }
 
@@ -246,22 +246,22 @@ function OpenStoriesTasksAndDefects() {
             query: defectCriteria
         };
         busySpinner = new rally.sdk.ui.basic.Wait({});
-        busySpinner.display("wait");
+        busySpinner.display('wait');
 
-        if(storyTable) {
+        if (storyTable) {
             storyTable.destroy();
             storyTable = null;
         }
-        if(taskTable) {
+        if (taskTable) {
             taskTable.destroy();
             taskTable = null;
         }
-        if(defectTable) {
+        if (defectTable) {
             defectTable.destroy();
             defectTable = null;
         }
 
-        rallyDataSource.setApiVersion("1.43");
+        rallyDataSource.setApiVersion('1.43');
         rallyDataSource.findAll(queryConfigs, showResults);
     };
 }
