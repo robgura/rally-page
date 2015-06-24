@@ -146,19 +146,21 @@ function OpenStoriesTasksAndDefects() {
                 displayChild(task, tableData, taskInfo, storyInfo);
             });
 
-            story.Defects.sort(itemSort).forEach(function(defect) {
-                emptyStory = false;
-                defectLink = artifactLink('Defect', defect);
-                indentedDefect = indentedItem(defectLink);
-                defectInfo = {
-                    'itemLink' : indentedDefect,
-                    'status'   : defect.ScheduleState,
-                    'blocked'  : getBlockedHtml(defect),
-                    'userName' : ownerIfKnown(defect)
-                };
+            if (story.Defects) {
+                story.Defects.sort(itemSort).forEach(function(defect) {
+                    emptyStory = false;
+                    defectLink = artifactLink('Defect', defect);
+                    indentedDefect = indentedItem(defectLink);
+                    defectInfo = {
+                        'itemLink' : indentedDefect,
+                        'status'   : defect.ScheduleState,
+                        'blocked'  : getBlockedHtml(defect),
+                        'userName' : ownerIfKnown(defect)
+                    };
 
-                displayChild(defect, tableData, defectInfo, storyInfo);
-            });
+                    displayChild(defect, tableData, defectInfo, storyInfo);
+                });
+            }
 
             if (emptyStory) {
                 tableData.push(storyInfo);
@@ -212,13 +214,22 @@ function OpenStoriesTasksAndDefects() {
             busySpinner = null;
         }
 
-        var ownedStories = results.stories;
-        document.getElementById('stories_count').innerHTML = 'Stories: ' + ownedStories.length;
+
+        document.getElementById('stories_count').innerHTML = 'Stories: ' + results.stories.length;
+
+        // defects with tasks will be listed with the user stories
+        var ownedStories = results.stories.concat(results.defects.filter(function(defect) {
+            return defect.Tasks.length > 0;
+        }));
+
         if (ownedStories.length > 0) {
             showStories(ownedStories, 'stories');
         }
 
-        var ownedDefects = results.defects;
+        // defects with no tasks will be listed separately from defects with tasks
+        var ownedDefects = results.defects.filter(function(defect) {
+            return defect.Tasks.length === 0;
+        });
         document.getElementById('defects_count').innerHTML = 'Defects: ' + ownedDefects.length;
         if (ownedDefects.length > 0) {
             showDefects(ownedDefects, 'defects');
@@ -242,7 +253,7 @@ function OpenStoriesTasksAndDefects() {
         queryConfigs[1] = {
             type : 'defect',
             key  : 'defects',
-            fetch: 'ObjectID,FormattedID,Name,TaskIndex,Rank,Owner,UserName,DisplayName,ScheduleState,Blocked,BlockedReason',
+            fetch: 'ObjectID,FormattedID,Name,TaskIndex,Rank,Owner,UserName,DisplayName,ScheduleState,Blocked,BlockedReason,Defects,Tasks',
             query: defectCriteria
         };
         busySpinner = new rally.sdk.ui.basic.Wait({});

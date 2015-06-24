@@ -26,7 +26,7 @@
         }
     
         function ownerIfKnown(arti) {
-            var owner = "";
+            var owner = '';
             if (arti.Owner) {
                 if (arti.Owner.DisplayName) {
                     owner = arti.Owner.DisplayName;
@@ -39,10 +39,10 @@
         }
     
         function artifactLink(artifactName, artifact) {
-            var artUrl = "__SERVER_URL__/detail/_ABBREV_/_OID_";
+            var artUrl = '__SERVER_URL__/detail/_ABBREV_/_OID_';
             artUrl = artUrl.replace('_ABBREV_', abbrev[artifactName]);
             artUrl = artUrl.replace('_OID_', artifact.ObjectID);
-            var linkText = artifact.FormattedID + " " + artifact.Name;
+            var linkText = artifact.FormattedID + ' ' + artifact.Name;
             var link = '<a href="_URL_" target="_blank">_TEXT_</a>';
             link = link.replace('_URL_', artUrl);
             link = link.replace('_TEXT_', linkText);
@@ -157,19 +157,21 @@
                     displayChild(task, tableData, taskInfo, storyInfo);
                 });
     
-                story.Defects.sort(itemSort).forEach(function(defect) {
-                    emptyStory = false;
-                    defectLink = artifactLink('Defect', defect);
-                    indentedDefect = indentedItem(defectLink);
-                    defectInfo = {
-                        'itemLink' : indentedDefect,
-                        'status'   : defect.ScheduleState,
-                        'blocked'  : getBlockedHtml(defect),
-                        'userName' : ownerIfKnown(defect)
-                    };
+                if (story.Defects) {
+                    story.Defects.sort(itemSort).forEach(function(defect) {
+                        emptyStory = false;
+                        defectLink = artifactLink('Defect', defect);
+                        indentedDefect = indentedItem(defectLink);
+                        defectInfo = {
+                            'itemLink' : indentedDefect,
+                            'status'   : defect.ScheduleState,
+                            'blocked'  : getBlockedHtml(defect),
+                            'userName' : ownerIfKnown(defect)
+                        };
     
-                    displayChild(defect, tableData, defectInfo, storyInfo);
-                });
+                        displayChild(defect, tableData, defectInfo, storyInfo);
+                    });
+                }
     
                 if (emptyStory) {
                     tableData.push(storyInfo);
@@ -216,23 +218,32 @@
         }
     
         function showResults(results) {
-            document.getElementById("stories_count").innerHTML = "";
-            document.getElementById("defects_count").innerHTML = "";
-            if(busySpinner) {
+            document.getElementById('stories_count').innerHTML = '';
+            document.getElementById('defects_count').innerHTML = '';
+            if (busySpinner) {
                 busySpinner.hide();
                 busySpinner = null;
             }
     
-            var ownedStories = results.stories;
-            document.getElementById("stories_count").innerHTML = "Stories: " + ownedStories.length;
+    
+            document.getElementById('stories_count').innerHTML = 'Stories: ' + results.stories.length;
+    
+            // defects with tasks will be listed with the user stories
+            var ownedStories = results.stories.concat(results.defects.filter(function(defect) {
+                return defect.Tasks.length > 0;
+            }));
+    
             if (ownedStories.length > 0) {
-                showStories(ownedStories, "stories");
+                showStories(ownedStories, 'stories');
             }
     
-            var ownedDefects = results.defects;
-            document.getElementById("defects_count").innerHTML = "Defects: " + ownedDefects.length;
+            // defects with no tasks will be listed separately from defects with tasks
+            var ownedDefects = results.defects.filter(function(defect) {
+                return defect.Tasks.length === 0;
+            });
+            document.getElementById('defects_count').innerHTML = 'Defects: ' + ownedDefects.length;
             if (ownedDefects.length > 0) {
-                showDefects(ownedDefects, "defects");
+                showDefects(ownedDefects, 'defects');
             }
         }
     
@@ -253,26 +264,26 @@
             queryConfigs[1] = {
                 type : 'defect',
                 key  : 'defects',
-                fetch: 'ObjectID,FormattedID,Name,TaskIndex,Rank,Owner,UserName,DisplayName,ScheduleState,Blocked,BlockedReason',
+                fetch: 'ObjectID,FormattedID,Name,TaskIndex,Rank,Owner,UserName,DisplayName,ScheduleState,Blocked,BlockedReason,Defects,Tasks',
                 query: defectCriteria
             };
             busySpinner = new rally.sdk.ui.basic.Wait({});
-            busySpinner.display("wait");
+            busySpinner.display('wait');
     
-            if(storyTable) {
+            if (storyTable) {
                 storyTable.destroy();
                 storyTable = null;
             }
-            if(taskTable) {
+            if (taskTable) {
                 taskTable.destroy();
                 taskTable = null;
             }
-            if(defectTable) {
+            if (defectTable) {
                 defectTable.destroy();
                 defectTable = null;
             }
     
-            rallyDataSource.setApiVersion("1.43");
+            rallyDataSource.setApiVersion('1.43');
             rallyDataSource.findAll(queryConfigs, showResults);
         };
     }
