@@ -243,17 +243,34 @@ function OpenStoriesTasksAndDefects() {
         var storyCriteria = '(' + iterCond + ' AND ' + scheduleStateCondition + ')';
         var defectCriteria = '(' + iterCond + ' AND ' + scheduleStateCondition + ')';
         var queryConfigs = [];
+        var hrColumns = [
+            'Blocked',
+            'BlockedReason',
+            'Defects',
+            'DisplayName',
+            'FormattedID',
+            'Name',
+            'ObjectID',
+            'Owner',
+            'Rank',
+            'ScheduleState',
+            'State',
+            'TaskIndex',
+            'Tasks',
+            'UserName'
+        ];
+
 
         queryConfigs[0] = {
             type : 'hierarchicalrequirement',
             key  : 'stories',
-            fetch: 'ObjectID,FormattedID,Name,TaskIndex,Rank,ScheduleState,State,Owner,Blocked,BlockedReason,DisplayName,UserName,Tasks,Defects',
+            fetch: hrColumns.join(','),
             query: storyCriteria
         };
         queryConfigs[1] = {
             type : 'defect',
             key  : 'defects',
-            fetch: 'ObjectID,FormattedID,Name,TaskIndex,Rank,Owner,UserName,DisplayName,ScheduleState,Blocked,BlockedReason,Defects,Tasks',
+            fetch: hrColumns.join(','),
             query: defectCriteria
         };
         busySpinner = new rally.sdk.ui.basic.Wait({});
