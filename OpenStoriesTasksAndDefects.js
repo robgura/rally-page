@@ -122,7 +122,7 @@ function OpenStoriesTasksAndDefects() {
         var tableData = [];
         var tblConfig, emptyStory;
 
-        stories.forEach(function(story) {
+        stories.sort(itemSort).forEach(function(story) {
             emptyStory = true;
             storyLink = artifactLink('User Story', story);
             storyInfo = {
