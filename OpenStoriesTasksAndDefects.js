@@ -123,13 +123,20 @@ function OpenStoriesTasksAndDefects() {
         var tblConfig, emptyStory;
 
         stories.sort(itemSort).forEach(function(story) {
+            var storyOwner = '';
+
+            // if the story has no tasks, label the story owner
+            if (story.Tasks.length === 0) {
+                storyOwner = ownerIfKnown(story);
+            }
+
             emptyStory = true;
             storyLink = artifactLink('User Story', story);
             storyInfo = {
                 'itemLink' : '<div style="font-weight: bold; font-size: 18px;">' + storyLink + '</div>',
                 'status'   : '',
                 'blocked'  : '',
-                'userName' : ''
+                'userName' : storyOwner
             };
 
             story.Tasks.sort(itemSort).forEach(function(task) {
