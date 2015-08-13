@@ -165,7 +165,10 @@ function OpenStoriesTasksAndDefects() {
                         'userName' : ownerIfKnown(defect)
                     };
 
-                    displayChild(defect, tableData, defectInfo, storyInfo);
+                    // don't show completed and accepted defects as children of a user story
+                    if (defect.ScheduleState !== 'Accepted' && defect.ScheduleState !== 'Completed') {
+                        displayChild(defect, tableData, defectInfo, storyInfo);
+                    }
                 });
             }
 
