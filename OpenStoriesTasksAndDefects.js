@@ -6,7 +6,7 @@ function OpenStoriesTasksAndDefects() {
     var that = this;
 
     var busySpinner;
-    var taskTable, defectTable, storyTable;
+    var defectTable, storyTable;
     var abbrev = {'User Story': 'ar', 'Defect': 'df', 'Task': 'tk', 'TestCase': 'tc'};
 
     function indentedItem(content/*, color*/) {
@@ -224,7 +224,6 @@ function OpenStoriesTasksAndDefects() {
             busySpinner = null;
         }
 
-
         document.getElementById('stories_count').innerHTML = 'Stories: ' + results.stories.length;
 
         // defects with tasks will be listed with the user stories
@@ -270,7 +269,6 @@ function OpenStoriesTasksAndDefects() {
             'UserName'
         ];
 
-
         queryConfigs[0] = {
             type : 'hierarchicalrequirement',
             key  : 'stories',
@@ -289,10 +287,6 @@ function OpenStoriesTasksAndDefects() {
         if (storyTable) {
             storyTable.destroy();
             storyTable = null;
-        }
-        if (taskTable) {
-            taskTable.destroy();
-            taskTable = null;
         }
         if (defectTable) {
             defectTable.destroy();
