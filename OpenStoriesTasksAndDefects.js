@@ -1,4 +1,9 @@
 /*global rally, document */
+
+String.prototype.capFirst = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+};
+
 var iterDropdown;
 var rallyDataSource;
 
@@ -15,15 +20,33 @@ function OpenStoriesTasksAndDefects() {
     }
 
     function ownerIfKnown(arti) {
-        var owner = '';
+        var owner = '',
+            hasDisplay = false;
+
         if (arti.Owner) {
             if (arti.Owner.DisplayName) {
                 owner = arti.Owner.DisplayName;
+                hasDisplay = true;
             }
             else if (arti.Owner.UserName) {
                 owner = arti.Owner.UserName;
             }
         }
+
+        if (! hasDisplay) {
+            var firstLastNameEmail = owner.match(/([^\.]+)\.([^\.]+)@.*/);
+
+            if (firstLastNameEmail) {
+                owner = firstLastNameEmail[2].capFirst() + ', ' + firstLastNameEmail[1].capFirst();
+            }
+
+            var firstInitialEmail = owner.match(/(.)(.+)@/);
+
+            if (firstInitialEmail) {
+                owner = firstInitialEmail[1].capFirst() + '. ' + firstInitialEmail[2].capFirst();
+            }
+        }
+
         return owner;
     }
 
