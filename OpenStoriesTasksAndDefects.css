@@ -21,3 +21,33 @@ h4#UserNameHeader {
 	clear: both;
 	padding-top: 15px
 }
+
+.story-owner {
+    font-style: italic;
+    font-size: 18px;
+    font-weight: bold;
+    color: rgb(7, 102, 146);
+
+    animation: colorfade 900s infinite;
+    animation-direction: alternate ;
+    animation-timing-function: ease;
+
+}
+
+@keyframes blink {
+    50% { opacity: 0 }
+}
+
+@keyframes colorfade {
+    17% { color: blue }
+    33% { color: purple }
+    50% { color: red }
+    67% { color: orange }
+    83% { color: gold }
+    100% { color: green }
+}
+
+.story-name {
+    font-size: 18px;
+    font-weight: bold;
+}
