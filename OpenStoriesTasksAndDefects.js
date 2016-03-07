@@ -77,7 +77,7 @@ function OpenStoriesTasksAndDefects() {
         return rv;
     }
     function displayChild(item, tableData, tableInfo, parentInfo) {
-        if (item.State === 'Completed' || item.ScheduleState === 'Completed') {
+        if (item.State === 'Completed' || item.ScheduleState === 'Completed' || item.ScheduleState === 'Accepted') {
             if (item.Blocked) {
                 if (parentInfo && ! parentInfo.displayed) {
                     tableData.push(parentInfo);
@@ -183,10 +183,7 @@ function OpenStoriesTasksAndDefects() {
                         'userName' : ownerIfKnown(defect)
                     };
 
-                    // don't show completed and accepted defects as children of a user story
-                    if (defect.ScheduleState !== 'Accepted' && defect.ScheduleState !== 'Completed') {
-                        displayChild(defect, tableData, defectInfo, storyInfo);
-                    }
+                    displayChild(defect, tableData, defectInfo, storyInfo);
                 });
             }
 
