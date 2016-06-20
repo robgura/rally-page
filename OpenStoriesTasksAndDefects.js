@@ -195,7 +195,7 @@ function OpenStoriesTasksAndDefects() {
         tblConfig = {
             'columnKeys'     : ['itemLink', 'status', 'blocked', 'userName'],
             'columnHeaders'  : ['Artifact', 'Status', 'Blocked', 'Owner'   ],
-            'columnWidths'   : ['600px',    '100px',  '200px',   '200px'   ],
+            'columnWidths'   : ['800px',    '100px',  '200px',   '200px'   ],
             'sortingEnabled' : false
         };
 
@@ -222,7 +222,7 @@ function OpenStoriesTasksAndDefects() {
         tblConfig = {
             'columnKeys'     : ['defectLink', 'status', 'blocked', 'userName'],
             'columnHeaders'  : ['Defect',     'Status', 'Blocked', 'Owner'   ],
-            'columnWidths'   : ['600px',      '100px',  '200px',   '200px'   ],
+            'columnWidths'   : ['800px',      '100px',  '200px',   '200px'   ],
             'sortingEnabled' : false
         };
 

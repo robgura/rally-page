@@ -7,6 +7,8 @@
   <meta name="Version" content="2012.11.19" />
   <meta name="Vendor" content="Rally Software" />
 
+  <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700' rel='stylesheet' type='text/css'>
+   
   <script type ="text/javascript" src="/apps/1.32/sdk.js"></script>
   <script type ="text/javascript">
     /*global rally, document */
@@ -206,7 +208,7 @@
             tblConfig = {
                 'columnKeys'     : ['itemLink', 'status', 'blocked', 'userName'],
                 'columnHeaders'  : ['Artifact', 'Status', 'Blocked', 'Owner'   ],
-                'columnWidths'   : ['600px',    '100px',  '200px',   '200px'   ],
+                'columnWidths'   : ['800px',    '100px',  '200px',   '200px'   ],
                 'sortingEnabled' : false
             };
     
@@ -233,7 +235,7 @@
             tblConfig = {
                 'columnKeys'     : ['defectLink', 'status', 'blocked', 'userName'],
                 'columnHeaders'  : ['Defect',     'Status', 'Blocked', 'Owner'   ],
-                'columnWidths'   : ['600px',      '100px',  '200px',   '200px'   ],
+                'columnWidths'   : ['800px',      '100px',  '200px',   '200px'   ],
                 'sortingEnabled' : false
             };
     
@@ -329,6 +331,11 @@
   <style type="text/css">
         body {
     	font-size: 10pt;
+            font-family: 'Roboto Condensed', sans-serif;
+    }
+    
+    .dojoxGrid {
+        font-family: inherit;
     }
     
     .count {
@@ -361,6 +368,12 @@
         animation-direction: alternate ;
         animation-timing-function: ease;
     
+    }
+    
+    td.dojoxGridCell {
+        font-size: 16px;
+        padding-top: 4px;
+        padding-bottom: 4px;
     }
     
     @keyframes blink {
@@ -402,18 +415,16 @@
 </head>
 
 <body>
-    <div style="margin: 10px; padding: 10px; border:solid silver 2px">
-        <div id="iterations"></div>
-        <div id="wait"></div>
-        <br><br>
-        <div class="count" id="defects_count"></div>
-        <div id="defects"></div>
+    <div id="iterations"></div>
+    <div id="wait"></div>
+    <br><br>
+    <div class="count" id="defects_count"></div>
+    <div id="defects"></div>
 
-        <br>
+    <br>
 
-        <div class="count" id="stories_count"></div>
-        <div id="stories"></div>
-    </div>
+    <div class="count" id="stories_count"></div>
+    <div id="stories"></div>
 
 </body>
 </html>
