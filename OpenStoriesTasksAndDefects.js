@@ -145,7 +145,10 @@ function OpenStoriesTasksAndDefects() {
         var tableData = [];
         var tblConfig, emptyStory;
 
-        stories.sort(itemSort).forEach(function(story) {
+        stories.filter(function(story) {
+            // only show stories that are blocked and are NOT Completed and Not Accepted
+            return story.Blocked || ! (story.ScheduleState === 'Completed' || story.ScheduleState === 'Accepted');
+        }).sort(itemSort).forEach(function(story) {
             var storyOwner = ownerIfKnown(story);
 
             emptyStory = true;
