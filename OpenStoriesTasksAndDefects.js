@@ -60,6 +60,13 @@ function OpenStoriesTasksAndDefects() {
         link = link.replace('_TEXT_', linkText);
         return link;
     }
+    function getPriority(item) {
+        var rv = '';
+        if (item.Priority !== 'None') {
+            rv = item.Priority;
+        }
+        return rv;
+    }
     function getBlockedHtml(item) {
         var rv = '';
         if (item.Blocked) {
@@ -216,6 +223,7 @@ function OpenStoriesTasksAndDefects() {
             defectLink = artifactLink('Defect', defect);
             defectInfo = { 'defectLink' : defectLink,
                 'status'     : defect.ScheduleState,
+                'priority'   : getPriority(defect),
                 'blocked'    : getBlockedHtml(defect),
                 'userName'   : ownerIfKnown(defect)
             };
@@ -223,9 +231,9 @@ function OpenStoriesTasksAndDefects() {
             displayChild(defect, tableData, defectInfo);
         });
         tblConfig = {
-            'columnKeys'     : ['defectLink', 'status', 'blocked', 'userName'],
-            'columnHeaders'  : ['Defect',     'Status', 'Blocked', 'Owner'   ],
-            'columnWidths'   : ['800px',      '100px',  '200px',   '200px'   ],
+            'columnKeys'     : ['defectLink', 'priority', 'status', 'blocked', 'userName'],
+            'columnHeaders'  : ['Defect',     'Priority', 'Status', 'Blocked', 'Owner'   ],
+            'columnWidths'   : ['800px',      '75',    '100px',  '200px',   '200px'   ],
             'sortingEnabled' : false
         };
 
@@ -279,6 +287,7 @@ function OpenStoriesTasksAndDefects() {
             'Name',
             'ObjectID',
             'Owner',
+            'Priority',
             'Rank',
             'ScheduleState',
             'State',
