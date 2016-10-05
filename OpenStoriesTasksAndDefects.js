@@ -120,6 +120,12 @@ function OpenStoriesTasksAndDefects() {
                 rv += 100;
             }
 
+            if (item.Priority === 'Immediate') { rv += 10; }
+            else if (item.Priority === 'High') { rv += 20; }
+            else if (item.Priority === 'Normal') { rv += 30; }
+            else if (item.Priority === 'Low') { rv += 40; }
+            else { rv += 50; }
+
             return rv;
         };
 
@@ -134,7 +140,7 @@ function OpenStoriesTasksAndDefects() {
                     rv = left.TaskIndex - rite.TaskIndex;
                 }
                 else if (left.Rank && rite.Rank) {
-                    rv = left.TaskIndex - rite.TaskIndex;
+                    rv = left.Rank - rite.Rank;
                 }
 
                 if (rv === 0) {
