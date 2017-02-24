@@ -62,3 +62,14 @@ td.dojoxGridCell {
     font-size: 18px;
     font-weight: bold;
 }
+
+table.defect-stats {
+    border-collapse: collapse;
+    margin-bottom: 10px;
+}
+
+.defect-stats td {
+    border: solid grey 1px;
+    padding: 5px;
+    min-width: 100px;
+}

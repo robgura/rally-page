@@ -20,12 +20,12 @@
     var iterDropdown;
     var rallyDataSource;
     
-    function OpenStoriesTasksAndDefects() {
+    function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         var that = this;
     
         var busySpinner;
         var defectTable, storyTable;
-        var abbrev = {'User Story': 'ar', 'Defect': 'df', 'Task': 'tk', 'TestCase': 'tc'};
+        var abbrev = { 'User Story': 'ar', 'Defect': 'df', 'Task': 'tk', 'TestCase': 'tc' };
     
         function indentedItem(content/*, color*/) {
             var indentationDiv = '<div style="margin-left: 20px;">' + content + '</div>';
@@ -77,6 +77,13 @@
             var rv = '';
             if (item.Priority !== 'None') {
                 rv = item.Priority;
+            }
+            return rv;
+        }
+        function getRelease(item) {
+            var rv = '';
+            if (item.Release) {
+                rv = item.Release.Name;
             }
             return rv;
         }
@@ -143,6 +150,7 @@
             };
     
             var rv = computedValue(left) - computedValue(rite);
+    
             if (rv === 0) {
                     var leftOwner = ownerIfKnown(left),
                         riteOwner = ownerIfKnown(rite);
@@ -152,7 +160,9 @@
                     if (left.TaskIndex && rite.TaskIndex) {
                         rv = left.TaskIndex - rite.TaskIndex;
                     }
-                    else if (left.Rank && rite.Rank) {
+                    // Order defects by formatted ID and thus by age.
+                    // 
+                    else if (left._type !== 'Defect' && left.Rank && rite.Rank) {
                         rv = left.Rank - rite.Rank;
                     }
     
@@ -165,9 +175,9 @@
         }
     
         function showStories(stories, contentDiv) {
-            var     storyLink,    storyInfo;
-            var     taskLink,     taskInfo,     indentedTask;
-            var     defectLink,   defectInfo,   indentedDefect;
+            var storyLink, storyInfo;
+            var taskLink, taskInfo, indentedTask;
+            var defectLink, defectInfo, indentedDefect;
             var tableData = [];
             var tblConfig, emptyStory;
     
@@ -180,10 +190,10 @@
                 emptyStory = true;
                 storyLink = artifactLink('User Story', story);
                 storyInfo = {
-                    'itemLink' : '<div class="story-name">' + storyLink + '</div>',
-                    'status'   : '',
-                    'blocked'  : '',
-                    'userName' : '<div class="story-owner">' + storyOwner + '</div>'
+                    'itemLink': '<div class="story-name">' + storyLink + '</div>',
+                    'status': '',
+                    'blocked': '',
+                    'userName': '<div class="story-owner">' + storyOwner + '</div>'
                 };
     
                 story.Tasks.sort(itemSort).forEach(function(task) {
@@ -191,10 +201,10 @@
                     taskLink = artifactLink('Task', task);
                     indentedTask = indentedItem(taskLink);
                     taskInfo = {
-                        'itemLink' : indentedTask,
-                        'status'   : task.State,
-                        'blocked'  : getBlockedHtml(task),
-                        'userName' : ownerIfKnown(task)
+                        'itemLink': indentedTask,
+                        'status': task.State,
+                        'blocked': getBlockedHtml(task),
+                        'userName': ownerIfKnown(task)
                     };
     
                     displayChild(task, tableData, taskInfo, storyInfo);
@@ -206,10 +216,10 @@
                         defectLink = artifactLink('Defect', defect);
                         indentedDefect = indentedItem(defectLink);
                         defectInfo = {
-                            'itemLink' : indentedDefect,
-                            'status'   : defect.ScheduleState,
-                            'blocked'  : getBlockedHtml(defect),
-                            'userName' : ownerIfKnown(defect)
+                            'itemLink': indentedDefect,
+                            'status': defect.ScheduleState,
+                            'blocked': getBlockedHtml(defect),
+                            'userName': ownerIfKnown(defect)
                         };
     
                         displayChild(defect, tableData, defectInfo, storyInfo);
@@ -222,10 +232,10 @@
     
             });
             tblConfig = {
-                'columnKeys'     : ['itemLink', 'status', 'blocked', 'userName'],
-                'columnHeaders'  : ['Artifact', 'Status', 'Blocked', 'Owner'   ],
-                'columnWidths'   : ['800px',    '100px',  '200px',   '200px'   ],
-                'sortingEnabled' : false
+                'columnKeys': ['itemLink', 'status', 'blocked', 'userName'],
+                'columnHeaders': ['Artifact', 'Status', 'Blocked', 'Owner'   ],
+                'columnWidths': ['800px', '100px', '200px', '200px'   ],
+                'sortingEnabled': false
             };
     
             storyTable = new rally.sdk.ui.Table(tblConfig);
@@ -238,27 +248,71 @@
             var tblConfig;
             var defectLink, defectInfo;
     
+            var in_progress = [ 0, 0, 0 ],
+                defined = [ 0, 0, 0 ],
+                comp_pr = 0;
+    
             defects.sort(itemSort).forEach(function(defect) {
                 defectLink = artifactLink('Defect', defect);
-                defectInfo = { 'defectLink' : defectLink,
-                    'status'     : defect.ScheduleState,
-                    'priority'   : getPriority(defect),
-                    'blocked'    : getBlockedHtml(defect),
-                    'userName'   : ownerIfKnown(defect)
+                defectInfo = { 'defectLink': defectLink,
+                    'status': defect.ScheduleState,
+                    'priority': getPriority(defect),
+                    'release': getRelease(defect),
+                    'blocked': getBlockedHtml(defect),
+                    'userName': ownerIfKnown(defect)
                 };
+    
+                if (defect.ScheduleState === 'Completed' && defect.BlockedReason === 'PR') {
+                    comp_pr += 1;
+                }
+    
+                if (defect.ScheduleState === 'In-Progress') {
+                    if (defect.Priority === 'Low') {
+                        in_progress[0] += 1;
+                    }
+                    else if (defect.Priority === 'High') {
+                        in_progress[2] += 1;
+                    }
+                    else {
+                        in_progress[1] += 1;
+                    }
+                }
+    
+                if (defect.ScheduleState === 'Defined') {
+                    if (defect.Priority === 'Low') {
+                        defined[0] += 1;
+                    }
+                    else if (defect.Priority === 'High') {
+                        defined[2] += 1;
+                    }
+                    else {
+                        defined[1] += 1;
+                    }
+                }
     
                 displayChild(defect, tableData, defectInfo);
             });
             tblConfig = {
-                'columnKeys'     : ['defectLink', 'priority', 'status', 'blocked', 'userName'],
-                'columnHeaders'  : ['Defect',     'Priority', 'Status', 'Blocked', 'Owner'   ],
-                'columnWidths'   : ['800px',      '75',    '100px',  '200px',   '200px'   ],
-                'sortingEnabled' : false
+                'columnKeys': ['release', 'defectLink', 'priority', 'status', 'blocked', 'userName'],
+                'columnHeaders': ['Release', 'Defect', 'Priority', 'Status', 'Blocked', 'Owner'   ],
+                'columnWidths': ['75px', '800px', '75', '100px', '200px', '200px'   ],
+                'sortingEnabled': false
             };
     
             defectTable = new rally.sdk.ui.Table(tblConfig);
             defectTable.addRows(tableData);
             defectTable.display(contentDiv);
+    
+            document.getElementById('defects_count').innerHTML = 'Defects hot: ';
+            document.getElementById('def-comp-pr').innerHTML = comp_pr;
+    
+            document.getElementById('def-ip-high').innerHTML = in_progress[2];
+            document.getElementById('def-ip-low').innerHTML = in_progress[0];
+            document.getElementById('def-ip-other').innerHTML = in_progress[1];
+    
+            document.getElementById('def-defined-high').innerHTML = defined[2];
+            document.getElementById('def-defined-low').innerHTML = defined[0];
+            document.getElementById('def-defined-other').innerHTML = defined[1];
         }
     
         function showResults(results) {
@@ -284,7 +338,6 @@
             var ownedDefects = results.defects.filter(function(defect) {
                 return defect.Tasks.length === 0;
             });
-            document.getElementById('defects_count').innerHTML = 'Defects: ' + ownedDefects.length;
             if (ownedDefects.length > 0) {
                 showDefects(ownedDefects, 'defects');
             }
@@ -308,6 +361,7 @@
                 'Owner',
                 'Priority',
                 'Rank',
+                'Release',
                 'ScheduleState',
                 'State',
                 'TaskIndex',
@@ -316,14 +370,14 @@
             ];
     
             queryConfigs[0] = {
-                type : 'hierarchicalrequirement',
-                key  : 'stories',
+                type: 'hierarchicalrequirement',
+                key: 'stories',
                 fetch: hrColumns.join(','),
                 query: storyCriteria
             };
             queryConfigs[1] = {
-                type : 'defect',
-                key  : 'defects',
+                type: 'defect',
+                key: 'defects',
                 fetch: hrColumns.join(','),
                 query: defectCriteria
             };
@@ -411,6 +465,17 @@
         font-size: 18px;
         font-weight: bold;
     }
+    
+    table.defect-stats {
+        border-collapse: collapse;
+        margin-bottom: 10px;
+    }
+    
+    .defect-stats td {
+        border: solid grey 1px;
+        padding: 5px;
+        min-width: 100px;
+    }
 
   </style>
 
@@ -437,6 +502,29 @@
     <div id="wait"></div>
     <br><br>
     <div class="count" id="defects_count"></div>
+    <table class="defect-stats">
+        <tr>
+            <td> Completed on PR </td> <td id="def-comp-pr"/>
+        </tr>
+        <tr>
+            <td> In Progress High </td> <td id="def-ip-high"/>
+        </tr>
+        <tr>
+            <td> In Progress Low </td> <td id="def-ip-low"/>
+        </tr>
+        <tr>
+            <td> In Progress Other </td> <td id="def-ip-other"/>
+        </tr>
+        <tr>
+            <td> Defined High </td> <td id="def-defined-high"/>
+        </tr>
+        <tr>
+            <td> Defined Low </td> <td id="def-defined-low"/>
+        </tr>
+        <tr>
+            <td> Defined Low </td> <td id="def-defined-other"/>
+        </tr>
+    </table>
     <div id="defects"></div>
 
     <br>
