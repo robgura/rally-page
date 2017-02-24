@@ -7,12 +7,12 @@ String.prototype.capFirst = function() {
 var iterDropdown;
 var rallyDataSource;
 
-function OpenStoriesTasksAndDefects() {
+function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
     var that = this;
 
     var busySpinner;
     var defectTable, storyTable;
-    var abbrev = {'User Story': 'ar', 'Defect': 'df', 'Task': 'tk', 'TestCase': 'tc'};
+    var abbrev = { 'User Story': 'ar', 'Defect': 'df', 'Task': 'tk', 'TestCase': 'tc' };
 
     function indentedItem(content/*, color*/) {
         var indentationDiv = '<div style="margin-left: 20px;">' + content + '</div>';
@@ -155,9 +155,9 @@ function OpenStoriesTasksAndDefects() {
     }
 
     function showStories(stories, contentDiv) {
-        var     storyLink,    storyInfo;
-        var     taskLink,     taskInfo,     indentedTask;
-        var     defectLink,   defectInfo,   indentedDefect;
+        var storyLink, storyInfo;
+        var taskLink, taskInfo, indentedTask;
+        var defectLink, defectInfo, indentedDefect;
         var tableData = [];
         var tblConfig, emptyStory;
 
@@ -170,10 +170,10 @@ function OpenStoriesTasksAndDefects() {
             emptyStory = true;
             storyLink = artifactLink('User Story', story);
             storyInfo = {
-                'itemLink' : '<div class="story-name">' + storyLink + '</div>',
-                'status'   : '',
-                'blocked'  : '',
-                'userName' : '<div class="story-owner">' + storyOwner + '</div>'
+                'itemLink': '<div class="story-name">' + storyLink + '</div>',
+                'status': '',
+                'blocked': '',
+                'userName': '<div class="story-owner">' + storyOwner + '</div>'
             };
 
             story.Tasks.sort(itemSort).forEach(function(task) {
@@ -181,10 +181,10 @@ function OpenStoriesTasksAndDefects() {
                 taskLink = artifactLink('Task', task);
                 indentedTask = indentedItem(taskLink);
                 taskInfo = {
-                    'itemLink' : indentedTask,
-                    'status'   : task.State,
-                    'blocked'  : getBlockedHtml(task),
-                    'userName' : ownerIfKnown(task)
+                    'itemLink': indentedTask,
+                    'status': task.State,
+                    'blocked': getBlockedHtml(task),
+                    'userName': ownerIfKnown(task)
                 };
 
                 displayChild(task, tableData, taskInfo, storyInfo);
@@ -196,10 +196,10 @@ function OpenStoriesTasksAndDefects() {
                     defectLink = artifactLink('Defect', defect);
                     indentedDefect = indentedItem(defectLink);
                     defectInfo = {
-                        'itemLink' : indentedDefect,
-                        'status'   : defect.ScheduleState,
-                        'blocked'  : getBlockedHtml(defect),
-                        'userName' : ownerIfKnown(defect)
+                        'itemLink': indentedDefect,
+                        'status': defect.ScheduleState,
+                        'blocked': getBlockedHtml(defect),
+                        'userName': ownerIfKnown(defect)
                     };
 
                     displayChild(defect, tableData, defectInfo, storyInfo);
@@ -212,10 +212,10 @@ function OpenStoriesTasksAndDefects() {
 
         });
         tblConfig = {
-            'columnKeys'     : ['itemLink', 'status', 'blocked', 'userName'],
-            'columnHeaders'  : ['Artifact', 'Status', 'Blocked', 'Owner'   ],
-            'columnWidths'   : ['800px',    '100px',  '200px',   '200px'   ],
-            'sortingEnabled' : false
+            'columnKeys': ['itemLink', 'status', 'blocked', 'userName'],
+            'columnHeaders': ['Artifact', 'Status', 'Blocked', 'Owner'   ],
+            'columnWidths': ['800px', '100px', '200px', '200px'   ],
+            'sortingEnabled': false
         };
 
         storyTable = new rally.sdk.ui.Table(tblConfig);
@@ -230,20 +230,20 @@ function OpenStoriesTasksAndDefects() {
 
         defects.sort(itemSort).forEach(function(defect) {
             defectLink = artifactLink('Defect', defect);
-            defectInfo = { 'defectLink' : defectLink,
-                'status'     : defect.ScheduleState,
-                'priority'   : getPriority(defect),
-                'blocked'    : getBlockedHtml(defect),
-                'userName'   : ownerIfKnown(defect)
+            defectInfo = { 'defectLink': defectLink,
+                'status': defect.ScheduleState,
+                'priority': getPriority(defect),
+                'blocked': getBlockedHtml(defect),
+                'userName': ownerIfKnown(defect)
             };
 
             displayChild(defect, tableData, defectInfo);
         });
         tblConfig = {
-            'columnKeys'     : ['defectLink', 'priority', 'status', 'blocked', 'userName'],
-            'columnHeaders'  : ['Defect',     'Priority', 'Status', 'Blocked', 'Owner'   ],
-            'columnWidths'   : ['800px',      '75',    '100px',  '200px',   '200px'   ],
-            'sortingEnabled' : false
+            'columnKeys': ['defectLink', 'priority', 'status', 'blocked', 'userName'],
+            'columnHeaders': ['Defect', 'Priority', 'Status', 'Blocked', 'Owner'   ],
+            'columnWidths': ['800px', '75', '100px', '200px', '200px'   ],
+            'sortingEnabled': false
         };
 
         defectTable = new rally.sdk.ui.Table(tblConfig);
@@ -306,14 +306,14 @@ function OpenStoriesTasksAndDefects() {
         ];
 
         queryConfigs[0] = {
-            type : 'hierarchicalrequirement',
-            key  : 'stories',
+            type: 'hierarchicalrequirement',
+            key: 'stories',
             fetch: hrColumns.join(','),
             query: storyCriteria
         };
         queryConfigs[1] = {
-            type : 'defect',
-            key  : 'defects',
+            type: 'defect',
+            key: 'defects',
             fetch: hrColumns.join(','),
             query: defectCriteria
         };
