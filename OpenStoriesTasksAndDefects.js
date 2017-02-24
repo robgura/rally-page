@@ -67,6 +67,13 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         }
         return rv;
     }
+    function getRelease(item) {
+        var rv = '';
+        if (item.Release) {
+            rv = item.Release.Name;
+        }
+        return rv;
+    }
     function getBlockedHtml(item) {
         var rv = '';
         if (item.Blocked) {
@@ -233,6 +240,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             defectInfo = { 'defectLink': defectLink,
                 'status': defect.ScheduleState,
                 'priority': getPriority(defect),
+                'release': getRelease(defect),
                 'blocked': getBlockedHtml(defect),
                 'userName': ownerIfKnown(defect)
             };
@@ -240,9 +248,9 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             displayChild(defect, tableData, defectInfo);
         });
         tblConfig = {
-            'columnKeys': ['defectLink', 'priority', 'status', 'blocked', 'userName'],
-            'columnHeaders': ['Defect', 'Priority', 'Status', 'Blocked', 'Owner'   ],
-            'columnWidths': ['800px', '75', '100px', '200px', '200px'   ],
+            'columnKeys': ['release', 'defectLink', 'priority', 'status', 'blocked', 'userName'],
+            'columnHeaders': ['Release', 'Defect', 'Priority', 'Status', 'Blocked', 'Owner'   ],
+            'columnWidths': ['75px', '800px', '75', '100px', '200px', '200px'   ],
             'sortingEnabled': false
         };
 
@@ -298,6 +306,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             'Owner',
             'Priority',
             'Rank',
+            'Release',
             'ScheduleState',
             'State',
             'TaskIndex',
