@@ -235,6 +235,10 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         var tblConfig;
         var defectLink, defectInfo;
 
+        var in_progress = [ 0, 0, 0 ],
+            defined = [ 0, 0, 0 ],
+            comp_pr = 0;
+
         defects.sort(itemSort).forEach(function(defect) {
             defectLink = artifactLink('Defect', defect);
             defectInfo = { 'defectLink': defectLink,
@@ -244,6 +248,34 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                 'blocked': getBlockedHtml(defect),
                 'userName': ownerIfKnown(defect)
             };
+
+            if (defect.ScheduleState === 'Completed' && defect.BlockedReason === 'PR') {
+                comp_pr += 1;
+            }
+
+            if (defect.ScheduleState === 'In-Progress') {
+                if (defect.Priority === 'Low') {
+                    in_progress[0] += 1;
+                }
+                else if (defect.Priority === 'High') {
+                    in_progress[2] += 1;
+                }
+                else {
+                    in_progress[1] += 1;
+                }
+            }
+
+            if (defect.ScheduleState === 'Defined') {
+                if (defect.Priority === 'Low') {
+                    defined[0] += 1;
+                }
+                else if (defect.Priority === 'High') {
+                    defined[2] += 1;
+                }
+                else {
+                    defined[1] += 1;
+                }
+            }
 
             displayChild(defect, tableData, defectInfo);
         });
@@ -257,6 +289,17 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         defectTable = new rally.sdk.ui.Table(tblConfig);
         defectTable.addRows(tableData);
         defectTable.display(contentDiv);
+
+        document.getElementById('defects_count').innerHTML = 'Defects hot: ';
+        document.getElementById('def-comp-pr').innerHTML = comp_pr;
+
+        document.getElementById('def-ip-high').innerHTML = in_progress[2];
+        document.getElementById('def-ip-low').innerHTML = in_progress[0];
+        document.getElementById('def-ip-other').innerHTML = in_progress[1];
+
+        document.getElementById('def-defined-high').innerHTML = defined[2];
+        document.getElementById('def-defined-low').innerHTML = defined[0];
+        document.getElementById('def-defined-other').innerHTML = defined[1];
     }
 
     function showResults(results) {
@@ -282,7 +325,6 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         var ownedDefects = results.defects.filter(function(defect) {
             return defect.Tasks.length === 0;
         });
-        document.getElementById('defects_count').innerHTML = 'Defects: ' + ownedDefects.length;
         if (ownedDefects.length > 0) {
             showDefects(ownedDefects, 'defects');
         }
