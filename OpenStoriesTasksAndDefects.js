@@ -290,7 +290,6 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         defectTable.addRows(tableData);
         defectTable.display(contentDiv);
 
-        document.getElementById('defects_count').innerHTML = 'Defects hot: ';
         document.getElementById('def-comp-pr').innerHTML = comp_pr;
 
         document.getElementById('def-ip-high').innerHTML = in_progress[2];

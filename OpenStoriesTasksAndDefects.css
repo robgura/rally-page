@@ -63,6 +63,15 @@ td.dojoxGridCell {
     font-weight: bold;
 }
 
+.table-group {
+    float: left;
+    margin-right: 14px;
+}
+
+td.number {
+    text-align: right;
+}
+
 table.defect-stats {
     border-collapse: collapse;
     margin-bottom: 10px;
@@ -71,5 +80,6 @@ table.defect-stats {
 .defect-stats td {
     border: solid grey 1px;
     padding: 5px;
+    padding-right: 10px;
     min-width: 100px;
 }
