@@ -282,8 +282,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         tblConfig = {
             'columnKeys': ['release', 'defectLink', 'priority', 'status', 'blocked', 'userName'],
             'columnHeaders': ['Release', 'Defect', 'Priority', 'Status', 'Blocked', 'Owner'   ],
-            'columnWidths': ['75px', '800px', '75', '100px', '200px', '200px'   ],
-            'sortingEnabled': false
+            'columnWidths': ['75px', '800px', '75', '100px', '200px', '200px'   ]
         };
 
         defectTable = new rally.sdk.ui.Table(tblConfig);
