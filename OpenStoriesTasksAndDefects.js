@@ -173,6 +173,12 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         var defectLink, defectInfo, indentedDefect;
         var tableData = [];
         var tblConfig, emptyStory;
+        var taskData = {
+            def: 0,
+            ip: 0,
+            compPR: 0,
+            comp: 0
+        };
         var usPoints = 0;
 
         stories.filter(function(story) {
@@ -181,6 +187,22 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         }).sort(itemSort).forEach(function(story) {
             if (story._type === 'HierarchicalRequirement') {
                 usPoints += story.PlanEstimate;
+                 story.Tasks.forEach(function(task) {
+                    if (task.State === 'Defined') {
+                        taskData.def += 1;
+                    }
+                    else if (task.State === 'In-Progress') {
+                        taskData.ip += 1;
+                    }
+                    else if (task.State === 'Completed') {
+                        if (task.BlockedReason && task.BlockedReason === 'PR') {
+                            taskData.compPR += 1;
+                        }
+                        else {
+                            taskData.comp += 1;
+                        }
+                    }
+                 });
             }
 
             var storyOwner = ownerIfKnown(story);
@@ -241,6 +263,11 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         storyTable.display(contentDiv);
 
         document.getElementById('us-points').innerHTML = usPoints;
+
+        document.getElementById('task-def').innerHTML = taskData.def;
+        document.getElementById('task-ip').innerHTML = taskData.ip;
+        document.getElementById('task-comp-pr').innerHTML = taskData.compPR;
+        document.getElementById('task-comp').innerHTML = taskData.comp;
     }
 
     function showDefects(defects, contentDiv) {
