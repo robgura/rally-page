@@ -63,11 +63,14 @@
             return owner;
         }
     
-        function artifactLink(artifactName, artifact) {
+        function artifactLink(artifactName, artifact, namePrefix) {
             var artUrl = '__SERVER_URL__/detail/_ABBREV_/_OID_';
             artUrl = artUrl.replace('_ABBREV_', abbrev[artifactName]);
             artUrl = artUrl.replace('_OID_', artifact.ObjectID);
             var linkText = artifact.FormattedID + ' ' + artifact.Name;
+            if (namePrefix) {
+                linkText = namePrefix + linkText;
+            }
             var link = '<a href="_URL_" target="_blank">_TEXT_</a>';
             link = link.replace('_URL_', artUrl);
             link = link.replace('_TEXT_', linkText);
@@ -111,6 +114,7 @@
                         parentInfo.displayed = true;
                     }
                     tableData.push(tableInfo);
+                    return true;
                 }
             }
             else {
@@ -119,7 +123,9 @@
                     parentInfo.displayed = true;
                 }
                 tableData.push(tableInfo);
+                return true;
             }
+            return false;
         }
     
         function itemSort(left, rite) {
@@ -180,11 +186,38 @@
             var defectLink, defectInfo, indentedDefect;
             var tableData = [];
             var tblConfig, emptyStory;
+            var taskData = {
+                def: 0,
+                ip: 0,
+                compPR: 0,
+                comp: 0
+            };
+            var usPoints = 0;
     
             stories.filter(function(story) {
                 // only show stories that are blocked and are NOT Completed and Not Accepted
                 return story.Blocked || ! (story.ScheduleState === 'Completed' || story.ScheduleState === 'Accepted');
             }).sort(itemSort).forEach(function(story) {
+                if (story._type === 'HierarchicalRequirement') {
+                    usPoints += story.PlanEstimate;
+                     story.Tasks.forEach(function(task) {
+                        if (task.State === 'Defined') {
+                            taskData.def += 1;
+                        }
+                        else if (task.State === 'In-Progress') {
+                            taskData.ip += 1;
+                        }
+                        else if (task.State === 'Completed') {
+                            if (task.BlockedReason && task.BlockedReason === 'PR') {
+                                taskData.compPR += 1;
+                            }
+                            else {
+                                taskData.comp += 1;
+                            }
+                        }
+                     });
+                }
+    
                 var storyOwner = ownerIfKnown(story);
     
                 emptyStory = true;
@@ -241,19 +274,29 @@
             storyTable = new rally.sdk.ui.Table(tblConfig);
             storyTable.addRows(tableData);
             storyTable.display(contentDiv);
+    
+            document.getElementById('us-points').innerHTML = usPoints;
+    
+            document.getElementById('task-def').innerHTML = taskData.def;
+            document.getElementById('task-ip').innerHTML = taskData.ip;
+            document.getElementById('task-comp-pr').innerHTML = taskData.compPR;
+            document.getElementById('task-comp').innerHTML = taskData.comp;
         }
     
         function showDefects(defects, contentDiv) {
             var tableData = [];
             var tblConfig;
             var defectLink, defectInfo;
+            var defPoints = 0;
     
             var in_progress = [ 0, 0, 0 ],
                 defined = [ 0, 0, 0 ],
                 comp_pr = 0;
     
             defects.sort(itemSort).forEach(function(defect) {
-                defectLink = artifactLink('Defect', defect);
+                var pref = defect.Tasks.length === 0 ? '' : '*** ';
+    
+                defectLink = artifactLink('Defect', defect, pref);
                 defectInfo = { 'defectLink': defectLink,
                     'status': defect.ScheduleState,
                     'priority': getPriority(defect),
@@ -290,7 +333,11 @@
                     }
                 }
     
-                displayChild(defect, tableData, defectInfo);
+                var didDisplay = displayChild(defect, tableData, defectInfo);
+    
+                if (didDisplay) {
+                    defPoints += defect.PlanEstimate;
+                }
             });
             tblConfig = {
                 'columnKeys': ['release', 'defectLink', 'priority', 'status', 'blocked', 'userName'],
@@ -311,34 +358,29 @@
             document.getElementById('def-defined-high').innerHTML = defined[2];
             document.getElementById('def-defined-low').innerHTML = defined[0];
             document.getElementById('def-defined-other').innerHTML = defined[1];
+    
+            document.getElementById('def-points').innerHTML = Number(defPoints).toFixed(1);
         }
     
         function showResults(results) {
-            document.getElementById('stories_count').innerHTML = '';
-            document.getElementById('defects_count').innerHTML = '';
             if (busySpinner) {
                 busySpinner.hide();
                 busySpinner = null;
             }
-    
-            document.getElementById('stories_count').innerHTML = 'Stories: ' + results.stories.length;
     
             // defects with tasks will be listed with the user stories
             var ownedStories = results.stories.concat(results.defects.filter(function(defect) {
                 return defect.Tasks.length > 0;
             }));
     
-            if (ownedStories.length > 0) {
-                showStories(ownedStories, 'stories');
-            }
+            showStories(ownedStories, 'stories');
     
             // defects with no tasks will be listed separately from defects with tasks
             var ownedDefects = results.defects.filter(function(defect) {
-                return defect.Tasks.length === 0;
+                return true; //defect.Tasks.length === 0;
             });
-            if (ownedDefects.length > 0) {
-                showDefects(ownedDefects, 'defects');
-            }
+    
+            showDefects(ownedDefects, 'defects');
         }
     
         that.onIterationSelected = function() {
@@ -357,6 +399,7 @@
                 'Name',
                 'ObjectID',
                 'Owner',
+                'PlanEstimate',
                 'Priority',
                 'Rank',
                 'Release',
@@ -473,7 +516,7 @@
         text-align: right;
     }
     
-    table.defect-stats {
+    table {
         border-collapse: collapse;
         margin-bottom: 10px;
     }
@@ -509,8 +552,38 @@
     <div id="iterations"></div>
     <div id="wait"></div>
     <br><br>
-    <div class="count" id="defects_count"></div>
-    <h2> Defect Data </h2>
+    <h2> Points Data </h2>
+    <div class="table-group">
+        <table class="defect-stats">
+            <tr>
+                <td> User Story Points </td> <td class="number" id="us-points"/>
+            </tr>
+            <tr>
+                <td> Defect Points </td> <td class="number" id="def-points"/>
+            </tr>
+        </table>
+    </div>
+
+    <h2 style="clear: both"> User Story Data </h2>
+    <h3> Tasks </h3>
+    <div class="table-group">
+        <table class="defect-stats">
+            <tr>
+                <td> Defined </td> <td class="number" id="task-def"/>
+            </tr>
+            <tr>
+                <td> In Progress </td> <td class="number" id="task-ip"/>
+            </tr>
+            <tr>
+                <td> Completed on PR </td> <td class="number" id="task-comp-pr"/>
+            </tr>
+            <tr>
+                <td> Completed </td> <td class="number" id="task-comp"/>
+            </tr>
+        </table>
+    </div>
+
+    <h2 style="clear: both"> Defect Data </h2>
     <div class="table-group">
         <table class="defect-stats">
             <tr>
@@ -544,11 +617,11 @@
             </tr>
         </table>
     </div>
-    <div id="defects"></div>
+    <div style="clear: both;" id="defects"></div>
+    <div style="margin-top: 10px"><i>*** defect contains tasks that are broken down with stories</i> </div>
 
     <br>
 
-    <div class="count" id="stories_count"></div>
     <div id="stories"></div>
 
 </body>
