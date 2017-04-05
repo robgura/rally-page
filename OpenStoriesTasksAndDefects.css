@@ -72,12 +72,12 @@ td.number {
     text-align: right;
 }
 
-table {
+.table-stats {
     border-collapse: collapse;
     margin-bottom: 10px;
 }
 
-.defect-stats td {
+.table-stats td {
     border: solid grey 1px;
     padding: 5px;
     padding-right: 10px;
