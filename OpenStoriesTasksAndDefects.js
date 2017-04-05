@@ -50,11 +50,14 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         return owner;
     }
 
-    function artifactLink(artifactName, artifact) {
+    function artifactLink(artifactName, artifact, namePrefix) {
         var artUrl = '__SERVER_URL__/detail/_ABBREV_/_OID_';
         artUrl = artUrl.replace('_ABBREV_', abbrev[artifactName]);
         artUrl = artUrl.replace('_OID_', artifact.ObjectID);
         var linkText = artifact.FormattedID + ' ' + artifact.Name;
+        if (namePrefix) {
+            linkText = namePrefix + linkText;
+        }
         var link = '<a href="_URL_" target="_blank">_TEXT_</a>';
         link = link.replace('_URL_', artUrl);
         link = link.replace('_TEXT_', linkText);
@@ -240,7 +243,9 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             comp_pr = 0;
 
         defects.sort(itemSort).forEach(function(defect) {
-            defectLink = artifactLink('Defect', defect);
+            var pref = defect.Tasks.length === 0 ? '' : '*** ';
+
+            defectLink = artifactLink('Defect', defect, pref);
             defectInfo = { 'defectLink': defectLink,
                 'status': defect.ScheduleState,
                 'priority': getPriority(defect),
@@ -301,14 +306,10 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
     }
 
     function showResults(results) {
-        document.getElementById('stories_count').innerHTML = '';
-        document.getElementById('defects_count').innerHTML = '';
         if (busySpinner) {
             busySpinner.hide();
             busySpinner = null;
         }
-
-        document.getElementById('stories_count').innerHTML = 'Stories: ' + results.stories.length;
 
         // defects with tasks will be listed with the user stories
         var ownedStories = results.stories.concat(results.defects.filter(function(defect) {
@@ -321,7 +322,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
 
         // defects with no tasks will be listed separately from defects with tasks
         var ownedDefects = results.defects.filter(function(defect) {
-            return defect.Tasks.length === 0;
+            return true; //defect.Tasks.length === 0;
         });
         if (ownedDefects.length > 0) {
             showDefects(ownedDefects, 'defects');
