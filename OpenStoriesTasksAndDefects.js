@@ -101,6 +101,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                     parentInfo.displayed = true;
                 }
                 tableData.push(tableInfo);
+                return true;
             }
         }
         else {
@@ -109,7 +110,9 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                 parentInfo.displayed = true;
             }
             tableData.push(tableInfo);
+            return true;
         }
+        return false;
     }
 
     function itemSort(left, rite) {
@@ -170,11 +173,16 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         var defectLink, defectInfo, indentedDefect;
         var tableData = [];
         var tblConfig, emptyStory;
+        var usPoints = 0;
 
         stories.filter(function(story) {
             // only show stories that are blocked and are NOT Completed and Not Accepted
             return story.Blocked || ! (story.ScheduleState === 'Completed' || story.ScheduleState === 'Accepted');
         }).sort(itemSort).forEach(function(story) {
+            if (story._type === 'HierarchicalRequirement') {
+                usPoints += story.PlanEstimate;
+            }
+
             var storyOwner = ownerIfKnown(story);
 
             emptyStory = true;
@@ -231,12 +239,15 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         storyTable = new rally.sdk.ui.Table(tblConfig);
         storyTable.addRows(tableData);
         storyTable.display(contentDiv);
+
+        document.getElementById('us-points').innerHTML = usPoints;
     }
 
     function showDefects(defects, contentDiv) {
         var tableData = [];
         var tblConfig;
         var defectLink, defectInfo;
+        var defPoints = 0;
 
         var in_progress = [ 0, 0, 0 ],
             defined = [ 0, 0, 0 ],
@@ -282,7 +293,11 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                 }
             }
 
-            displayChild(defect, tableData, defectInfo);
+            var didDisplay = displayChild(defect, tableData, defectInfo);
+
+            if (didDisplay) {
+                defPoints += defect.PlanEstimate;
+            }
         });
         tblConfig = {
             'columnKeys': ['release', 'defectLink', 'priority', 'status', 'blocked', 'userName'],
@@ -303,6 +318,8 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         document.getElementById('def-defined-high').innerHTML = defined[2];
         document.getElementById('def-defined-low').innerHTML = defined[0];
         document.getElementById('def-defined-other').innerHTML = defined[1];
+
+        document.getElementById('def-points').innerHTML = Number(defPoints).toFixed(1);
     }
 
     function showResults(results) {
@@ -316,17 +333,14 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             return defect.Tasks.length > 0;
         }));
 
-        if (ownedStories.length > 0) {
-            showStories(ownedStories, 'stories');
-        }
+        showStories(ownedStories, 'stories');
 
         // defects with no tasks will be listed separately from defects with tasks
         var ownedDefects = results.defects.filter(function(defect) {
             return true; //defect.Tasks.length === 0;
         });
-        if (ownedDefects.length > 0) {
-            showDefects(ownedDefects, 'defects');
-        }
+
+        showDefects(ownedDefects, 'defects');
     }
 
     that.onIterationSelected = function() {
@@ -345,6 +359,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             'Name',
             'ObjectID',
             'Owner',
+            'PlanEstimate',
             'Priority',
             'Rank',
             'Release',

@@ -72,7 +72,7 @@ td.number {
     text-align: right;
 }
 
-table.defect-stats {
+table {
     border-collapse: collapse;
     margin-bottom: 10px;
 }
