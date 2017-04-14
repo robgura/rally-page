@@ -9,9 +9,10 @@
 
   <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700' rel='stylesheet' type='text/css'>
    
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
   <script type ="text/javascript" src="/apps/1.32/sdk.js"></script>
   <script type ="text/javascript">
-    /*global rally, document */
+    /*global rally, document, moment */
     
     String.prototype.capFirst = function() {
         return this.charAt(0).toUpperCase() + this.slice(1);
@@ -156,7 +157,6 @@
             };
     
             var rv = computedValue(left) - computedValue(rite);
-    
             if (rv === 0) {
                     var leftOwner = ownerIfKnown(left),
                         riteOwner = ownerIfKnown(rite);
@@ -166,9 +166,7 @@
                     if (left.TaskIndex && rite.TaskIndex) {
                         rv = left.TaskIndex - rite.TaskIndex;
                     }
-                    // Order defects by formatted ID and thus by age.
-                    // 
-                    else if (left._type !== 'Defect' && left.Rank && rite.Rank) {
+                    else if (left.Rank && rite.Rank) {
                         rv = left.Rank - rite.Rank;
                     }
     
@@ -283,6 +281,12 @@
             document.getElementById('task-comp').innerHTML = taskData.comp;
         }
     
+        function getCreated(item) {
+    //         gets pretty format of age i.e 3 Months Age
+    //         return moment(new Date(item.CreationDate)).fromNow();
+            return moment(new Date()).diff(new Date(item.CreationDate), 'days');
+        }
+    
         function showDefects(defects, contentDiv) {
             var tableData = [];
             var tblConfig;
@@ -302,6 +306,7 @@
                     'priority': getPriority(defect),
                     'release': getRelease(defect),
                     'blocked': getBlockedHtml(defect),
+                    'created': getCreated(defect),
                     'userName': ownerIfKnown(defect)
                 };
     
@@ -340,9 +345,9 @@
                 }
             });
             tblConfig = {
-                'columnKeys': ['release', 'defectLink', 'priority', 'status', 'blocked', 'userName'],
-                'columnHeaders': ['Release', 'Defect', 'Priority', 'Status', 'Blocked', 'Owner'   ],
-                'columnWidths': ['75px', '800px', '75', '100px', '200px', '200px'   ]
+                'columnKeys': ['release', 'created', 'defectLink', 'priority', 'status', 'blocked', 'userName'],
+                'columnHeaders': ['Release', 'Age (Days)', 'Defect', 'Priority', 'Status', 'Blocked', 'Owner'   ],
+                'columnWidths': ['75px', '75px', '800px', '75', '100px', '200px', '200px'   ]
             };
     
             defectTable = new rally.sdk.ui.Table(tblConfig);
@@ -393,6 +398,7 @@
             var hrColumns = [
                 'Blocked',
                 'BlockedReason',
+                'CreationDate',
                 'Defects',
                 'DisplayName',
                 'FormattedID',

@@ -1,4 +1,4 @@
-/*global rally, document */
+/*global rally, document, moment */
 
 String.prototype.capFirst = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
@@ -267,6 +267,12 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         document.getElementById('task-comp').innerHTML = taskData.comp;
     }
 
+    function getCreated(item) {
+//         gets pretty format of age i.e 3 Months Age
+//         return moment(new Date(item.CreationDate)).fromNow();
+        return moment(new Date()).diff(new Date(item.CreationDate), 'days');
+    }
+
     function showDefects(defects, contentDiv) {
         var tableData = [];
         var tblConfig;
@@ -286,6 +292,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                 'priority': getPriority(defect),
                 'release': getRelease(defect),
                 'blocked': getBlockedHtml(defect),
+                'created': getCreated(defect),
                 'userName': ownerIfKnown(defect)
             };
 
@@ -324,9 +331,9 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             }
         });
         tblConfig = {
-            'columnKeys': ['release', 'defectLink', 'priority', 'status', 'blocked', 'userName'],
-            'columnHeaders': ['Release', 'Defect', 'Priority', 'Status', 'Blocked', 'Owner'   ],
-            'columnWidths': ['75px', '800px', '75', '100px', '200px', '200px'   ]
+            'columnKeys': ['release', 'created', 'defectLink', 'priority', 'status', 'blocked', 'userName'],
+            'columnHeaders': ['Release', 'Age (Days)', 'Defect', 'Priority', 'Status', 'Blocked', 'Owner'   ],
+            'columnWidths': ['75px', '75px', '800px', '75', '100px', '200px', '200px'   ]
         };
 
         defectTable = new rally.sdk.ui.Table(tblConfig);
@@ -377,6 +384,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         var hrColumns = [
             'Blocked',
             'BlockedReason',
+            'CreationDate',
             'Defects',
             'DisplayName',
             'FormattedID',
