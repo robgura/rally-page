@@ -278,6 +278,9 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         var tblConfig;
         var defectLink, defectInfo;
         var defPoints = 0;
+        var age = 0;
+        var defCount = 0;
+        var now = new Date();
 
         var in_progress = [ 0, 0, 0 ],
             defined = [ 0, 0, 0 ],
@@ -328,6 +331,9 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
 
             if (didDisplay) {
                 defPoints += defect.PlanEstimate;
+
+                age += now.getTime() - new Date(defect.CreationDate).getTime();
+                defCount++;
             }
         });
         tblConfig = {
@@ -351,6 +357,8 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         document.getElementById('def-defined-other').innerHTML = defined[1];
 
         document.getElementById('def-points').innerHTML = Number(defPoints).toFixed(1);
+
+        document.getElementById('def-avg-age').innerHTML = (age / defCount / 1000 / 60 / 60 / 24 ).toFixed(1);
     }
 
     function showResults(results) {
