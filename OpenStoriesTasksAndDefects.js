@@ -143,7 +143,6 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         };
 
         var rv = computedValue(left) - computedValue(rite);
-
         if (rv === 0) {
                 var leftOwner = ownerIfKnown(left),
                     riteOwner = ownerIfKnown(rite);
@@ -153,9 +152,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                 if (left.TaskIndex && rite.TaskIndex) {
                     rv = left.TaskIndex - rite.TaskIndex;
                 }
-                // Order defects by formatted ID and thus by age.
-                // 
-                else if (left._type !== 'Defect' && left.Rank && rite.Rank) {
+                else if (left.Rank && rite.Rank) {
                     rv = left.Rank - rite.Rank;
                 }
 
