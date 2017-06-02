@@ -265,7 +265,7 @@
             tblConfig = {
                 'columnKeys': ['itemLink', 'status', 'blocked', 'userName'],
                 'columnHeaders': ['Artifact', 'Status', 'Blocked', 'Owner'   ],
-                'columnWidths': ['800px', '100px', '200px', '200px'   ],
+                'columnWidths': ['800px', '100px', '100px', '200px'   ],
                 'sortingEnabled': false
             };
     
@@ -341,6 +341,11 @@
                     }
                 }
     
+                defectInfo.daysInProgress = '';
+                if (defect.ScheduleState === 'In-Progress' && defect.InProgressDate) {
+                    defectInfo.daysInProgress = ((now.getTime() - new Date(defect.InProgressDate).getTime()) / 1000 / 60 / 60 / 24 ).toFixed(0);
+                }
+    
                 var didDisplay = displayChild(defect, tableData, defectInfo);
     
                 if (didDisplay) {
@@ -351,9 +356,9 @@
                 }
             });
             tblConfig = {
-                'columnKeys': ['release', 'created', 'defectLink', 'priority', 'status', 'blocked', 'userName'],
-                'columnHeaders': ['Release', 'Age (Days)', 'Defect', 'Priority', 'Status', 'Blocked', 'Owner'   ],
-                'columnWidths': ['75px', '75px', '800px', '75', '100px', '200px', '200px'   ]
+                'columnKeys': ['release', 'created', 'defectLink', 'priority', 'daysInProgress', 'status', 'blocked', 'userName'],
+                'columnHeaders': ['Release', 'Age (Days)', 'Defect', 'Priority', 'Days IP', 'Status', 'Blocked', 'Owner'   ],
+                'columnWidths': ['75px', '75px', '800px', '75', '50', '100px', '100px', '200px'   ]
             };
     
             defectTable = new rally.sdk.ui.Table(tblConfig);
@@ -410,6 +415,7 @@
                 'Defects',
                 'DisplayName',
                 'FormattedID',
+                'InProgressDate',
                 'Name',
                 'ObjectID',
                 'Owner',
