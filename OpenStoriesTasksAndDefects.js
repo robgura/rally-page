@@ -251,7 +251,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         tblConfig = {
             'columnKeys': ['itemLink', 'status', 'blocked', 'userName'],
             'columnHeaders': ['Artifact', 'Status', 'Blocked', 'Owner'   ],
-            'columnWidths': ['800px', '100px', '200px', '200px'   ],
+            'columnWidths': ['800px', '100px', '100px', '200px'   ],
             'sortingEnabled': false
         };
 
@@ -327,6 +327,11 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                 }
             }
 
+            defectInfo.daysInProgress = '';
+            if (defect.ScheduleState === 'In-Progress' && defect.InProgressDate) {
+                defectInfo.daysInProgress = ((now.getTime() - new Date(defect.InProgressDate).getTime()) / 1000 / 60 / 60 / 24 ).toFixed(0);
+            }
+
             var didDisplay = displayChild(defect, tableData, defectInfo);
 
             if (didDisplay) {
@@ -337,9 +342,9 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             }
         });
         tblConfig = {
-            'columnKeys': ['release', 'created', 'defectLink', 'priority', 'status', 'blocked', 'userName'],
-            'columnHeaders': ['Release', 'Age (Days)', 'Defect', 'Priority', 'Status', 'Blocked', 'Owner'   ],
-            'columnWidths': ['75px', '75px', '800px', '75', '100px', '200px', '200px'   ]
+            'columnKeys': ['release', 'created', 'defectLink', 'priority', 'daysInProgress', 'status', 'blocked', 'userName'],
+            'columnHeaders': ['Release', 'Age (Days)', 'Defect', 'Priority', 'Days IP', 'Status', 'Blocked', 'Owner'   ],
+            'columnWidths': ['75px', '75px', '800px', '75', '50', '100px', '100px', '200px'   ]
         };
 
         defectTable = new rally.sdk.ui.Table(tblConfig);
@@ -396,6 +401,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             'Defects',
             'DisplayName',
             'FormattedID',
+            'InProgressDate',
             'Name',
             'ObjectID',
             'Owner',
