@@ -19,6 +19,15 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         return indentationDiv;
     }
 
+    function getDaysInProgress(artifact) {
+        var rv = '',
+            now = new Date();
+        if (artifact.ScheduleState === 'In-Progress' && artifact.InProgressDate) {
+            rv = ((now.getTime() - new Date(artifact.InProgressDate).getTime()) / 1000 / 60 / 60 / 24 ).toFixed(0);
+        }
+        return rv;
+    }
+
     function ownerIfKnown(arti) {
         var owner = '',
             hasDisplay = false;
@@ -202,13 +211,18 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                  });
             }
 
-            var storyOwner = ownerIfKnown(story);
+            var storyOwner = ownerIfKnown(story),
+                statusDays = getDaysInProgress(story);
+
+            if (statusDays !== '') {
+                statusDays += " Days";
+            }
 
             emptyStory = true;
             storyLink = artifactLink(story);
             storyInfo = {
                 'itemLink': '<div class="story-name">' + storyLink + '</div>',
-                'status': '',
+                'status': statusDays,
                 'blocked': '',
                 'userName': '<div class="story-owner">' + storyOwner + '</div>'
             };
@@ -327,10 +341,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                 }
             }
 
-            defectInfo.daysInProgress = '';
-            if (defect.ScheduleState === 'In-Progress' && defect.InProgressDate) {
-                defectInfo.daysInProgress = ((now.getTime() - new Date(defect.InProgressDate).getTime()) / 1000 / 60 / 60 / 24 ).toFixed(0);
-            }
+            defectInfo.daysInProgress = getDaysInProgress(defect);
 
             var didDisplay = displayChild(defect, tableData, defectInfo);
 
@@ -342,9 +353,9 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             }
         });
         tblConfig = {
-            'columnKeys': ['release', 'created', 'defectLink', 'priority', 'daysInProgress', 'status', 'blocked', 'userName'],
-            'columnHeaders': ['Release', 'Age (Days)', 'Defect', 'Priority', 'Days IP', 'Status', 'Blocked', 'Owner'   ],
-            'columnWidths': ['75px', '75px', '800px', '75', '50', '100px', '100px', '200px'   ]
+            'columnKeys': ['release', 'created', 'defectLink', 'priority', /*'daysInProgress',*/ 'status', 'blocked', 'userName'],
+            'columnHeaders': ['Release', 'Age (Days)', 'Defect', 'Priority', /*'Days IP',*/ 'Status', 'Blocked', 'Owner'   ],
+            'columnWidths': ['75px', '75px', '800px', '75', /*'50',*/ '100px', '100px', '200px'   ]
         };
 
         defectTable = new rally.sdk.ui.Table(tblConfig);
