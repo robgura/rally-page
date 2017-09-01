@@ -12,7 +12,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
 
     var busySpinner;
     var defectTable, storyTable;
-    var abbrev = { 'User Story': 'ar', 'Defect': 'df', 'Task': 'tk', 'TestCase': 'tc' };
+    var abbrev = { 'HierarchicalRequirement': 'ar', 'Defect': 'df', 'Task': 'tk', 'TestCase': 'tc' };
 
     function indentedItem(content/*, color*/) {
         var indentationDiv = '<div style="margin-left: 20px;">' + content + '</div>';
@@ -50,9 +50,9 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         return owner;
     }
 
-    function artifactLink(artifactName, artifact, namePrefix) {
+    function artifactLink(artifact, namePrefix) {
         var artUrl = '__SERVER_URL__/detail/_ABBREV_/_OID_';
-        artUrl = artUrl.replace('_ABBREV_', abbrev[artifactName]);
+        artUrl = artUrl.replace('_ABBREV_', abbrev[artifact._type]);
         artUrl = artUrl.replace('_OID_', artifact.ObjectID);
         var linkText = artifact.FormattedID + ' ' + artifact.Name;
         if (namePrefix) {
@@ -184,7 +184,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         }).sort(itemSort).forEach(function(story) {
             if (story._type === 'HierarchicalRequirement') {
                 usPoints += story.PlanEstimate;
-                 story.Tasks.forEach(function(task) {
+                story.Tasks.forEach(function(task) {
                     if (task.State === 'Defined') {
                         taskData.def += 1;
                     }
@@ -205,7 +205,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             var storyOwner = ownerIfKnown(story);
 
             emptyStory = true;
-            storyLink = artifactLink('User Story', story);
+            storyLink = artifactLink(story);
             storyInfo = {
                 'itemLink': '<div class="story-name">' + storyLink + '</div>',
                 'status': '',
@@ -215,7 +215,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
 
             story.Tasks.sort(itemSort).forEach(function(task) {
                 emptyStory = false;
-                taskLink = artifactLink('Task', task);
+                taskLink = artifactLink(task);
                 indentedTask = indentedItem(taskLink);
                 taskInfo = {
                     'itemLink': indentedTask,
@@ -230,7 +230,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             if (story.Defects) {
                 story.Defects.sort(itemSort).forEach(function(defect) {
                     emptyStory = false;
-                    defectLink = artifactLink('Defect', defect);
+                    defectLink = artifactLink(defect);
                     indentedDefect = indentedItem(defectLink);
                     defectInfo = {
                         'itemLink': indentedDefect,
@@ -289,7 +289,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         defects.sort(itemSort).forEach(function(defect) {
             var pref = defect.Tasks.length === 0 ? '' : '*** ';
 
-            defectLink = artifactLink('Defect', defect, pref);
+            defectLink = artifactLink(defect, pref);
             defectInfo = { 'defectLink': defectLink,
                 'status': defect.ScheduleState,
                 'priority': getPriority(defect),
