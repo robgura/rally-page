@@ -140,16 +140,23 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
 
             if (item.State === 'Completed' || item.ScheduleState === 'Completed') {
                 rv += 1000;
+
+                if (! item.Blocked) {
+                    rv += 100;
+                }
             }
             else if (item.State === 'In-Progress' || item.ScheduleState === 'In-Progress') {
                 rv += 2000;
+
+                if (! item.Blocked) {
+                    rv += 100;
+                }
             }
             else {
                 rv += 3000;
-            }
-
-            if (! item.Blocked) {
-                rv += 100;
+                if (item.Blocked) {
+                    rv += 100;
+                }
             }
 
             if (item.Priority === 'Immediate') { rv += 10; }

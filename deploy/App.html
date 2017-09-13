@@ -100,6 +100,14 @@
             }
             return rv;
         }
+        function getMaxString(str, max) {
+            var rv = str.substring(0, max);
+            if (rv !== str) {
+                rv += '...';
+            }
+            return rv;
+        }
+    
         function getBlockedHtml(item) {
             var rv = '';
             if (item.Blocked) {
@@ -112,6 +120,8 @@
                         rv = 'Blocked';
                     }
                 }
+    
+                rv = getMaxString(rv, 25);
                 rv = '<b style="color:red">' + rv + '</b>';
             }
             return rv;
@@ -144,16 +154,23 @@
     
                 if (item.State === 'Completed' || item.ScheduleState === 'Completed') {
                     rv += 1000;
+    
+                    if (! item.Blocked) {
+                        rv += 100;
+                    }
                 }
                 else if (item.State === 'In-Progress' || item.ScheduleState === 'In-Progress') {
                     rv += 2000;
+    
+                    if (! item.Blocked) {
+                        rv += 100;
+                    }
                 }
                 else {
                     rv += 3000;
-                }
-    
-                if (! item.Blocked) {
-                    rv += 100;
+                    if (item.Blocked) {
+                        rv += 100;
+                    }
                 }
     
                 if (item.Priority === 'Immediate') { rv += 10; }
@@ -229,7 +246,7 @@
                     statusDays = getDaysInProgress(story);
     
                 if (statusDays !== '') {
-                    statusDays += " Days";
+                    statusDays += ' Days';
                 }
     
                 emptyStory = true;
