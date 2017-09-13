@@ -14,6 +14,13 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
     var defectTable, storyTable;
     var abbrev = { 'HierarchicalRequirement': 'ar', 'Defect': 'df', 'Task': 'tk', 'TestCase': 'tc' };
 
+    var blankStoryRow = {
+        itemLink: '<div style="min-height:49px">&nbsp</div>',
+        'status': '<div style="min-height:49px">&nbsp</div>',
+        blocked: '<div style="min-height:49px">&nbsp</div>',
+        userName: '<div style="min-height:49px">&nbsp</div>',
+    };
+
     function indentedItem(content/*, color*/) {
         var indentationDiv = '<div style="margin-left: 20px;">' + content + '</div>';
         return indentationDiv;
@@ -112,12 +119,17 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         }
         return rv;
     }
+    var firstDisplay = true;
     function displayChild(item, tableData, tableInfo, parentInfo) {
         if (item.State === 'Completed' || item.ScheduleState === 'Completed' || item.ScheduleState === 'Accepted') {
             if (item.Blocked) {
                 if (parentInfo && ! parentInfo.displayed) {
+                    if (! firstDisplay) {
+                        tableData.push(blankStoryRow);
+                    }
                     tableData.push(parentInfo);
                     parentInfo.displayed = true;
+                    firstDisplay = false;
                 }
                 tableData.push(tableInfo);
                 return true;
@@ -125,8 +137,12 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         }
         else {
             if (parentInfo && ! parentInfo.displayed) {
+                if (! firstDisplay) {
+                    tableData.push(blankStoryRow);
+                }
                 tableData.push(parentInfo);
                 parentInfo.displayed = true;
+                firstDisplay = false;
             }
             tableData.push(tableInfo);
             return true;
