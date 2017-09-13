@@ -86,6 +86,14 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         }
         return rv;
     }
+    function getMaxString(str, max) {
+        var rv = str.substring(0, max);
+        if (rv !== str) {
+            rv += '...';
+        }
+        return rv;
+    }
+
     function getBlockedHtml(item) {
         var rv = '';
         if (item.Blocked) {
@@ -98,6 +106,8 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                     rv = 'Blocked';
                 }
             }
+
+            rv = getMaxString(rv, 25);
             rv = '<b style="color:red">' + rv + '</b>';
         }
         return rv;
@@ -215,7 +225,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                 statusDays = getDaysInProgress(story);
 
             if (statusDays !== '') {
-                statusDays += " Days";
+                statusDays += ' Days';
             }
 
             emptyStory = true;
