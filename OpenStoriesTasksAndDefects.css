@@ -39,6 +39,11 @@ h4#UserNameHeader {
 
 }
 
+.story-name {
+    font-size: 18px;
+    font-weight: bold;
+}
+
 td.dojoxGridCell {
     font-size: 16px;
     padding-top: 4px;
@@ -56,11 +61,6 @@ td.dojoxGridCell {
     67% { color: orange }
     83% { color: gold }
     100% { color: green }
-}
-
-.story-name {
-    font-size: 18px;
-    font-weight: bold;
 }
 
 .table-group {

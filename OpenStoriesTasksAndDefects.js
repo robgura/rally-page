@@ -150,6 +150,21 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         return false;
     }
 
+    function storySort(left, rite) {
+        var leftFinished = left.ScheduleState === 'Completed' || left.ScheduleState === 'Accepted';
+        var riteFinished = rite.ScheduleState === 'Completed' || rite.ScheduleState === 'Accepted';
+
+        if (leftFinished && ! riteFinished) {
+            return -1;
+        }
+
+        if (riteFinished && ! leftFinished) {
+            return 1;
+        }
+
+        return left.FormattedID.localeCompare(rite.FormattedID);
+    }
+
     function itemSort(left, rite) {
         var computedValue = function(item) {
             var rv = 0;
@@ -220,10 +235,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         };
         var usPoints = 0;
 
-        stories.filter(function(story) {
-            // only show stories that are blocked and are NOT Completed and Not Accepted
-            return story.Blocked || ! (story.ScheduleState === 'Completed' || story.ScheduleState === 'Accepted');
-        }).sort(itemSort).forEach(function(story) {
+        stories.sort(storySort).forEach(function(story) {
             if (story._type === 'HierarchicalRequirement') {
                 usPoints += story.PlanEstimate;
                 story.Tasks.forEach(function(task) {
