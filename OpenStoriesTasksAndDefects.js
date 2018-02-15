@@ -151,17 +151,6 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
     }
 
     function storySort(left, rite) {
-        var leftFinished = left.ScheduleState === 'Completed' || left.ScheduleState === 'Accepted';
-        var riteFinished = rite.ScheduleState === 'Completed' || rite.ScheduleState === 'Accepted';
-
-        if (leftFinished && ! riteFinished) {
-            return -1;
-        }
-
-        if (riteFinished && ! leftFinished) {
-            return 1;
-        }
-
         return left.FormattedID.localeCompare(rite.FormattedID);
     }
 
