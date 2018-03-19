@@ -239,7 +239,6 @@
             var usPoints = 0;
     
             stories.sort(storySort).forEach(function(story) {
-                console.log(story);
                 if (story._type === 'HierarchicalRequirement') {
                     usPoints += story.PlanEstimate;
                     story.Tasks.forEach(function(task) {
@@ -307,6 +306,7 @@
                 }
     
                 if (emptyStory) {
+                    tableData.push(blankStoryRow);
                     tableData.push(storyInfo);
                 }
     

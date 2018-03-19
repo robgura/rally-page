@@ -292,6 +292,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             }
 
             if (emptyStory) {
+                tableData.push(blankStoryRow);
                 tableData.push(storyInfo);
             }
 
