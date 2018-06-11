@@ -337,6 +337,9 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
 
         defects.sort(itemSort).forEach(function(defect) {
             var pref = defect.Tasks.length === 0 ? '' : '*** ';
+            if (defect.Requirement) {
+                pref += '<b>[' + defect.Requirement.FormattedID + ']</b> ';
+            }
 
             defectLink = artifactLink(defect, pref);
             defectInfo = { 'defectLink': defectLink,
@@ -455,6 +458,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             'Priority',
             'Rank',
             'Release',
+            'Requirement',
             'ScheduleState',
             'State',
             'TaskIndex',
