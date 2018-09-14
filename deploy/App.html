@@ -64,7 +64,7 @@
             }
     
             if (! hasDisplay) {
-                var firstLastNameEmail = owner.match(/([^\.]+)\.([^\.]+)@.*/);
+                var firstLastNameEmail = owner.match(/([^.]+)\.([^.]+)@.*/);
     
                 if (firstLastNameEmail) {
                     owner = firstLastNameEmail[2].capFirst() + ', ' + firstLastNameEmail[1].capFirst();
@@ -92,6 +92,12 @@
             link = link.replace('_URL_', artUrl);
             link = link.replace('_TEXT_', linkText);
             return link;
+        }
+        function getCustomer(defect) {
+            if (defect.IsCustomer) {
+                return 'Yes';
+            }
+            return '';
         }
         function getPriority(item) {
             var rv = '';
@@ -362,6 +368,7 @@
                     'release': getRelease(defect),
                     'blocked': getBlockedHtml(defect),
                     'created': getCreated(defect),
+                    'customer': getCustomer(defect),
                     'userName': ownerIfKnown(defect)
                 };
     
@@ -405,9 +412,9 @@
                 }
             });
             tblConfig = {
-                'columnKeys': ['release', 'created', 'defectLink', 'priority', /*'daysInProgress',*/ 'status', 'blocked', 'userName'],
-                'columnHeaders': ['Release', 'Age (Days)', 'Defect', 'Priority', /*'Days IP',*/ 'Status', 'Blocked', 'Owner'   ],
-                'columnWidths': ['75px', '75px', '800px', '75', /*'50',*/ '100px', '100px', '200px'   ]
+                'columnKeys': ['release', 'created', 'defectLink', 'customer', 'priority', /*'daysInProgress',*/ 'status', 'blocked', 'userName'],
+                'columnHeaders': ['Release', 'Age (Days)', 'Defect', 'Customer', 'Priority', /*'Days IP',*/ 'Status', 'Blocked', 'Owner'   ],
+                'columnWidths': ['75px', '75px', '800px', '60', '60', /*'50',*/ '100px', '100px', '200px'   ]
             };
     
             defectTable = new rally.sdk.ui.Table(tblConfig);
@@ -480,6 +487,8 @@
                 'UserName'
             ];
     
+            var defectColumns = hrColumns.concat('IsCustomer');
+    
             queryConfigs[0] = {
                 type: 'hierarchicalrequirement',
                 key: 'stories',
@@ -489,7 +498,7 @@
             queryConfigs[1] = {
                 type: 'defect',
                 key: 'defects',
-                fetch: hrColumns.join(','),
+                fetch: defectColumns.join(','),
                 query: defectCriteria
             };
             busySpinner = new rally.sdk.ui.basic.Wait({});
