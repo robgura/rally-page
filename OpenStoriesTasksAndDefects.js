@@ -79,6 +79,12 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         link = link.replace('_TEXT_', linkText);
         return link;
     }
+    function getCustomer(defect) {
+        if (defect.IsCustomer) {
+            return 'Yes';
+        }
+        return '';
+    }
     function getPriority(item) {
         var rv = '';
         if (item.Priority !== 'None') {
@@ -348,6 +354,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                 'release': getRelease(defect),
                 'blocked': getBlockedHtml(defect),
                 'created': getCreated(defect),
+                'customer': getCustomer(defect),
                 'userName': ownerIfKnown(defect)
             };
 
@@ -391,9 +398,9 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             }
         });
         tblConfig = {
-            'columnKeys': ['release', 'created', 'defectLink', 'priority', /*'daysInProgress',*/ 'status', 'blocked', 'userName'],
-            'columnHeaders': ['Release', 'Age (Days)', 'Defect', 'Priority', /*'Days IP',*/ 'Status', 'Blocked', 'Owner'   ],
-            'columnWidths': ['75px', '75px', '800px', '75', /*'50',*/ '100px', '100px', '200px'   ]
+            'columnKeys': ['release', 'created', 'defectLink', 'customer', 'priority', /*'daysInProgress',*/ 'status', 'blocked', 'userName'],
+            'columnHeaders': ['Release', 'Age (Days)', 'Defect', 'Customer', 'Priority', /*'Days IP',*/ 'Status', 'Blocked', 'Owner'   ],
+            'columnWidths': ['75px', '75px', '800px', '60', '60', /*'50',*/ '100px', '100px', '200px'   ]
         };
 
         defectTable = new rally.sdk.ui.Table(tblConfig);
@@ -466,6 +473,8 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             'UserName'
         ];
 
+        var defectColumns = hrColumns.concat('IsCustomer');
+
         queryConfigs[0] = {
             type: 'hierarchicalrequirement',
             key: 'stories',
@@ -475,7 +484,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         queryConfigs[1] = {
             type: 'defect',
             key: 'defects',
-            fetch: hrColumns.join(','),
+            fetch: defectColumns.join(','),
             query: defectCriteria
         };
         busySpinner = new rally.sdk.ui.basic.Wait({});
