@@ -50,7 +50,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         }
 
         if (! hasDisplay) {
-            var firstLastNameEmail = owner.match(/([^\.]+)\.([^\.]+)@.*/);
+            var firstLastNameEmail = owner.match(/([^.]+)\.([^.]+)@.*/);
 
             if (firstLastNameEmail) {
                 owner = firstLastNameEmail[2].capFirst() + ', ' + firstLastNameEmail[1].capFirst();
