@@ -90,7 +90,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         if (item.Priority !== 'None') {
             rv = item.Priority;
         }
-        return rv;
+        return getMaxString(rv, 5);
     }
     function getRelease(item) {
         var rv = '';
@@ -400,7 +400,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         tblConfig = {
             'columnKeys': ['release', 'created', 'defectLink', 'customer', 'priority', /*'daysInProgress',*/ 'status', 'blocked', 'userName'],
             'columnHeaders': ['Release', 'Age (Days)', 'Defect', 'Customer', 'Priority', /*'Days IP',*/ 'Status', 'Blocked', 'Owner'   ],
-            'columnWidths': ['75px', '75px', '800px', '60', '60', /*'50',*/ '100px', '100px', '200px'   ]
+            'columnWidths': ['75px', '75px', '700px', '60', '60', /*'50',*/ '100px', '100px', '100px'   ]
         };
 
         defectTable = new rally.sdk.ui.Table(tblConfig);
