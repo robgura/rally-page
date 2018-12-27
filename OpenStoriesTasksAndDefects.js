@@ -66,7 +66,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         return owner;
     }
 
-    function artifactLink(artifact, namePrefix) {
+    function artifactLink(artifact, namePrefix, addTasks) {
         var artUrl = '__SERVER_URL__/detail/_ABBREV_/_OID_';
         artUrl = artUrl.replace('_ABBREV_', abbrev[artifact._type]);
         artUrl = artUrl.replace('_OID_', artifact.ObjectID);
@@ -77,6 +77,12 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         var link = '<a href="_URL_" target="_blank">_TEXT_</a>';
         link = link.replace('_URL_', artUrl);
         link = link.replace('_TEXT_', linkText);
+
+        if (addTasks && artifact.ScheduleState) {
+            link += ' <a class="small-link" href="TASK_URL" target="_blank">_TEXT_</a>';
+            link = link.replace('TASK_URL', artUrl + '/tasks');
+            link = link.replace('_TEXT_', 'tasks');
+        }
         return link;
     }
     function getCustomer(defect) {
@@ -259,7 +265,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             }
 
             emptyStory = true;
-            storyLink = artifactLink(story);
+            storyLink = artifactLink(story, '', true);
             storyInfo = {
                 'itemLink': '<div class="story-name">' + storyLink + '</div>',
                 'status': statusDays,
@@ -269,7 +275,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
 
             story.Tasks.sort(itemSort).forEach(function(task) {
                 emptyStory = false;
-                taskLink = artifactLink(task);
+                taskLink = artifactLink(task, '', false);
                 indentedTask = indentedItem(taskLink);
                 taskInfo = {
                     'itemLink': indentedTask,
@@ -284,7 +290,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             if (story.Defects) {
                 story.Defects.sort(itemSort).forEach(function(defect) {
                     emptyStory = false;
-                    defectLink = artifactLink(defect);
+                    defectLink = artifactLink(defect, '', true);
                     indentedDefect = indentedItem(defectLink);
                     defectInfo = {
                         'itemLink': indentedDefect,
@@ -347,7 +353,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                 pref += '<b>[' + defect.Requirement.FormattedID + ']</b> ';
             }
 
-            defectLink = artifactLink(defect, pref);
+            defectLink = artifactLink(defect, pref, false);
             defectInfo = { 'defectLink': defectLink,
                 'status': defect.ScheduleState,
                 'priority': getPriority(defect),

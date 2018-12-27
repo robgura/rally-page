@@ -44,6 +44,11 @@ h4#UserNameHeader {
     font-weight: bold;
 }
 
+.small-link {
+    font-size: 14px;
+    font-weight: normal;
+}
+
 .dojoxGridCell {
     padding: 3px 3px 3px 3px;
 }
