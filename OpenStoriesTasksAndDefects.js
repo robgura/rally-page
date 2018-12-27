@@ -66,11 +66,14 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         return owner;
     }
 
-    function artifactLink(artifact, namePrefix, addTasks) {
+    function artifactLink(artifact, namePrefix, addTasks, addRelease) {
         var artUrl = '__SERVER_URL__/detail/_ABBREV_/_OID_';
         artUrl = artUrl.replace('_ABBREV_', abbrev[artifact._type]);
         artUrl = artUrl.replace('_OID_', artifact.ObjectID);
         var linkText = artifact.FormattedID + ' ' + artifact.Name;
+        if (addRelease) {
+            linkText = '[' + artifact.Release.Name + '] ' + linkText;
+        }
         if (namePrefix) {
             linkText = namePrefix + linkText;
         }
@@ -162,8 +165,33 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         return false;
     }
 
+    // https://stackoverflow.com/a/7931892
+    function version_lt(version1, version2) {
+        var result = false;
+        if (typeof version1 !== 'object') { version1 = version1.toString().split('.'); }
+        if (typeof version2 !== 'object') { version2 = version2.toString().split('.'); }
+
+        for (var i = 0; i < (Math.max(version1.length, version2.length)); i++) {
+
+            if (version1[i] === undefined) { version1[i] = 0; }
+            if (version2[i] === undefined) { version2[i] = 0; }
+
+            if (Number(version1[i]) < Number(version2[i])) {
+                result = true;
+                break;
+            }
+            if (version1[i] !== version2[i]) {
+                break;
+            }
+        }
+        return result;
+    }
+
     function storySort(left, rite) {
-        return left.FormattedID.localeCompare(rite.FormattedID);
+        if (left.Release.Name === rite.Release.Name) {
+            return left.FormattedID.localeCompare(rite.FormattedID);
+        }
+        return version_lt(left.Release.Name, rite.Release.Name) ? -1 : 1;
     }
 
     function itemSort(left, rite) {
@@ -265,7 +293,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             }
 
             emptyStory = true;
-            storyLink = artifactLink(story, '', true);
+            storyLink = artifactLink(story, '', true, true);
             storyInfo = {
                 'itemLink': '<div class="story-name">' + storyLink + '</div>',
                 'status': statusDays,
@@ -290,7 +318,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             if (story.Defects) {
                 story.Defects.sort(itemSort).forEach(function(defect) {
                     emptyStory = false;
-                    defectLink = artifactLink(defect, '', true);
+                    defectLink = artifactLink(defect, '', true, true);
                     indentedDefect = indentedItem(defectLink);
                     defectInfo = {
                         'itemLink': indentedDefect,
