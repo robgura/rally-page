@@ -85,7 +85,7 @@
             artUrl = artUrl.replace('_ABBREV_', abbrev[artifact._type]);
             artUrl = artUrl.replace('_OID_', artifact.ObjectID);
             var linkText = artifact.FormattedID + ' ' + artifact.Name;
-            if (addRelease) {
+            if (addRelease && artifact.Release) {
                 linkText = '[' + artifact.Release.Name + '] ' + linkText;
             }
             if (namePrefix) {
@@ -205,7 +205,7 @@
             if (left.Release.Name === rite.Release.Name) {
                 return left.FormattedID.localeCompare(rite.FormattedID);
             }
-            return version_lt(left.Release.Name, rite.Release.Name) ? -1 : 0;
+            return version_lt(left.Release.Name, rite.Release.Name) ? -1 : 1;
         }
     
         function itemSort(left, rite) {

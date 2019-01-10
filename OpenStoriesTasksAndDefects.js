@@ -71,7 +71,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         artUrl = artUrl.replace('_ABBREV_', abbrev[artifact._type]);
         artUrl = artUrl.replace('_OID_', artifact.ObjectID);
         var linkText = artifact.FormattedID + ' ' + artifact.Name;
-        if (addRelease) {
+        if (addRelease && artifact.Release) {
             linkText = '[' + artifact.Release.Name + '] ' + linkText;
         }
         if (namePrefix) {
