@@ -92,3 +92,11 @@ td.number {
     padding-right: 10px;
     min-width: 100px;
 }
+
+.lifecycle {
+    font-size: 14px;
+    font-weight: normal;
+    color: rgb(150, 150, 150);
+    font-weight: bold;
+}
+

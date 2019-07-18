@@ -1,4 +1,4 @@
-/*global rally, document, moment */
+/*global rally, moment */
 
 String.prototype.capFirst = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
@@ -66,11 +66,13 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         return owner;
     }
 
-    function artifactLink(artifact, namePrefix, addTasks, addRelease) {
+    function artifactLink(artifact, namePrefix, lifeCycle, addTasks, addRelease) {
         var artUrl = '__SERVER_URL__/detail/_ABBREV_/_OID_';
         artUrl = artUrl.replace('_ABBREV_', abbrev[artifact._type]);
         artUrl = artUrl.replace('_OID_', artifact.ObjectID);
-        var linkText = artifact.FormattedID + ' ' + artifact.Name;
+
+        var linkText = artifact.FormattedID + ' ' + artifact.Name + ' <span class="lifecycle">' + lifeCycle + "</span>";
+
         if (addRelease && artifact.Release) {
             linkText = '[' + artifact.Release.Name + '] ' + linkText;
         }
@@ -94,6 +96,13 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         }
         return '';
     }
+    function getMaxString(str, max) {
+        var rv = str.substring(0, max);
+        if (rv !== str) {
+            rv += '...';
+        }
+        return rv;
+    }
     function getPriority(item) {
         var rv = '';
         if (item.Priority !== 'None') {
@@ -108,14 +117,6 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         }
         return rv;
     }
-    function getMaxString(str, max) {
-        var rv = str.substring(0, max);
-        if (rv !== str) {
-            rv += '...';
-        }
-        return rv;
-    }
-
     function getBlockedHtml(item) {
         var rv = '';
         if (item.Blocked) {
@@ -285,6 +286,11 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                  });
             }
 
+            var lifeCycle = '';
+            if (story.Lifecycle) {
+                // grab capture group [1]
+                lifeCycle = story.Lifecycle.match(/\d+\. ([\w\s]+) \(.*/)[1];
+            }
             var storyOwner = ownerIfKnown(story),
                 statusDays = getDaysInProgress(story);
 
@@ -293,7 +299,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             }
 
             emptyStory = true;
-            storyLink = artifactLink(story, '', true, true);
+            storyLink = artifactLink(story, '', lifeCycle, true, true);
             storyInfo = {
                 'itemLink': '<div class="story-name">' + storyLink + '</div>',
                 'status': statusDays,
@@ -303,7 +309,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
 
             story.Tasks.sort(itemSort).forEach(function(task) {
                 emptyStory = false;
-                taskLink = artifactLink(task, '', false);
+                taskLink = artifactLink(task, '', '', false);
                 indentedTask = indentedItem(taskLink);
                 taskInfo = {
                     'itemLink': indentedTask,
@@ -318,7 +324,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             if (story.Defects) {
                 story.Defects.sort(itemSort).forEach(function(defect) {
                     emptyStory = false;
-                    defectLink = artifactLink(defect, '', true, true);
+                    defectLink = artifactLink(defect, '', '', true, true);
                     indentedDefect = indentedItem(defectLink);
                     defectInfo = {
                         'itemLink': indentedDefect,
@@ -381,7 +387,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                 pref += '<b>[' + defect.Requirement.FormattedID + ']</b> ';
             }
 
-            defectLink = artifactLink(defect, pref, false);
+            defectLink = artifactLink(defect, pref, '', false);
             defectInfo = { 'defectLink': defectLink,
                 'status': defect.ScheduleState,
                 'priority': getPriority(defect),
@@ -484,7 +490,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         var storyCriteria = '(' + iterCond + ' AND ' + scheduleStateCondition + ')';
         var defectCriteria = '(' + iterCond + ' AND ' + scheduleStateCondition + ')';
         var queryConfigs = [];
-        var hrColumns = [
+        var baseColumns = [
             'Blocked',
             'BlockedReason',
             'CreationDate',
@@ -507,7 +513,8 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             'UserName'
         ];
 
-        var defectColumns = hrColumns.concat('IsCustomer');
+        var defectColumns = baseColumns.concat('IsCustomer');
+        var hrColumns = baseColumns.concat('Lifecycle');
 
         queryConfigs[0] = {
             type: 'hierarchicalrequirement',
