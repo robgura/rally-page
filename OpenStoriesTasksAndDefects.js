@@ -288,8 +288,12 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
 
             var lifeCycle = '';
             if (story.Lifecycle) {
-                // grab capture group [1]
-                lifeCycle = story.Lifecycle.match(/\d+\. ([\w\s]+) \(.*/)[1];
+                try {
+                    // grab capture group [1]
+                    lifeCycle = story.Lifecycle.match(/\d+\. ([\w\s]+)( \(.*|$)/)[1];
+                } catch (e) {
+                    lifeCycle = 'Unknown: ' + e;
+                }
             }
             var storyOwner = ownerIfKnown(story),
                 statusDays = getDaysInProgress(story);
