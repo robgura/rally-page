@@ -188,9 +188,22 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         return result;
     }
 
+    var ORDER = {
+        '10. Implement (SO, E)': 1,
+        '11. Demo (SO,CAG, E)': 2,
+        '9. Kick Off (E)': 3
+    };
+
     function storySort(left, rite) {
         if (left.Release.Name === rite.Release.Name) {
-            return left.FormattedID.localeCompare(rite.FormattedID);
+            if (left.Lifecycle === rite.Lifecycle) {
+                return left.FormattedID.localeCompare(rite.FormattedID);
+            }
+
+            var l = ORDER[left.Lifecycle] || 0;
+            var r = ORDER[rite.Lifecycle] || 0;
+            return l - r;
+
         }
         return version_lt(left.Release.Name, rite.Release.Name) ? -1 : 1;
     }
@@ -291,6 +304,9 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                 try {
                     // grab capture group [1]
                     lifeCycle = story.Lifecycle.match(/\d+\. ([\w\s]+)( \(.*|$)/)[1];
+//                     if (lifeCycle === 'Kick Off') {
+//                         lifeCycle = '<span style="color: green"> Kick Off </span>';
+//                     }
                 } catch (e) {
                     lifeCycle = 'Unknown: ' + e;
                 }
