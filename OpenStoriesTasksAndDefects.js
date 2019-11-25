@@ -249,7 +249,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                 rv = leftOwner.localeCompare(riteOwner);
 
             if (rv === 0) {
-                if (left.TaskIndex && rite.TaskIndex) {
+                if ((left.TaskIndex || left.TaskIndex === 0) && (rite.TaskIndex || rite.TaskIndex === 0)) {
                     rv = left.TaskIndex - rite.TaskIndex;
                 }
                 else if (left.Rank && rite.Rank) {
