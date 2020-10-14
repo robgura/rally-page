@@ -413,6 +413,7 @@
     
             var in_progress = [ 0, 0, 0 ],
                 defined = [ 0, 0, 0 ],
+                def_total = 0,
                 comp_pr = 0;
     
             defects.sort(itemSort).forEach(function(defect) {
@@ -437,6 +438,7 @@
                 }
     
                 if (defect.ScheduleState === 'In-Progress') {
+                    def_total += 1;
                     if (defect.Priority === 'Low') {
                         in_progress[0] += 1;
                     }
@@ -449,6 +451,7 @@
                 }
     
                 if (defect.ScheduleState === 'Defined') {
+                    def_total += 1;
                     if (defect.Priority === 'Low') {
                         defined[0] += 1;
                     }
@@ -481,6 +484,8 @@
             defectTable.addRows(tableData);
             defectTable.display(contentDiv);
     
+            document.getElementById('def-total').innerHTML = def_total;
+    
             document.getElementById('def-comp-pr').innerHTML = comp_pr;
     
             document.getElementById('def-ip-high').innerHTML = in_progress[2];
@@ -496,11 +501,19 @@
             document.getElementById('def-avg-age').innerHTML = (age / defCount / 1000 / 60 / 60 / 24 ).toFixed(1);
         }
     
+        function showIteration(iteration) {
+    //         const left = moment(new Date()).diff(new Date(iteration.EndDate), 'days');
+            const left = moment(new Date(iteration.EndDate)).fromNow();
+            document.getElementById('time-left').innerHTML = left;
+        }
+    
         function showResults(results) {
             if (busySpinner) {
                 busySpinner.hide();
                 busySpinner = null;
             }
+    
+            showIteration(results.iteration[0]);
     
             // defects with tasks will be listed with the user stories
             var ownedStories = results.stories.concat(results.defects.filter(function(defect) {
@@ -573,6 +586,13 @@
                 defectTable.destroy();
                 defectTable = null;
             }
+    
+            queryConfigs.push({
+                type: 'iteration',
+                key: 'iteration',
+                fetch: 'StartDate,EndDate',
+                query: '(Name = "' + targetIterationName + '")',
+            });
     
             rallyDataSource.setApiVersion('1.43');
             rallyDataSource.findAll(queryConfigs, showResults);
@@ -703,6 +723,28 @@
     rally.addOnLoad(onLoad);
   </script>
 
+  <style>
+    .iter-time-left {
+        font-size: 32px;
+        font-family: "Impact", monospace;
+    }
+
+    .defect-total {
+        font-size: 128px;
+        line-height: 128px;
+        font-family: "Impact", monospace;
+        -webkit-text-stroke: 2px black;
+        -webkit-text-fill-color: lightgrey;
+
+        border: solid black 2px;
+        border-radius: 6px;
+        width: fit-content;
+        padding-right: 10px;
+        padding-left: 10px;
+
+    }
+  </style>
+
 </head>
 
 <body>
@@ -741,6 +783,7 @@
     </div>
 
     <h2 style="clear: both"> Defect Data </h2>
+    <div class="defect-total" id="def-total"> </div>
     <div style="margin-bottom: 10px;">
         Average Age: <span id="def-avg-age"> </span> days
     </div>
@@ -777,6 +820,10 @@
             </tr>
         </table>
     </div>
+
+    <h2 style="clear: both"> Iteration Data </h2>
+    <div class="iter-time-left" > Iteration ends <span id="time-left"> </span> </div>
+
     <div style="clear: both;" id="defects"></div>
     <div style="margin-top: 10px"><i>*** defect contains tasks that are broken down with stories</i> </div>
     <div style="margin-top: 10px"><i><b> Bold </b> users stories indicate the parent of the defect</i> </div>

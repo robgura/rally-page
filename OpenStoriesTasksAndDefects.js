@@ -399,6 +399,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
 
         var in_progress = [ 0, 0, 0 ],
             defined = [ 0, 0, 0 ],
+            def_total = 0,
             comp_pr = 0;
 
         defects.sort(itemSort).forEach(function(defect) {
@@ -423,6 +424,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             }
 
             if (defect.ScheduleState === 'In-Progress') {
+                def_total += 1;
                 if (defect.Priority === 'Low') {
                     in_progress[0] += 1;
                 }
@@ -435,6 +437,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             }
 
             if (defect.ScheduleState === 'Defined') {
+                def_total += 1;
                 if (defect.Priority === 'Low') {
                     defined[0] += 1;
                 }
@@ -467,6 +470,8 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         defectTable.addRows(tableData);
         defectTable.display(contentDiv);
 
+        document.getElementById('def-total').innerHTML = def_total;
+
         document.getElementById('def-comp-pr').innerHTML = comp_pr;
 
         document.getElementById('def-ip-high').innerHTML = in_progress[2];
@@ -482,11 +487,19 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         document.getElementById('def-avg-age').innerHTML = (age / defCount / 1000 / 60 / 60 / 24 ).toFixed(1);
     }
 
+    function showIteration(iteration) {
+//         const left = moment(new Date()).diff(new Date(iteration.EndDate), 'days');
+        const left = moment(new Date(iteration.EndDate)).fromNow();
+        document.getElementById('time-left').innerHTML = left;
+    }
+
     function showResults(results) {
         if (busySpinner) {
             busySpinner.hide();
             busySpinner = null;
         }
+
+        showIteration(results.iteration[0]);
 
         // defects with tasks will be listed with the user stories
         var ownedStories = results.stories.concat(results.defects.filter(function(defect) {
@@ -559,6 +572,13 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             defectTable.destroy();
             defectTable = null;
         }
+
+        queryConfigs.push({
+            type: 'iteration',
+            key: 'iteration',
+            fetch: 'StartDate,EndDate',
+            query: '(Name = "' + targetIterationName + '")',
+        });
 
         rallyDataSource.setApiVersion('1.43');
         rallyDataSource.findAll(queryConfigs, showResults);
