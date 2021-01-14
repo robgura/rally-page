@@ -414,6 +414,7 @@
             var in_progress = [ 0, 0, 0 ],
                 defined = [ 0, 0, 0 ],
                 def_total = 0,
+                def_high = 0,
                 comp_pr = 0;
     
             defects.sort(itemSort).forEach(function(defect) {
@@ -444,6 +445,7 @@
                     }
                     else if (defect.Priority === 'High') {
                         in_progress[2] += 1;
+                        def_high += 1;
                     }
                     else {
                         in_progress[1] += 1;
@@ -457,6 +459,7 @@
                     }
                     else if (defect.Priority === 'High') {
                         defined[2] += 1;
+                        def_high += 1;
                     }
                     else {
                         defined[1] += 1;
@@ -485,6 +488,7 @@
             defectTable.display(contentDiv);
     
             document.getElementById('def-total').innerHTML = def_total;
+            document.getElementById('def-high').innerHTML = def_high;
     
             document.getElementById('def-comp-pr').innerHTML = comp_pr;
     
@@ -736,13 +740,16 @@
 
         border: solid black 2px;
         border-radius: 6px;
-        width: fit-content;
+        width: max-content;
+        min-width: 160px;
         padding-right: 10px;
         padding-left: 10px;
 
+        display: inline-block;
+
     }
 
-    #def-total {
+    .big-defect {
         font-size: 128px;
         line-height: 128px;
         -webkit-text-stroke: 2px black;
@@ -760,7 +767,12 @@
 
     <div class="defect-total-container">
         Defects
-        <div id="def-total"> </div>
+        <div class="big-defect" id="def-total"> </div>
+    </div>
+
+    <div class="defect-total-container">
+        High
+        <div class="big-defect" id="def-high"> </div>
     </div>
 
     <div class="iter-time-left" > Iteration ends <span id="time-left"> </span> </div>

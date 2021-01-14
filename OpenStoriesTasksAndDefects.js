@@ -400,6 +400,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         var in_progress = [ 0, 0, 0 ],
             defined = [ 0, 0, 0 ],
             def_total = 0,
+            def_high = 0,
             comp_pr = 0;
 
         defects.sort(itemSort).forEach(function(defect) {
@@ -430,6 +431,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                 }
                 else if (defect.Priority === 'High') {
                     in_progress[2] += 1;
+                    def_high += 1;
                 }
                 else {
                     in_progress[1] += 1;
@@ -443,6 +445,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                 }
                 else if (defect.Priority === 'High') {
                     defined[2] += 1;
+                    def_high += 1;
                 }
                 else {
                     defined[1] += 1;
@@ -471,6 +474,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         defectTable.display(contentDiv);
 
         document.getElementById('def-total').innerHTML = def_total;
+        document.getElementById('def-high').innerHTML = def_high;
 
         document.getElementById('def-comp-pr').innerHTML = comp_pr;
 
