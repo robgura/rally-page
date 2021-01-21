@@ -44,6 +44,17 @@ h4#UserNameHeader {
     font-weight: bold;
 }
 
+.story-estimate {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: right;
+}
+
+.task-estimate {
+    font-size: 18px;
+    text-align: right;
+}
+
 .small-link {
     font-size: 14px;
     font-weight: normal;

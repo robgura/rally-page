@@ -16,6 +16,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
 
     var blankStoryRow = {
         itemLink: '<div style="min-height:49px">&nbsp</div>',
+        estimate: '<div style="min-height:49px">&nbsp</div>',
         'status': '<div style="min-height:49px">&nbsp</div>',
         blocked: '<div style="min-height:49px">&nbsp</div>',
         userName: '<div style="min-height:49px">&nbsp</div>',
@@ -320,8 +321,10 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
 
             emptyStory = true;
             storyLink = artifactLink(story, '', lifeCycle, true, true);
+            storyEstimate = story.PlanEstimate || '';
             storyInfo = {
                 'itemLink': '<div class="story-name">' + storyLink + '</div>',
+                'estimate': '<div class="story-estimate">' + storyEstimate + '</div>',
                 'status': statusDays,
                 'blocked': '',
                 'userName': '<div class="story-owner">' + storyOwner + '</div>'
@@ -333,6 +336,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                 indentedTask = indentedItem(taskLink);
                 taskInfo = {
                     'itemLink': indentedTask,
+                    'estimate': '<div class="task-estimate">' + task.Estimate + '</div>',
                     'status': task.State,
                     'blocked': getBlockedHtml(task),
                     'userName': ownerIfKnown(task)
@@ -364,9 +368,9 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
 
         });
         tblConfig = {
-            'columnKeys': ['itemLink', 'status', 'blocked', 'userName'],
-            'columnHeaders': ['Artifact', 'Status', 'Blocked', 'Owner'   ],
-            'columnWidths': ['800px', '100px', '100px', '200px'   ],
+            'columnKeys': ['itemLink', 'status', 'estimate', 'blocked', 'userName'],
+            'columnHeaders': ['Artifact', 'Status', 'Est.', 'Blocked', 'Owner'   ],
+            'columnWidths': ['800px', '100px', '25px', '100px', '200px'   ],
             'sortingEnabled': false
         };
 
@@ -539,6 +543,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             'ObjectID',
             'Owner',
             'PlanEstimate',
+            'Estimate',
             'Priority',
             'Rank',
             'Release',
