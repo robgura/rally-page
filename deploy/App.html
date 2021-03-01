@@ -447,7 +447,7 @@
                     if (defect.Priority === 'Low') {
                         in_progress[0] += 1;
                     }
-                    else if (defect.Priority === 'High') {
+                    else if (defect.Priority === 'High' || defect.Priority === 'Critical') {
                         in_progress[2] += 1;
                         def_high += 1;
                     }
@@ -787,7 +787,7 @@
     </div>
 
     <div class="defect-total-container">
-        High
+        High / Critical
         <div class="big-defect" id="def-high"> </div>
     </div>
 
