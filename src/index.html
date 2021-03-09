@@ -8,56 +8,10 @@
   <meta name="Vendor" content="Rally Software" />
 
   <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700' rel='stylesheet' type='text/css'>
-   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-  <script type="text/javascript" src="/apps/1.32/sdk.js"></script>
 
-  <script type="text/javascript">
-    function onLoad() {
-      var appCustom = new OpenStoriesTasksAndDefects();
-
-      rallyDataSource = new rally.sdk.data.RallyDataSource('__WORKSPACE_OID__',
-                                                           '__PROJECT_OID__',
-                                                           '__PROJECT_SCOPING_UP__',
-                                                           '__PROJECT_SCOPING_DOWN__');
-      var iterConfig = {label: "Select Iteration "};
-      iterDropdown = new rally.sdk.ui.IterationDropdown(iterConfig, rallyDataSource);
-      iterDropdown.display("iterations", appCustom.onIterationSelected);
-    }
-
-    rally.addOnLoad(onLoad);
-  </script>
-
-  <style>
-    .iter-time-left {
-        font-size: 32px;
-        font-family: "Impact", monospace;
-    }
-
-    .defect-total-container {
-        font-family: "Impact", monospace;
-        font-size: 36px;
-        text-align: center;
-
-        border: solid black 2px;
-        border-radius: 6px;
-        width: max-content;
-        min-width: 160px;
-        padding-right: 10px;
-        padding-left: 10px;
-
-        display: inline-block;
-
-    }
-
-    .big-defect {
-        font-size: 128px;
-        line-height: 128px;
-        -webkit-text-stroke: 2px black;
-        -webkit-text-fill-color: lightgrey;
-    }
-
-  </style>
+<!--   This will insert rally sdk script depending on if we're running development (local) or production -->
+  <%= htmlWebpackPlugin.options.custom %>
 
 </head>
 

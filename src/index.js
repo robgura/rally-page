@@ -1,13 +1,15 @@
 /*global rally, moment */
 
-String.prototype.capFirst = function() {
-    return this.charAt(0).toUpperCase() + this.slice(1);
-};
+import './styles.css';
 
 var iterDropdown;
 var rallyDataSource;
 
 function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
+    String.prototype.capFirst = function() {
+        return this.charAt(0).toUpperCase() + this.slice(1);
+    };
+
     var that = this;
 
     var busySpinner;
@@ -72,7 +74,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         artUrl = artUrl.replace('_ABBREV_', abbrev[artifact._type]);
         artUrl = artUrl.replace('_OID_', artifact.ObjectID);
 
-        var linkText = artifact.FormattedID + ' ' + artifact.Name + ' <span class="lifecycle">' + lifeCycle + "</span>";
+        var linkText = artifact.FormattedID + ' ' + artifact.Name + ' <span class="lifecycle">' + lifeCycle + '</span>';
 
         if (addRelease && artifact.Release) {
             linkText = '[' + artifact.Release.Name + '] ' + linkText;
@@ -245,9 +247,9 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
 
         var rv = computedValue(left) - computedValue(rite);
         if (rv === 0) {
-                var leftOwner = ownerIfKnown(left),
-                    riteOwner = ownerIfKnown(rite);
-                rv = leftOwner.localeCompare(riteOwner);
+            const leftOwner = ownerIfKnown(left);
+            const riteOwner = ownerIfKnown(rite);
+            let rv = leftOwner.localeCompare(riteOwner);
 
             if (rv === 0) {
                 if ((left.TaskIndex || left.TaskIndex === 0) && (rite.TaskIndex || rite.TaskIndex === 0)) {
@@ -297,7 +299,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                             taskData.comp += 1;
                         }
                     }
-                 });
+                });
             }
 
             var lifeCycle = '';
@@ -321,7 +323,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
 
             emptyStory = true;
             storyLink = artifactLink(story, '', lifeCycle, true, true);
-            storyEstimate = story.PlanEstimate || '';
+            const storyEstimate = story.PlanEstimate || '';
             storyInfo = {
                 'itemLink': '<div class="story-name">' + storyLink + '</div>',
                 'estimate': '<div class="story-estimate">' + storyEstimate + '</div>',
@@ -387,8 +389,8 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
     }
 
     function getCreated(item) {
-//         gets pretty format of age i.e 3 Months Age
-//         return moment(new Date(item.CreationDate)).fromNow();
+        // gets pretty format of age i.e 3 Months Age
+        // return moment(new Date(item.CreationDate)).fromNow();
         return moment(new Date()).diff(new Date(item.CreationDate), 'days');
     }
 
@@ -496,7 +498,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
     }
 
     function showIteration(iteration) {
-//         const left = moment(new Date()).diff(new Date(iteration.EndDate), 'days');
+        // const left = moment(new Date()).diff(new Date(iteration.EndDate), 'days');
         const left = moment(new Date(iteration.EndDate)).fromNow();
         document.getElementById('time-left').innerHTML = left;
     }
@@ -517,7 +519,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         showStories(ownedStories, 'stories');
 
         // defects with no tasks will be listed separately from defects with tasks
-        var ownedDefects = results.defects.filter(function(defect) {
+        var ownedDefects = results.defects.filter(function(/*defect*/) {
             return true; //defect.Tasks.length === 0;
         });
 
@@ -593,3 +595,19 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         rallyDataSource.findAll(queryConfigs, showResults);
     };
 }
+
+function onLoad() {
+    var appCustom = new OpenStoriesTasksAndDefects();
+
+    rallyDataSource = new rally.sdk.data.RallyDataSource(
+        '__WORKSPACE_OID__',
+        '__PROJECT_OID__',
+        '__PROJECT_SCOPING_UP__',
+        '__PROJECT_SCOPING_DOWN__'
+    );
+    var iterConfig = {label: 'Select Iteration '};
+    iterDropdown = new rally.sdk.ui.IterationDropdown(iterConfig, rallyDataSource);
+    iterDropdown.display('iterations', appCustom.onIterationSelected);
+}
+
+rally.addOnLoad(onLoad);
