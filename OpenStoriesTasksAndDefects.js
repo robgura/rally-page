@@ -234,7 +234,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                 }
             }
 
-            if (item.Priority === 'Immediate') { rv += 10; }
+            if (item.Priority === 'Immediate' || item.Priority === 'Critical') { rv += 10; }
             else if (item.Priority === 'High') { rv += 20; }
             else if (item.Priority === 'Normal') { rv += 30; }
             else if (item.Priority === 'Low') { rv += 40; }
