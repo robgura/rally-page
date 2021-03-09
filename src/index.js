@@ -14,7 +14,12 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
 
     var busySpinner;
     var defectTable, storyTable;
-    var abbrev = { 'HierarchicalRequirement': 'ar', 'Defect': 'df', 'Task': 'tk', 'TestCase': 'tc' };
+    var abbrev = {
+        'HierarchicalRequirement': 'userstory',
+        'Defect': 'defect',
+        'Task': 'task',
+        'TestCase': 'tc',
+    };
 
     var blankStoryRow = {
         itemLink: '<div style="min-height:49px">&nbsp</div>',
@@ -70,7 +75,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
     }
 
     function artifactLink(artifact, namePrefix, lifeCycle, addTasks, addRelease) {
-        var artUrl = '__SERVER_URL__/detail/_ABBREV_/_OID_';
+        var artUrl = '/#/3835160186ud/iterationstatus?detail=/_ABBREV_/_OID_';
         artUrl = artUrl.replace('_ABBREV_', abbrev[artifact._type]);
         artUrl = artUrl.replace('_OID_', artifact.ObjectID);
 
