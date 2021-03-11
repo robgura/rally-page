@@ -504,8 +504,13 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
 
     function showIteration(iteration) {
         // const left = moment(new Date()).diff(new Date(iteration.EndDate), 'days');
-        const left = moment(new Date(iteration.EndDate)).fromNow();
-        document.getElementById('time-left').innerHTML = left;
+        if (iteration.EndDate) {
+            const left = moment(new Date(iteration.EndDate)).fromNow();
+            document.getElementById('time-left').innerHTML = left;
+        }
+        else {
+            document.getElementById('time-left').innerHTML = 'Unknown';
+        }
     }
 
     function showResults(results) {
