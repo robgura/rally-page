@@ -37,7 +37,34 @@ h4#UserNameHeader {
     animation-timing-function: ease;
 }
 
-.story-name {
+.defect-id .artifact-id {
+    background-color: rgb(146, 51, 7);
+    color: white;
+    padding-right: 3px;
+    padding-left: 6px;
+    margin-right: 6px;
+    border-radius: 9px;
+}
+
+.story-id .artifact-id {
+    background-color: rgb(102, 146, 7);
+    color: white;
+    padding-right: 3px;
+    padding-left: 6px;
+    margin-right: 6px;
+    border-radius: 9px;
+}
+
+.release-name {
+    color: white;
+    padding-right: 3px;
+    padding-left: 6px;
+    margin-right: 6px;
+    border-radius: 9px;
+    background-color: rgb(7, 102, 146);
+}
+
+.artifact-title {
     font-size: 18px;
     font-weight: bold;
 }

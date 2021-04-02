@@ -79,10 +79,10 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         artUrl = artUrl.replace('_ABBREV_', abbrev[artifact._type]);
         artUrl = artUrl.replace('_OID_', artifact.ObjectID);
 
-        var linkText = artifact.FormattedID + ' ' + artifact.Name + ' <span class="lifecycle">' + lifeCycle + '</span>';
+        let linkText = `<span class="artifact-id"> ${artifact.FormattedID} </span> <span class="artifact-name"> ${artifact.Name} </span> <span class="lifecycle"> ${lifeCycle} </span>`;
 
         if (addRelease && artifact.Release) {
-            linkText = '[' + artifact.Release.Name + '] ' + linkText;
+            linkText = `<span class="release-name"> ${artifact.Release.Name} </span>` + linkText;
         }
         if (namePrefix) {
             linkText = namePrefix + linkText;
@@ -197,9 +197,9 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
     }
 
     var ORDER = {
-        '10. Implement (SO, E)': 1,
-        '11. Demo (SO,CAG, E)': 2,
-        '9. Kick Off (E)': 3
+        '5. Implement': 1,
+        '6. Demo': 2,
+        '4. Schedule': 3,
     };
 
     function storySort(left, rite) {
@@ -287,6 +287,8 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         var usPoints = 0;
 
         stories.sort(storySort).forEach(function(story) {
+            let idClass = story._type === 'Defect' ? 'defect-id' : 'story-id';
+
             if (story._type === 'HierarchicalRequirement') {
                 usPoints += story.PlanEstimate;
                 story.Tasks.forEach(function(task) {
@@ -330,7 +332,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             storyLink = artifactLink(story, '', lifeCycle, true, true);
             const storyEstimate = story.PlanEstimate || '';
             storyInfo = {
-                'itemLink': '<div class="story-name">' + storyLink + '</div>',
+                'itemLink': `<div class="artifact-title ${idClass} "> ${storyLink} </div>`,
                 'estimate': '<div class="story-estimate">' + storyEstimate + '</div>',
                 'status': statusDays,
                 'blocked': '',
