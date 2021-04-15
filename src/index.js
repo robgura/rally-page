@@ -254,7 +254,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         if (rv === 0) {
             const leftOwner = ownerIfKnown(left);
             const riteOwner = ownerIfKnown(rite);
-            let rv = leftOwner.localeCompare(riteOwner);
+            rv = leftOwner.localeCompare(riteOwner);
 
             if (rv === 0) {
                 if ((left.TaskIndex || left.TaskIndex === 0) && (rite.TaskIndex || rite.TaskIndex === 0)) {
