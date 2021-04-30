@@ -81,8 +81,9 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
 
         let linkText = `<span class="artifact-id"> ${artifact.FormattedID} </span> <span class="artifact-name"> ${artifact.Name} </span> <span class="lifecycle"> ${lifeCycle} </span>`;
 
-        if (addRelease && artifact.Release) {
-            linkText = `<span class="release-name"> ${artifact.Release.Name} </span>` + linkText;
+        if (addRelease) {
+            const releaseName = getReleaseName(artifact);
+            linkText = `<span class="release-name"> ${releaseName} </span>` + linkText;
         }
         if (namePrefix) {
             linkText = namePrefix + linkText;
@@ -118,8 +119,8 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         }
         return getMaxString(rv, 5);
     }
-    function getRelease(item) {
-        var rv = '';
+    function getReleaseName(item) {
+        var rv = 'None';
         if (item.Release) {
             rv = item.Release.Name;
         }
@@ -203,7 +204,11 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
     };
 
     function storySort(left, rite) {
-        if (left.Release.Name === rite.Release.Name) {
+        // if there is no release name assigned assume super high version number for sorting
+        const leftReleaseName = left.Release?.Name || '999.0';
+        const riteReleaseName = rite.Release?.Name || '999.0';
+
+        if (leftReleaseName === riteReleaseName) {
             if (left.Lifecycle === rite.Lifecycle) {
                 return left.FormattedID.localeCompare(rite.FormattedID);
             }
@@ -213,7 +218,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             return l - r;
 
         }
-        return version_lt(left.Release.Name, rite.Release.Name) ? -1 : 1;
+        return version_lt(leftReleaseName, riteReleaseName) ? -1 : 1;
     }
 
     function itemSort(left, rite) {
@@ -426,7 +431,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             defectInfo = { 'defectLink': defectLink,
                 'status': defect.ScheduleState,
                 'priority': getPriority(defect),
-                'release': getRelease(defect),
+                'release': getReleaseName(defect),
                 'blocked': getBlockedHtml(defect),
                 'created': getCreated(defect),
                 'customer': getCustomer(defect),
