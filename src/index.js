@@ -415,17 +415,19 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         var defCount = 0;
         var now = new Date();
 
-        var in_progress = [ 0, 0, 0 ],
-            defined = [ 0, 0, 0 ],
-            def_total = 0,
-            def_high = 0,
-            comp_pr = 0;
+        let in_progress = [ 0, 0, 0 ];
+        let defined = [ 0, 0, 0 ];
+        let def_total = 0;
+        let def_high = {};
+        let comp_pr = 0;
 
         defects.sort(itemSort).forEach(function(defect) {
             var pref = defect.Tasks.length === 0 ? '' : '*** ';
             if (defect.Requirement) {
                 pref += '<b>[' + defect.Requirement.FormattedID + ']</b> ';
             }
+
+            const releaseName = getReleaseName(defect);
 
             defectLink = artifactLink(defect, pref, '', false);
             defectInfo = { 'defectLink': defectLink,
@@ -449,7 +451,12 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                 }
                 else if (defect.Priority === 'High' || defect.Priority === 'Critical') {
                     in_progress[2] += 1;
-                    def_high += 1;
+                    if (def_high[releaseName]) {
+                        def_high[releaseName] += 1;
+                    }
+                    else {
+                        def_high[releaseName] = 1;
+                    }
                 }
                 else {
                     in_progress[1] += 1;
@@ -463,7 +470,12 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                 }
                 else if (defect.Priority === 'High') {
                     defined[2] += 1;
-                    def_high += 1;
+                    if (def_high[releaseName]) {
+                        def_high[releaseName] += 1;
+                    }
+                    else {
+                        def_high[releaseName] = 1;
+                    }
                 }
                 else {
                     defined[1] += 1;
@@ -492,7 +504,20 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         defectTable.display(contentDiv);
 
         document.getElementById('def-total').innerHTML = def_total;
-        document.getElementById('def-high').innerHTML = def_high;
+
+
+        Object.keys(def_high).forEach((key) => {
+            const child = document.createElement('div');
+            const defects = def_high[key];
+            child.innerHTML = `
+                <div class="defect-total-container"> High
+                    <span class="release-name"> ${key} </span>
+                    <div class="big-defect"> ${defects} </div>
+                </div>
+            `.trim();
+            document.getElementById('big-defect-parent').appendChild(child);
+
+        });
 
         document.getElementById('def-comp-pr').innerHTML = comp_pr;
 
