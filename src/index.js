@@ -468,7 +468,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                 if (defect.Priority === 'Low') {
                     defined[0] += 1;
                 }
-                else if (defect.Priority === 'High') {
+                else if (defect.Priority === 'High' || defect.Priority === 'Critical') {
                     defined[2] += 1;
                     if (def_high[releaseName]) {
                         def_high[releaseName] += 1;
