@@ -345,12 +345,13 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             };
 
             story.Tasks.sort(itemSort).forEach(function(task) {
+                const taskEstimate = task.Estimate !== null ? task.Estimate : '-';
                 emptyStory = false;
                 taskLink = artifactLink(task, '', '', false);
                 indentedTask = indentedItem(taskLink);
                 taskInfo = {
                     'itemLink': indentedTask,
-                    'estimate': '<div class="task-estimate">' + task.Estimate + '</div>',
+                    'estimate': '<div class="task-estimate">' + taskEstimate + '</div>',
                     'status': task.State,
                     'blocked': getBlockedHtml(task),
                     'userName': ownerIfKnown(task)
