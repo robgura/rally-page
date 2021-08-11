@@ -506,8 +506,23 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
 
         document.getElementById('def-total').innerHTML = def_total;
 
+        let versions = Object.keys(def_high);
+        // https://stackoverflow.com/a/40632727
+        versions.sort(function(a,b){
+            var a1 = a.split('.');
+            var b1 = b.split('.');
+            var len = Math.max(a1.length, b1.length);
+                    
+            for(var i = 0; i< len; i++) {
+                var _a = +a1[i] || 0;
+                var _b = +b1[i] || 0;
+                if(_a === _b) continue;
+                else return _a > _b ? 1 : -1;
+            }
+            return 0;
+        });
 
-        Object.keys(def_high).forEach((key) => {
+        versions.forEach((key) => {
             const child = document.createElement('div');
             const defects = def_high[key];
             child.innerHTML = `
