@@ -441,6 +441,10 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                 'userName': ownerIfKnown(defect)
             };
 
+            if (defectInfo.created > 180) {
+                defectInfo.created = `<span class="parchment"> ${defectInfo.created} </span>`;
+            }
+
             if (defect.ScheduleState === 'Completed' && defect.BlockedReason === 'PR') {
                 comp_pr += 1;
             }
