@@ -441,7 +441,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                 'userName': ownerIfKnown(defect)
             };
 
-            if (defectInfo.created > 180) {
+            if (defectInfo.created > 90) {
                 defectInfo.created = `<span class="parchment"> ${defectInfo.created} </span>`;
             }
 

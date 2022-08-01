@@ -29,6 +29,10 @@ body {
     filter: url(#wavy2);
 }
 
+span.parchment {
+    filter: inherit;
+}
+
 h4#UserNameHeader {
     clear: both;
     padding-top: 15px;
