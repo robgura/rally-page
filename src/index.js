@@ -442,7 +442,15 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             };
 
             if (defectInfo.created > 90) {
-                defectInfo.created = `<span class="parchment"> ${defectInfo.created} </span>`;
+                defectInfo.created = `
+                    <div class="parchment">
+                        <div class="background">
+                        </div>
+                        <div class="text" >
+                            ${defectInfo.created}
+                        </div>
+                    </div>`
+                ;
             }
 
             if (defect.ScheduleState === 'Completed' && defect.BlockedReason === 'PR') {
