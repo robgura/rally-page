@@ -122,7 +122,12 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
     function getReleaseName(item) {
         var rv = 'None';
         if (item.Release) {
-            rv = item.Release.Name;
+            if (item.Release.ObjectID === 628264242911) {
+                rv = 'S&M';
+            }
+            else {
+                rv = item.Release.Name;
+            }
         }
         return rv;
     }
