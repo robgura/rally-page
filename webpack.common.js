@@ -4,7 +4,7 @@ const path = require('path');
 const webpack = require('webpack');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
+const HtmlInlineScriptPlugin = require('html-inline-script-webpack-plugin');
 
 module.exports = (env, argv) => {
     const isProduction = argv.config.some(item => item === 'webpack.prod.js');
@@ -34,7 +34,7 @@ module.exports = (env, argv) => {
             }),
             // this plugin provides the inlineSource option to HtmlWebpackPlugin which inlines all
             // css and js into a single html file
-            new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin),
+            new HtmlInlineScriptPlugin(),
         ],
 
         module: {

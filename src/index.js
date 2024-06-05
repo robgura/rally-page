@@ -323,7 +323,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             if (story.Lifecycle) {
                 try {
                     // grab capture group [1]
-                    lifeCycle = story.Lifecycle.match(/\d+\. ([\w\s]+)( \(.*|$)/)[1];
+                    lifeCycle = story.Lifecycle.match(/(\d+\. )?(?<name>[\w\s]+)( \(.*|$)/).groups.name;
                     if (lifeCycle === 'Kick Off') {
                         lifeCycle = '<span style="color: red"> Kick Off </span>';
                     }
