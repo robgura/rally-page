@@ -260,24 +260,35 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             return rv;
         };
 
-        var rv = computedValue(left) - computedValue(rite);
+        let rv = computedValue(left) - computedValue(rite);
         if (rv === 0) {
             const leftOwner = ownerIfKnown(left);
             const riteOwner = ownerIfKnown(rite);
             rv = leftOwner.localeCompare(riteOwner);
 
             if (rv === 0) {
-                if ((left.TaskIndex || left.TaskIndex === 0) && (rite.TaskIndex || rite.TaskIndex === 0)) {
-                    rv = left.TaskIndex - rite.TaskIndex;
+                const mm_l = left.FormattedID.match(/(?<type>\D+)(?<number>\d+)/);
+                const mm_r = rite.FormattedID.match(/(?<type>\D+)(?<number>\d+)/);
+                // if left and rite are both defects sort by defect number as a proxy for age
+                if (mm_l.groups.type === 'DE' && mm_l.groups.type === 'DE') {
+                    rv = parseInt(mm_l.groups.number, 10) - parseInt(mm_r.groups.number, 10);
                 }
-                else if (left.Rank && rite.Rank) {
-                    rv = left.Rank - rite.Rank;
+                else {
+                    if ((left.TaskIndex || left.TaskIndex === 0) && (rite.TaskIndex || rite.TaskIndex === 0)) {
+                        rv = left.TaskIndex - rite.TaskIndex;
+                    }
+                    else if (left.Rank && rite.Rank) {
+                        rv = left.Rank - rite.Rank;
+                    }
                 }
 
-                if (rv === 0) {
-                    rv = left.FormattedID.localeCompare(rite.FormattedID);
-                }
             }
+        }
+        if (rv < 0) {
+            rv = -1;
+        }
+        else if (rv > 0) {
+            rv = 1;
         }
         return rv;
     }
