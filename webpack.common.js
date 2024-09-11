@@ -5,6 +5,7 @@ const webpack = require('webpack');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlInlineScriptPlugin = require('html-inline-script-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = (env, argv) => {
     const isProduction = argv.config.some(item => item === 'webpack.prod.js');
@@ -35,6 +36,14 @@ module.exports = (env, argv) => {
             // this plugin provides the inlineSource option to HtmlWebpackPlugin which inlines all
             // css and js into a single html file
             new HtmlInlineScriptPlugin(),
+            new ESLintPlugin({
+                configType: 'flat',
+                threads: true,
+                // fix: true,
+                exclude: [
+                    'node_modules',
+                ],
+            }),
         ],
 
         module: {

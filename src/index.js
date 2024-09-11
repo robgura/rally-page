@@ -2,26 +2,67 @@
 
 import './styles.css';
 
-var iterDropdown;
-var rallyDataSource;
+let iterDropdown;
+let rallyDataSource;
 
-function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
+function OpenStoriesTasksAndDefects() {
+    function getCustomer(defect) {
+        if (defect.IsCustomer) {
+            return 'Yes';
+        }
+        return '';
+    }
+    function getMaxString(str, max) {
+        let rv = str.substring(0, max);
+        if (rv !== str) {
+            rv += '...';
+        }
+        return rv;
+    }
+    function getSeverity(item) {
+        let rv = '';
+        if (item.Severity === 'Internal') {
+            rv = '\u{1fac1}';
+        }
+        return rv;
+
+    }
+    function getPriority(item) {
+        let rv = '';
+        if (item.Priority !== 'None') {
+            rv = item.Priority;
+        }
+        return getMaxString(rv, 5);
+    }
+    function getReleaseName(item) {
+        let rv = 'None';
+        if (item.Release) {
+            if (item.Release.ObjectID === 628264242911) {
+                rv = 'S&M';
+            }
+            else {
+                rv = item.Release.Name;
+            }
+        }
+        return rv;
+    }
     String.prototype.capFirst = function() {
         return this.charAt(0).toUpperCase() + this.slice(1);
     };
 
-    var that = this;
+    const that = this;
 
-    var busySpinner;
-    var defectTable, storyTable;
-    var abbrev = {
+    let busySpinner;
+    let defectTable;
+    let storyTable;
+    const abbrev = {
         'HierarchicalRequirement': 'userstory',
         'Defect': 'defect',
         'Task': 'task',
         'TestCase': 'tc',
     };
 
-    var blankStoryRow = {
+    const blankStoryRow = {
         itemLink: '<div style="min-height:49px">&nbsp</div>',
         estimate: '<div style="min-height:49px">&nbsp</div>',
         'status': '<div style="min-height:49px">&nbsp</div>',
@@ -30,22 +71,22 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
     };
 
     function indentedItem(content/*, color*/) {
-        var indentationDiv = '<div style="margin-left: 20px;">' + content + '</div>';
+        const indentationDiv = '<div style="margin-left: 20px;">' + content + '</div>';
         return indentationDiv;
     }
 
     function getDaysInProgress(artifact) {
-        var rv = '',
-            now = new Date();
+        let rv = '';
+        const now = new Date();
         if (artifact.ScheduleState === 'In-Progress' && artifact.InProgressDate) {
-            rv = ((now.getTime() - new Date(artifact.InProgressDate).getTime()) / 1000 / 60 / 60 / 24 ).toFixed(0);
+            rv = ((now.getTime() - new Date(artifact.InProgressDate).getTime()) / 1000 / 60 / 60 / 24).toFixed(0);
         }
         return rv;
     }
 
     function ownerIfKnown(arti) {
-        var owner = '',
-            hasDisplay = false;
+        let owner = '';
+        let hasDisplay = false;
 
         if (arti.Owner) {
             if (arti.Owner.DisplayName) {
@@ -57,14 +98,14 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             }
         }
 
-        if (! hasDisplay) {
-            var firstLastNameEmail = owner.match(/([^.]+)\.([^.]+)@.*/);
+        if (!hasDisplay) {
+            const firstLastNameEmail = owner.match(/([^.]+)\.([^.]+)@.*/);
 
             if (firstLastNameEmail) {
                 owner = firstLastNameEmail[2].capFirst() + ', ' + firstLastNameEmail[1].capFirst();
             }
 
-            var firstInitialEmail = owner.match(/(.)(.+)@/);
+            const firstInitialEmail = owner.match(/(.)(.+)@/);
 
             if (firstInitialEmail) {
                 owner = firstInitialEmail[1].capFirst() + '. ' + firstInitialEmail[2].capFirst();
@@ -75,7 +116,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
     }
 
     function artifactLink(artifact, namePrefix, lifeCycle, addTasks, addRelease) {
-        var artUrl = '/#/3835160186ud/iterationstatus?detail=/_ABBREV_/_OID_';
+        let artUrl = '/#/3835160186ud/iterationstatus?detail=/_ABBREV_/_OID_';
         artUrl = artUrl.replace('_ABBREV_', abbrev[artifact._type]);
         artUrl = artUrl.replace('_OID_', artifact.ObjectID);
 
@@ -96,58 +137,17 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             link = link.replace('TASK_URL', artUrl + '/tasks');
             link = link.replace('_TEXT_', 'tasks');
         }
-        console.log(link);
         return link;
     }
-    function getCustomer(defect) {
-        if (defect.IsCustomer) {
-            return 'Yes';
-        }
-        return '';
-    }
-    function getMaxString(str, max) {
-        var rv = str.substring(0, max);
-        if (rv !== str) {
-            rv += '...';
-        }
-        return rv;
-    }
-    function getSeverity(item) {
-        var rv = '';
-        if (item.Severity === 'Internal') {
-            rv ='\u{1fac1}';
-        }
-        return rv;
-
-    }
-    function getPriority(item) {
-        var rv = '';
-        if (item.Priority !== 'None') {
-            rv = item.Priority;
-        }
-        return getMaxString(rv, 5);
-    }
-    function getReleaseName(item) {
-        var rv = 'None';
-        if (item.Release) {
-            if (item.Release.ObjectID === 628264242911) {
-                rv = 'S&M';
-            }
-            else {
-                rv = item.Release.Name;
-            }
-        }
-        return rv;
-    }
     function getBlockedHtml(item) {
-        var rv = '';
+        let rv = '';
         if (item.Blocked) {
             if (item.BlockedReason && item.BlockedReason.match(/pr/i)) {
                 rv = item.BlockedReason;
             }
             else {
                 rv = item.BlockedReason;
-                if (! rv) {
+                if (!rv) {
                     rv = 'Blocked';
                 }
             }
@@ -157,12 +157,12 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         }
         return rv;
     }
-    var firstDisplay = true;
+    let firstDisplay = true;
     function displayChild(item, tableData, tableInfo, parentInfo) {
         if (item.State === 'Completed' || item.ScheduleState === 'Completed' || item.ScheduleState === 'Accepted') {
             if (item.Blocked) {
-                if (parentInfo && ! parentInfo.displayed) {
-                    if (! firstDisplay) {
+                if (parentInfo && !parentInfo.displayed) {
+                    if (!firstDisplay) {
                         tableData.push(blankStoryRow);
                     }
                     tableData.push(parentInfo);
@@ -174,8 +174,8 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             }
         }
         else {
-            if (parentInfo && ! parentInfo.displayed) {
-                if (! firstDisplay) {
+            if (parentInfo && !parentInfo.displayed) {
+                if (!firstDisplay) {
                     tableData.push(blankStoryRow);
                 }
                 tableData.push(parentInfo);
@@ -190,11 +190,11 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
 
     // https://stackoverflow.com/a/7931892
     function version_lt(version1, version2) {
-        var result = false;
+        let result = false;
         if (typeof version1 !== 'object') { version1 = version1.toString().split('.'); }
         if (typeof version2 !== 'object') { version2 = version2.toString().split('.'); }
 
-        for (var i = 0; i < (Math.max(version1.length, version2.length)); i++) {
+        for (let i = 0; i < (Math.max(version1.length, version2.length)); i += 1) {
 
             if (version1[i] === undefined) { version1[i] = 0; }
             if (version2[i] === undefined) { version2[i] = 0; }
@@ -210,7 +210,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         return result;
     }
 
-    var ORDER = {
+    const ORDER = {
         '5. Implement': 1,
         '6. Demo': 2,
         '4. Schedule': 3,
@@ -226,8 +226,8 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                 return left.FormattedID.localeCompare(rite.FormattedID);
             }
 
-            var l = ORDER[left.Lifecycle] || 0;
-            var r = ORDER[rite.Lifecycle] || 0;
+            const l = ORDER[left.Lifecycle] || 0;
+            const r = ORDER[rite.Lifecycle] || 0;
             return l - r;
 
         }
@@ -235,20 +235,20 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
     }
 
     function itemSort(left, rite) {
-        var computedValue = function(item) {
-            var rv = 0;
+        const computedValue = function(item) {
+            let rv = 0;
 
             if (item.State === 'Completed' || item.ScheduleState === 'Completed') {
                 rv += 1000;
 
-                if (! item.Blocked) {
+                if (!item.Blocked) {
                     rv += 100;
                 }
             }
             else if (item.State === 'In-Progress' || item.ScheduleState === 'In-Progress') {
                 rv += 2000;
 
-                if (! item.Blocked) {
+                if (!item.Blocked) {
                     rv += 100;
                 }
             }
@@ -302,21 +302,27 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
     }
 
     function showStories(stories, contentDiv) {
-        var storyLink, storyInfo;
-        var taskLink, taskInfo, indentedTask;
-        var defectLink, defectInfo, indentedDefect;
-        var tableData = [];
-        var tblConfig, emptyStory;
-        var taskData = {
+        let storyLink;
+        let storyInfo;
+        let taskLink;
+        let taskInfo;
+        let indentedTask;
+        let defectLink;
+        let defectInfo;
+        let indentedDefect;
+        const tableData = [];
+        let tblConfig;
+        let emptyStory;
+        const taskData = {
             def: 0,
             ip: 0,
             compPR: 0,
             comp: 0
         };
-        var usPoints = 0;
+        let usPoints = 0;
 
         stories.sort(storySort).forEach(function(story) {
-            let idClass = story._type === 'Defect' ? 'defect-id' : 'story-id';
+            const idClass = story._type === 'Defect' ? 'defect-id' : 'story-id';
 
             if (story._type === 'HierarchicalRequirement') {
                 usPoints += story.PlanEstimate;
@@ -338,7 +344,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                 });
             }
 
-            var lifeCycle = '';
+            let lifeCycle = '';
             if (story.Lifecycle) {
                 try {
                     // grab capture group [1]
@@ -346,12 +352,13 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                     if (lifeCycle === 'Kick Off') {
                         lifeCycle = '<span style="color: red"> Kick Off </span>';
                     }
-                } catch (e) {
+                }
+                catch (e) {
                     lifeCycle = 'Unknown: ' + e;
                 }
             }
-            var storyOwner = ownerIfKnown(story),
-                statusDays = getDaysInProgress(story);
+            const storyOwner = ownerIfKnown(story);
+            let statusDays = getDaysInProgress(story);
 
             if (statusDays !== '') {
                 statusDays += ' Days';
@@ -408,8 +415,8 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         });
         tblConfig = {
             'columnKeys': ['itemLink', 'status', 'estimate', 'blocked', 'userName'],
-            'columnHeaders': ['Artifact', 'Status', 'Est.', 'Blocked', 'Owner'   ],
-            'columnWidths': ['800px', '100px', '25px', '100px', '200px'   ],
+            'columnHeaders': ['Artifact', 'Status', 'Est.', 'Blocked', 'Owner'],
+            'columnWidths': ['800px', '100px', '25px', '100px', '200px'],
             'sortingEnabled': false
         };
 
@@ -432,22 +439,23 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
     }
 
     function showDefects(defects, contentDiv) {
-        var tableData = [];
-        var tblConfig;
-        var defectLink, defectInfo;
-        var defPoints = 0;
-        var age = 0;
-        var defCount = 0;
-        var now = new Date();
+        const tableData = [];
+        let tblConfig;
+        let defectLink;
+        let defectInfo;
+        let defPoints = 0;
+        let age = 0;
+        let defCount = 0;
+        const now = new Date();
 
-        let in_progress = [ 0, 0, 0 ];
-        let defined = [ 0, 0, 0 ];
+        const in_progress = [0, 0, 0];
+        const defined = [0, 0, 0];
         let def_total = 0;
-        let def_high = {};
+        const def_high = {};
         let comp_pr = 0;
 
         defects.sort(itemSort).forEach(function(defect) {
-            var pref = defect.Tasks.length === 0 ? '' : '*** ';
+            let pref = defect.Tasks.length === 0 ? '' : '*** ';
             if (defect.Requirement) {
                 pref += '<b>[' + defect.Requirement.FormattedID + ']</b> ';
             }
@@ -463,8 +471,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
                 'blocked': getBlockedHtml(defect),
                 'created': getCreated(defect),
                 'customer': getCustomer(defect),
-                'userName': ownerIfKnown(defect)
-            };
+                'userName': ownerIfKnown(defect) };
 
             if (defectInfo.created > 90) {
                 defectInfo.created = `
@@ -522,19 +529,19 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
 
             defectInfo.daysInProgress = getDaysInProgress(defect);
 
-            var didDisplay = displayChild(defect, tableData, defectInfo);
+            const didDisplay = displayChild(defect, tableData, defectInfo);
 
             if (didDisplay) {
                 defPoints += defect.PlanEstimate;
 
                 age += now.getTime() - new Date(defect.CreationDate).getTime();
-                defCount++;
+                defCount += 1;
             }
         });
         tblConfig = {
             'columnKeys': ['release', 'created', 'defectLink', 'customer', 'priority', /*'daysInProgress',*/ 'status', 'blocked', 'userName'],
-            'columnHeaders': ['Release', 'Age (Days)', 'Defect', 'Customer', 'Priority', /*'Days IP',*/ 'Status', 'Blocked', 'Owner'   ],
-            'columnWidths': ['75px', '75px', '700px', '60', '60', /*'50',*/ '100px', '100px', '100px'   ]
+            'columnHeaders': ['Release', 'Age (Days)', 'Defect', 'Customer', 'Priority', /*'Days IP',*/ 'Status', 'Blocked', 'Owner'],
+            'columnWidths': ['75px', '75px', '700px', '60', '60', /*'50',*/ '100px', '100px', '100px']
         };
 
         defectTable = new rally.sdk.ui.Table(tblConfig);
@@ -543,29 +550,29 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
 
         document.getElementById('def-total').innerHTML = def_total;
 
-        let versions = Object.keys(def_high);
+        const versions = Object.keys(def_high);
         // https://stackoverflow.com/a/40632727
-        versions.sort(function(a,b){
-            var a1 = a.split('.');
-            var b1 = b.split('.');
-            var len = Math.max(a1.length, b1.length);
-                    
-            for(var i = 0; i< len; i++) {
-                var _a = +a1[i] || 0;
-                var _b = +b1[i] || 0;
-                if(_a === _b) continue;
-                else return _a > _b ? 1 : -1;
+        versions.sort(function(a, b) {
+            const a1 = a.split('.');
+            const b1 = b.split('.');
+            const len = Math.max(a1.length, b1.length);
+
+            for (let i = 0; i < len; i += 1) {
+                const _a = +a1[i] || 0;
+                const _b = +b1[i] || 0;
+                if (_a === _b) { continue; }
+                else { return _a > _b ? 1 : -1; }
             }
             return 0;
         });
 
         versions.forEach((key) => {
             const child = document.createElement('div');
-            const defects = def_high[key];
+            const dds = def_high[key];
             child.innerHTML = `
                 <div class="defect-total-container"> High
                     <span class="release-name"> ${key} </span>
-                    <div class="big-defect"> ${defects} </div>
+                    <div class="big-defect"> ${dds} </div>
                 </div>
             `.trim();
             document.getElementById('big-defect-parent').appendChild(child);
@@ -584,7 +591,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
 
         document.getElementById('def-points').innerHTML = Number(defPoints).toFixed(1);
 
-        document.getElementById('def-avg-age').innerHTML = (age / defCount / 1000 / 60 / 60 / 24 ).toFixed(1);
+        document.getElementById('def-avg-age').innerHTML = (age / defCount / 1000 / 60 / 60 / 24).toFixed(1);
     }
 
     function showIteration(iteration) {
@@ -607,14 +614,14 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         showIteration(results.iteration[0]);
 
         // defects with tasks will be listed with the user stories
-        var ownedStories = results.stories.concat(results.defects.filter(function(defect) {
+        const ownedStories = results.stories.concat(results.defects.filter(function(defect) {
             return defect.Tasks.length > 0;
         }));
 
         showStories(ownedStories, 'stories');
 
         // defects with no tasks will be listed separately from defects with tasks
-        var ownedDefects = results.defects.filter(function(/*defect*/) {
+        const ownedDefects = results.defects.filter(function(/*defect*/) {
             return true; //defect.Tasks.length === 0;
         });
 
@@ -622,13 +629,13 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
     }
 
     that.onIterationSelected = function() {
-        var targetIterationName = iterDropdown.getSelectedName();
-        var iterCond = '(Iteration.Name = "_ITER_TARGET_")'.replace('_ITER_TARGET_', targetIterationName);
-        var scheduleStateCondition = '(ScheduleState != "Accepted")';
-        var storyCriteria = '(' + iterCond + ' AND ' + scheduleStateCondition + ')';
-        var defectCriteria = '(' + iterCond + ' AND ' + scheduleStateCondition + ')';
-        var queryConfigs = [];
-        var baseColumns = [
+        const targetIterationName = iterDropdown.getSelectedName();
+        const iterCond = '(Iteration.Name = "_ITER_TARGET_")'.replace('_ITER_TARGET_', targetIterationName);
+        const scheduleStateCondition = '(ScheduleState != "Accepted")';
+        const storyCriteria = '(' + iterCond + ' AND ' + scheduleStateCondition + ')';
+        const defectCriteria = '(' + iterCond + ' AND ' + scheduleStateCondition + ')';
+        const queryConfigs = [];
+        const baseColumns = [
             'Blocked',
             'BlockedReason',
             'CreationDate',
@@ -652,8 +659,8 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             'UserName'
         ];
 
-        var defectColumns = baseColumns.concat(['IsCustomer', 'Severity']);
-        var hrColumns = baseColumns.concat('Lifecycle');
+        const defectColumns = baseColumns.concat(['IsCustomer', 'Severity']);
+        const hrColumns = baseColumns.concat('Lifecycle');
 
         queryConfigs[0] = {
             type: 'hierarchicalrequirement',
@@ -692,7 +699,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
 }
 
 function onLoad() {
-    var appCustom = new OpenStoriesTasksAndDefects();
+    const appCustom = new OpenStoriesTasksAndDefects();
 
     rallyDataSource = new rally.sdk.data.RallyDataSource(
         '__WORKSPACE_OID__',
@@ -700,7 +707,7 @@ function onLoad() {
         '__PROJECT_SCOPING_UP__',
         '__PROJECT_SCOPING_DOWN__'
     );
-    var iterConfig = {label: 'Select Iteration '};
+    const iterConfig = { label: 'Select Iteration ' };
     iterDropdown = new rally.sdk.ui.IterationDropdown(iterConfig, rallyDataSource);
     iterDropdown.display('iterations', appCustom.onIterationSelected);
 }
