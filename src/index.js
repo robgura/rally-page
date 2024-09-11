@@ -88,15 +88,15 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
         if (namePrefix) {
             linkText = namePrefix + linkText;
         }
-        var link = '<a href="_URL_" target="_blank">_TEXT_</a>';
-        link = link.replace('_URL_', artUrl);
-        link = link.replace('_TEXT_', linkText);
+        const severity = getSeverity(artifact);
+        let link = `<a href="${artUrl}" target="_blank">${severity}${linkText}</a>`;
 
         if (addTasks && artifact.ScheduleState) {
             link += ' <a class="small-link" href="TASK_URL" target="_blank">_TEXT_</a>';
             link = link.replace('TASK_URL', artUrl + '/tasks');
             link = link.replace('_TEXT_', 'tasks');
         }
+        console.log(link);
         return link;
     }
     function getCustomer(defect) {
@@ -111,6 +111,14 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             rv += '...';
         }
         return rv;
+    }
+    function getSeverity(item) {
+        var rv = '';
+        if (item.Severity === 'Internal') {
+            rv ='\u{1fac1}';
+        }
+        return rv;
+
     }
     function getPriority(item) {
         var rv = '';
@@ -450,6 +458,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             defectInfo = { 'defectLink': defectLink,
                 'status': defect.ScheduleState,
                 'priority': getPriority(defect),
+                'severity': getSeverity(defect),
                 'release': getReleaseName(defect),
                 'blocked': getBlockedHtml(defect),
                 'created': getCreated(defect),
@@ -643,7 +652,7 @@ function OpenStoriesTasksAndDefects() { // eslint-disable-line no-unused-vars
             'UserName'
         ];
 
-        var defectColumns = baseColumns.concat('IsCustomer');
+        var defectColumns = baseColumns.concat(['IsCustomer', 'Severity']);
         var hrColumns = baseColumns.concat('Lifecycle');
 
         queryConfigs[0] = {
