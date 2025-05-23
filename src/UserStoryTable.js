@@ -6,6 +6,7 @@ import TaskTable from './TaskTable.js';
 
 import {
     getBlockedHtml,
+    getLink,
     itemSort2,
     ownerIfKnown,
 } from './util.js';
@@ -54,8 +55,7 @@ export default function UserStoryTable(props) {
                         <div className="story-title">
                             <span className="release-name">{rr.data.Release.Name}</span>
                             <span className={artClassName}>{rr.data.FormattedID}</span>
-                            <span className="artifact-title"> <a href={rr.getUri()}> {rr.data.Name} </a> </span>
-
+                            <span className="artifact-title"> <a href={getLink(rr)}> {rr.data.Name} </a> </span>
                             {getEstimate()}
                             {getBlockedHtml(rr.data)}
                             <span className="story-owner">{ownerIfKnown(rr.data)}</span>

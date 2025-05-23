@@ -2,6 +2,7 @@
 
 import {
     getBlockedHtml,
+    getLink,
     itemSort2,
     ownerIfKnown,
 } from './util.js';
@@ -29,7 +30,7 @@ export default function DefectTable(props) {
             })
             .sort(itemSort2)
             .map((rr) => {
-                // console.log('rr', rr.getCustomFields());
+                const link = getLink(rr);
                 return (
                     <tr key={rr.data.FormattedID} >
                         <td>
@@ -39,7 +40,7 @@ export default function DefectTable(props) {
                             {moment(new Date()).diff(new Date(rr.data.CreationDate), 'days')}
                         </td>
                         <td>
-                            <a href={rr.getUri()}> {rr.data.FormattedID} </a>
+                            <a href={link}> {rr.data.FormattedID} </a>
                         </td>
                         <td>
                             {rr.data.Name}

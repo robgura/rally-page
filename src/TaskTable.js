@@ -2,6 +2,7 @@
 
 import {
     getBlockedHtml,
+    getLink,
     itemSort2,
     ownerIfKnown,
 } from './util.js';
@@ -61,7 +62,7 @@ export default function TaskTable(props) {
                 return (
                     <tr key={tt.data.FormattedID} >
                         <td>
-                           {tt.data.FormattedID}
+                           <a href={getLink(tt)} > {tt.data.FormattedID} </a>
                         </td>
                         <td>
                             {tt.data.Name}

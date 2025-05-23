@@ -1,4 +1,4 @@
-/*global  */
+/*global Rally */
 
 String.prototype.capFirst = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
@@ -212,4 +212,8 @@ export function getBlockedHtml(item) {
         };
         return <span style={style}> {reason} </span>;
     }
+}
+
+export function getLink(model) {
+    return Rally.nav.Manager.getDetailUrl(model);
 }
