@@ -3,6 +3,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import js from '@eslint/js';
 import { FlatCompat } from '@eslint/eslintrc';
+import reactPlugin from 'eslint-plugin-react';
+import reactHooksPlugin from 'eslint-plugin-react-hooks';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,6 +22,16 @@ export default [...compat.extends('eslint:recommended'), {
 
         ecmaVersion: 12,
         sourceType: 'module',
+        parserOptions: {
+            ecmaFeatures: {
+                jsx: true,
+            },
+        },
+    },
+
+    plugins: {
+        react: reactPlugin,
+        'react-hooks': reactHooksPlugin,
     },
 
     rules: {

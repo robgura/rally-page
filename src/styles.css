@@ -49,6 +49,14 @@ h4#UserNameHeader {
     padding-top: 15px;
 }
 
+.story-title {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    font-size: 24px;
+    gap: 1em;
+}
+
 .story-owner {
     font-style: italic;
     font-size: 18px;
@@ -59,7 +67,7 @@ h4#UserNameHeader {
     animation-timing-function: ease;
 }
 
-.defect-id .artifact-id {
+.defect-id {
     background-color: rgb(146, 51, 7);
     color: white;
     padding-right: 3px;
@@ -68,7 +76,7 @@ h4#UserNameHeader {
     border-radius: 9px;
 }
 
-.story-id .artifact-id {
+.story-id {
     background-color: rgb(102, 146, 7);
     color: white;
     padding-right: 3px;
@@ -89,12 +97,20 @@ h4#UserNameHeader {
 .artifact-title {
     font-size: 18px;
     font-weight: bold;
+    flex-grow: 4;
 }
 
 .story-estimate {
     font-size: 18px;
     font-weight: bold;
     text-align: right;
+    border: solid black 1px;
+
+    border-radius: 48px;
+    width: 2em;
+    height: 2em;
+    text-align: center;
+    line-height: 2em;
 }
 
 .task-estimate {
@@ -186,3 +202,38 @@ td.number {
     -webkit-text-stroke: 2px black;
     -webkit-text-fill-color: lightgrey;
 }
+
+.mytable {
+    font-size: 14px;
+    border-collapse: collapse;
+}
+
+.mytable td {
+    border-bottom: solid black 1px;
+    border-right: dotted black 1px;
+
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    padding-right: 0.5em;
+    padding-left: 0.5em;
+}
+
+.mytable tr:last-child td {
+    border-bottom: 0;
+}
+
+.mytable td:last-child {
+    border-right: 0;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+    margin: 2em;
+}
+
+.main-container div {
+    padding: 1em;
+}
+

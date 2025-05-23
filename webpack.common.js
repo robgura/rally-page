@@ -14,6 +14,7 @@ module.exports = (env, argv) => {
         output: {
             path: path.resolve(__dirname, 'deploy'),
             publicPath: '/',
+            library: 'Entry',
         },
 
         entry: [
@@ -27,8 +28,8 @@ module.exports = (env, argv) => {
                 // use a different script tag to load rally script depending on if we're running
                 // locally (dev) or within the rally website
                 custom: isProduction
-                    ? '<script type="text/javascript" src="/apps/1.32/sdk.js"></script>'
-                    : '<script type ="text/javascript" src="https://rally1.rallydev.com/apps/1.32/sdk.js?debug=true"></script>',
+                    ? '<script type="text/javascript" src="/apps/2.1/sdk.js"></script>'
+                    : '<script type="text/javascript" src="https://rally1.rallydev.com/apps/2.1/sdk.js"></script>',
                 inlineSource: '.(js|css)$',
                 // needed to npm run watch reloads properly
                 cache: false,
@@ -43,6 +44,9 @@ module.exports = (env, argv) => {
                 exclude: [
                     'node_modules',
                 ],
+            }),
+            new webpack.DefinePlugin({
+                'isProduction': isProduction,
             }),
         ],
 

@@ -1,116 +1,54 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!-- Copyright (c) 2012 Rally Software Development Corp. All rights reserved -->
 <html>
-<svg>
-  <filter id="wavy2">
-    <feTurbulence x="0" y="0" baseFrequency="0.02" numOctaves="5" seed="1" />
-    <feDisplacementMap in="SourceGraphic" scale="20" />
-  </filter>
-</svg>
-<head>
-  <title>Open Stories, Tasks and Defects by Iteration</title>
-  <meta name="Name" content="App: Open Stories, Tasks and Defects by Iteration" />
-  <meta name="Version" content="2012.11.19" />
-  <meta name="Vendor" content="Rally Software" />
+    <svg>
+        <filter id="wavy2">
+        <feTurbulence x="0" y="0" baseFrequency="0.02" numOctaves="5" seed="1" />
+        <feDisplacementMap in="SourceGraphic" scale="20" />
+        </filter>
+    </svg>
+    <head>
+        <title>Open Stories, Tasks and Defects by Iteration</title>
+        <meta name="Name" content="App: Open Stories, Tasks and Defects by Iteration" />
+        <meta name="Version" content="2012.11.19" />
+        <meta name="Vendor" content="Rally Software" />
 
-  <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700' rel='stylesheet' type='text/css'>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+        <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700' rel='stylesheet' type='text/css'>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+        <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+        <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 
-<!--   This will insert rally sdk script depending on if we're running development (local) or production -->
-  <%= htmlWebpackPlugin.options.custom %>
+        <!--   This will insert rally sdk script depending on if we're running development (local) or production -->
+        <%= htmlWebpackPlugin.options.custom %>
+        <script type="text/javascript">
+            Rally.onReady(function () {
+                Ext.define(
+                    "CustomApp",
+                    {
+                        extend: "Rally.app.App",
+                        launch: function(){
+                            Entry.onLoad(this, Rally);
+                        },
+                        listeners: {
+                            afterrender: function() {
+                                Entry.afterrender(this);
+                            }
+                        },
+                    }
+                );
 
-</head>
+                Rally.launchApp('CustomApp', {
+                    name: "stand-up",
+                    parentRepos: "",
+                    version: "0.1.1"
+                });
+            });
+        </script>
 
-<body>
-    <div id="iterations"></div>
-    <div id="wait"></div>
-    <br><br>
 
-    <div class="big-defect-parent" id="big-defect-parent">
-        <div class="defect-total-container">
-            Defects
-            <div class="big-defect" id="def-total"> </div>
-        </div>
-    </div>
+    </head>
 
-    <div class="iter-time-left" > Iteration ends <span id="time-left"> </span> </div>
-
-    <div style="clear: both;" id="defects"></div>
-    <div style="margin-top: 10px"><i>*** defect contains tasks that are broken down with stories</i> </div>
-    <div style="margin-top: 10px"><i><b> Bold </b> users stories indicate the parent of the defect</i> </div>
-
-    <br>
-
-    <div id="stories"></div>
-
-    <h2> Points Data </h2>
-    <div class="table-group">
-        <table class="table-stats">
-            <tr>
-                <td> User Story Points </td> <td class="number" id="us-points"/>
-            </tr>
-            <tr>
-                <td> Defect Points </td> <td class="number" id="def-points"/>
-            </tr>
-        </table>
-    </div>
-
-    <h2 style="clear: both"> User Story Data </h2>
-    <h3> Tasks </h3>
-    <div class="table-group">
-        <table class="table-stats">
-            <tr>
-                <td> Defined </td> <td class="number" id="task-def"/>
-            </tr>
-            <tr>
-                <td> In Progress </td> <td class="number" id="task-ip"/>
-            </tr>
-            <tr>
-                <td> Completed on PR </td> <td class="number" id="task-comp-pr"/>
-            </tr>
-            <tr>
-                <td> Completed </td> <td class="number" id="task-comp"/>
-            </tr>
-        </table>
-    </div>
-
-    <h2 style="clear: both"> Defect Data </h2>
-    <div style="margin-bottom: 10px;">
-        Average Age: <span id="def-avg-age"> </span> days
-    </div>
-    <div class="table-group">
-        <table class="table-stats">
-            <tr>
-                <td> Completed on PR </td> <td class="number" id="def-comp-pr"/>
-            </tr>
-        </table>
-    </div>
-    <div class="table-group">
-        <table class="table-stats">
-            <tr>
-                <td> In Progress High </td> <td class="number" id="def-ip-high"/>
-            </tr>
-            <tr>
-                <td> In Progress Low </td> <td class="number" id="def-ip-low"/>
-            </tr>
-            <tr>
-                <td> In Progress Other </td> <td class="number" id="def-ip-other"/>
-            </tr>
-        </table>
-    </div>
-    <div class="table-group">
-        <table class="table-stats">
-            <tr>
-                <td> Defined High </td> <td class="number" id="def-defined-high"/>
-            </tr>
-            <tr>
-                <td> Defined Low </td> <td class="number" id="def-defined-low"/>
-            </tr>
-            <tr>
-                <td> Defined Other </td> <td class="number" id="def-defined-other"/>
-            </tr>
-        </table>
-    </div>
-
-</body>
+    <body>
+        Loading...
+    </body>
 </html>
