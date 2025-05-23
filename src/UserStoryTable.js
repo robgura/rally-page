@@ -30,7 +30,7 @@ export default function UserStoryTable(props) {
                         return true;
                     }
                 }
-                else if (rr.data.Blocked) {
+                else if (rr.data.Blocked && rr.isUserStory()) {
                     return true;
                 }
                 return false;
@@ -51,7 +51,7 @@ export default function UserStoryTable(props) {
                 };
 
                 return (
-                    <div key={rr.data.FormattedID}>
+                    <div className="story-chunk" key={rr.data.FormattedID}>
                         <div className="story-title">
                             <span className="release-name">{rr.data.Release.Name}</span>
                             <span className={artClassName}>{rr.data.FormattedID}</span>
@@ -59,7 +59,6 @@ export default function UserStoryTable(props) {
                             {getEstimate()}
                             {getBlockedHtml(rr.data)}
                             <span className="story-owner">{ownerIfKnown(rr.data)}</span>
-
                         </div>
                         <TaskTable model={rr} />
                     </div>
@@ -67,7 +66,7 @@ export default function UserStoryTable(props) {
             });
     };
     return (
-        <div>
+        <div className="story-display">
             {renderRecords()}
         </div>
     );

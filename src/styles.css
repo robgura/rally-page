@@ -49,10 +49,33 @@ h4#UserNameHeader {
     padding-top: 15px;
 }
 
+.defect-display {
+    margin-bottom: 2em;
+    padding: 2em;
+    border: solid black 2px;
+    border-radius: 8px;
+    width: fit-content;
+}
+
+.story-display {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+    align-items: stretch;
+    flex-wrap: wrap;
+    align-content: flex-start;
+}
+
+.story-chunk {
+    padding: 2em;
+    border: solid black 2px;
+    border-radius: 8px;
+}
+
 .story-title {
+    margin-bottom: 1em;
     display: flex;
     align-items: baseline;
-    justify-content: space-between;
     font-size: 24px;
     gap: 1em;
 }
@@ -97,7 +120,6 @@ h4#UserNameHeader {
 .artifact-title {
     font-size: 18px;
     font-weight: bold;
-    flex-grow: 4;
 }
 
 .story-estimate {
@@ -233,7 +255,7 @@ td.number {
     margin: 2em;
 }
 
-.main-container div {
-    padding: 1em;
+.main-container > div {
+    margin: 1em;
 }
 

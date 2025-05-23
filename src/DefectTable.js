@@ -66,7 +66,7 @@ export default function DefectTable(props) {
     };
 
     return (
-        <div>
+        <div className="defect-display">
             <table className="mytable">
                 <tbody>
                     {renderRecords()}
