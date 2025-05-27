@@ -16,6 +16,11 @@ export default function DefectTable(props) {
     const renderRecords = () => {
         return records
             .filter((rr) => {
+                // don't include any records that have tasks, those will end up being shown in the story tables
+                if (rr.canHaveTasks() && rr.data.Tasks.Count > 0) {
+                    return false;
+                }
+
                 if (rr.isDefect()) {
                     if (rr.data.ScheduleState === 'Completed' || rr.data.ScheduleState === 'Accepted') {
                         if (rr.data.Blocked) {
@@ -44,6 +49,10 @@ export default function DefectTable(props) {
                 }
                 else if (rr.data.Severity === 'Internal') {
                     thing = <span style={{ fontSize: '18px' }} > {String.fromCodePoint(129729)} </span>;
+                }
+
+                if (rr.canHaveTasks() && rr.data.Tasks.Count > 0) {
+                    className += ' defect-with-tasks';
                 }
                 return (
                     <tr className={className} key={rr.data.FormattedID} >

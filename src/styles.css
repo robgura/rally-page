@@ -235,6 +235,7 @@ td.number {
 .mytable th {
     border-bottom: double black 2px;
 }
+
 .mytable td {
     border-bottom: solid black 1px;
     border-right: dotted black 1px;
@@ -243,6 +244,10 @@ td.number {
     padding-bottom: 0.5em;
     padding-right: 0.5em;
     padding-left: 0.5em;
+}
+
+.defect-with-tasks {
+    color: grey;
 }
 
 .mytable tr:hover {
