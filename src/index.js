@@ -95,6 +95,9 @@ export function onLoad(app) {
         }
     };
 
+    // const user = app.getContext().getUser();
+    // console.log('user', user);
+
     app.add({
         xtype: 'rallyiterationcombobox',
         listeners: {
