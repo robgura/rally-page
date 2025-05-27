@@ -3,14 +3,15 @@
 import {
     getBlockedHtml,
     getLink,
+    Owner,
     taskSort,
-    ownerIfKnown,
 } from './util.js';
 
 export default function TaskTable(props) {
 
     const {
         model,
+        user,
     } = props;
 
     const [tasks, setTasks] = React.useState({
@@ -82,7 +83,7 @@ export default function TaskTable(props) {
                             {getBlockedHtml(tt.data)}
                         </td>
                         <td>
-                            {ownerIfKnown(tt.data)}
+                            <Owner artifact={tt.data} user={user} />
                         </td>
                     </tr>
                 );
