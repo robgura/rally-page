@@ -35,6 +35,7 @@ function MainElement() {
                     'Priority',
                     'Release',
                     'ScheduleState',
+                    'Severity',
                     'State',
                     'Tasks',
                     'UserName',

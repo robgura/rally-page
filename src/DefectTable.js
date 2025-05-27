@@ -35,6 +35,13 @@ export default function DefectTable(props) {
                 if (rr.data.Blocked) {
                     className = 'blocked';
                 }
+                let thing = null;
+                if (rr.data.c_IsCustomer) {
+                    thing = <span style={{ fontSize: '18px' }} > {String.fromCodePoint(128556)} </span>;
+                }
+                else if (rr.data.Severity === 'Internal') {
+                    thing = <span style={{ fontSize: '18px' }} > {String.fromCodePoint(129729)} </span>;
+                }
                 return (
                     <tr className={className} key={rr.data.FormattedID} >
                         <td>
@@ -50,7 +57,7 @@ export default function DefectTable(props) {
                             {rr.data.Name}
                         </td>
                         <td>
-                            <span style={{ fontSize: '18px' }} > {rr.data.c_IsCustomer ? '😬' : ''} </span>
+                            {thing}
                         </td>
                         <td>
                             {rr.data.Priority}

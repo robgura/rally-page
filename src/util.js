@@ -165,7 +165,7 @@ export function taskSort(left, right) {
 
 export function getBlockedHtml(item) {
     if (item.Blocked) {
-        const icon = <span style={{ fontSize: '22px' }} > ⬢ </span>;
+        const icon = <span style={{ fontSize: '22px' }} > {String.fromCodePoint(11042)} </span>;
         // if (item.BlockedReason.match(/pr/i)) {
         //     const pr = true;
         // }
