@@ -240,6 +240,14 @@ td.number {
     padding-left: 0.5em;
 }
 
+.mytable tr:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.mytable tr.blocked:hover {
+    background-color: rgba(255, 0, 0, 0.1);
+}
+
 .mytable tr:last-child td {
     border-bottom: 0;
 }

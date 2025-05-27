@@ -3,7 +3,7 @@
 import {
     getBlockedHtml,
     getLink,
-    itemSort2,
+    taskSort,
     ownerIfKnown,
 } from './util.js';
 
@@ -29,6 +29,7 @@ export default function TaskTable(props) {
                     'Blocked',
                     'BlockedReason',
                     'DisplayName',
+                    'Estimate',
                     'Estimate',
                     'FormattedId',
                     'Name',
@@ -57,15 +58,22 @@ export default function TaskTable(props) {
                 }
                 return false;
             })
-            .sort(itemSort2)
+            .sort(taskSort)
             .map((tt) => {
+                let className = '';
+                if (tt.data.Blocked) {
+                    className = 'blocked';
+                }
                 return (
-                    <tr key={tt.data.FormattedID} >
+                    <tr className={className} key={tt.data.FormattedID} >
                         <td>
                            <a href={getLink(tt)} > {tt.data.FormattedID} </a>
                         </td>
                         <td>
                             {tt.data.Name}
+                        </td>
+                        <td>
+                            {tt.data.Estimate}
                         </td>
                         <td>
                             {tt.data.State}

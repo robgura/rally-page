@@ -31,8 +31,12 @@ export default function DefectTable(props) {
             .sort(itemSort2)
             .map((rr) => {
                 const link = getLink(rr);
+                let className = '';
+                if (rr.data.Blocked) {
+                    className = 'blocked';
+                }
                 return (
-                    <tr key={rr.data.FormattedID} >
+                    <tr className={className} key={rr.data.FormattedID} >
                         <td>
                             {rr.data.Release.Name}
                         </td>
