@@ -17,8 +17,11 @@ export default function DefectTable(props) {
         return records
             .filter((rr) => {
                 if (rr.isDefect()) {
-                    if (rr.data.State === 'Completed' || rr.data.ScheduleState === 'Completed' || rr.data.ScheduleState === 'Accepted') {
+                    if (rr.data.ScheduleState === 'Completed' || rr.data.ScheduleState === 'Accepted') {
                         if (rr.data.Blocked) {
+                            return true;
+                        }
+                        if (rr.data.State !== 'Fixed' && rr.data.State !== 'Closed') {
                             return true;
                         }
                     }

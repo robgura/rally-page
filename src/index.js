@@ -3,6 +3,7 @@
 // cSpell: ignore iterationstatus afterrender hierarchicalrequirement rallyiterationcombobox wsapi xtype
 
 import './styles.css';
+import DefectSummary from './DefectSummary.js';
 import DefectTable from './DefectTable.js';
 import UserStoryTable from './UserStoryTable.js';
 
@@ -71,6 +72,7 @@ function MainElement() {
 
     return (
         <div className="main-container">
+            <DefectSummary records={records} />
             <DefectTable records={records} />
             <UserStoryTable records={records} />
         </div>
