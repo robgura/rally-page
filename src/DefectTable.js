@@ -50,7 +50,7 @@ export default function DefectTable(props) {
                             {rr.data.Name}
                         </td>
                         <td>
-                            {rr.data.c_IsCustomer ? 'Cust' : ''}
+                            <span style={{ fontSize: '18px' }} > {rr.data.c_IsCustomer ? '😬' : ''} </span>
                         </td>
                         <td>
                             {rr.data.Priority}

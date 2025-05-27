@@ -165,21 +165,19 @@ export function taskSort(left, right) {
 
 export function getBlockedHtml(item) {
     if (item.Blocked) {
-        let reason = 'Blocked';
-        if (item.BlockedReason && item.BlockedReason.match(/pr/i)) {
-            reason = item.BlockedReason;
-        }
-        else {
-            const br = item.BlockedReason;
-            if (!br) {
-                reason = 'Blocked';
-            }
-        }
+        const icon = <span style={{ fontSize: '22px' }} > ⬢ </span>;
+        // if (item.BlockedReason.match(/pr/i)) {
+        //     const pr = true;
+        // }
 
         const style = {
             color: 'red',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5em',
+            justifyContent: 'space-around',
         };
-        return <span style={style}> {reason} </span>;
+        return <span style={style}> {icon} {item.BlockedReason || null} </span>;
     }
 }
 
