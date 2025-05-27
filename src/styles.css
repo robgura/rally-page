@@ -228,8 +228,12 @@ td.number {
 .mytable {
     font-size: 14px;
     border-collapse: collapse;
+    width: 100%;
 }
 
+.mytable th {
+    border-bottom: double black 2px;
+}
 .mytable td {
     border-bottom: solid black 1px;
     border-right: dotted black 1px;

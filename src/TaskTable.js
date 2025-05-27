@@ -92,6 +92,16 @@ export default function TaskTable(props) {
     return (
         <div>
             <table className="mytable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Est.</th>
+                        <th>State</th>
+                        <th>Blocked</th>
+                        <th>Owner</th>
+                    </tr>
+                </thead>
                 <tbody>
                     {renderTasks()}
                 </tbody>

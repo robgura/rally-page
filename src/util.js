@@ -175,7 +175,7 @@ export function getBlockedHtml(item) {
             display: 'flex',
             alignItems: 'center',
             gap: '0.5em',
-            justifyContent: 'space-around',
+            justifyContent: 'space-evenly',
         };
         return <span style={style}> {icon} {item.BlockedReason || null} </span>;
     }

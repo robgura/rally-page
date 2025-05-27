@@ -79,6 +79,19 @@ export default function DefectTable(props) {
     return (
         <div className="defect-display">
             <table className="mytable">
+                <thead>
+                    <tr>
+                        <th>Release</th>
+                        <th>Age</th>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Visible</th>
+                        <th>Priority</th>
+                        <th>State</th>
+                        <th>Blocked</th>
+                        <th>Owner</th>
+                    </tr>
+                </thead>
                 <tbody>
                     {renderRecords()}
                 </tbody>
