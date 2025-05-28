@@ -41,7 +41,20 @@ export function Owner(props) {
         user,
     } = props;
 
-    const ownerName = ownerIfKnown(artifact);
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const minutesSinceMidnight = (hours * 60) + minutes;
+
+    let ownerName = '?';
+
+    if (minutesSinceMidnight >= 840 && minutesSinceMidnight <= 870) {
+        ownerName = String.fromCodePoint(9749);
+    }
+    else {
+        ownerName = ownerIfKnown(artifact);
+    }
+
     let title = null;
     if (artifact?.Owner && artifact.Owner._refObjectUUID === '2b6db043-4cca-4a90-9b7d-c00b15925a07') {
         title = 'A software engineer currently from Elk Grove Village, and an Alumnus of Western Illinois University. In 2018 Joe was awarded the W. Garry Johnson Award for Excellence in Student Governance.';
