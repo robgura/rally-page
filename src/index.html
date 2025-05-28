@@ -17,6 +17,8 @@
         <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
         <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 
+        <base target="_parent">
+
         <!--   This will insert rally sdk script depending on if we're running development (local) or production -->
         <%= htmlWebpackPlugin.options.custom %>
         <script type="text/javascript">
