@@ -35,6 +35,23 @@ export function ownerIfKnown(arti) {
     return owner;
 }
 
+export function Owner(props) {
+    const {
+        artifact,
+        user,
+    } = props;
+
+    const ownerName = ownerIfKnown(artifact);
+
+    if (artifact?.Owner && artifact.Owner._refObjectUUID === user._refObjectUUID && new Date().getHours() !== 9) {
+        return <span className="me"> {ownerName} </span>;
+    }
+
+    return (
+        <span> {ownerName} </span>
+    );
+}
+
 export function itemSort2(left, right) {
     if (left.isDefect() && !right.isDefect()) {
         return -1;

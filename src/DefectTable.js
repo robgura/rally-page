@@ -4,13 +4,14 @@ import {
     getBlockedHtml,
     getLink,
     itemSort2,
-    ownerIfKnown,
+    Owner,
 } from './util.js';
 
 export default function DefectTable(props) {
 
     const {
         records,
+        user,
     } = props;
 
     const renderRecords = () => {
@@ -81,7 +82,7 @@ export default function DefectTable(props) {
                             {getBlockedHtml(rr.data)}
                         </td>
                         <td>
-                            {ownerIfKnown(rr.data)}
+                            <Owner artifact={rr.data} user={user} />
                         </td>
                     </tr>
                 );

@@ -10,7 +10,10 @@ import UserStoryTable from './UserStoryTable.js';
 let getUpdate = null;
 let extId = null;
 
-function MainElement() {
+function MainElement(props) {
+    const {
+        user,
+    } = props;
 
     const [iteration, setIteration] = React.useState({
         iterationName: '',
@@ -73,8 +76,8 @@ function MainElement() {
     return (
         <div className="main-container">
             <DefectSummary records={records} />
-            <DefectTable records={records} />
-            <UserStoryTable records={records} />
+            <DefectTable records={records} user={user} />
+            <UserStoryTable records={records} user={user}/>
         </div>
     );
 }
@@ -84,7 +87,8 @@ export function afterrender(app) {
         // for some reason in development react only works if it is attached in the afterrender
         let root = document.getElementById(extId);
         root.style.overflow = 'visible';
-        ReactDOM.render(<MainElement app={app}/>, root);
+        const user = app.getContext().getUser();
+        ReactDOM.render(<MainElement app={app} user={user} />, root);
     }
 }
 
@@ -94,9 +98,6 @@ export function onLoad(app) {
             getUpdate(iterationName, iterationValue);
         }
     };
-
-    // const user = app.getContext().getUser();
-    // console.log('user', user);
 
     app.add({
         xtype: 'rallyiterationcombobox',
@@ -121,6 +122,7 @@ export function onLoad(app) {
         // for some reason in rally (i.e. production) react only works if is attached right away
         let root = document.getElementById(extId);
         root.style.overflow = 'visible';
-        ReactDOM.render(<MainElement app={app}/>, root);
+        const user = app.getContext().getUser();
+        ReactDOM.render(<MainElement app={app} user={user} />, root);
     }
 }

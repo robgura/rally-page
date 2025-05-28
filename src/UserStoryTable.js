@@ -8,13 +8,14 @@ import {
     getBlockedHtml,
     getLink,
     itemSort2,
-    ownerIfKnown,
+    Owner,
 } from './util.js';
 
 export default function UserStoryTable(props) {
 
     const {
         records,
+        user,
     } = props;
 
     const renderRecords = () => {
@@ -58,9 +59,11 @@ export default function UserStoryTable(props) {
                             <span className="artifact-title"> <a href={getLink(rr)}> {rr.data.Name} </a> </span>
                             {getEstimate()}
                             {getBlockedHtml(rr.data)}
-                            <span className="story-owner">{ownerIfKnown(rr.data)}</span>
+                            <span className="story-owner">
+                                <Owner artifact={rr.data} user={user} />
+                            </span>
                         </div>
-                        <TaskTable model={rr} />
+                        <TaskTable model={rr} user={user} />
                     </div>
                 );
             });

@@ -3,6 +3,15 @@ body {
     font-family: sans-serif;
 }
 
+.me {
+    font-weight: bold;
+    border: solid #c83803 4px;
+    background-color: #0b162a;
+    color: white;
+    padding: 0.5em;
+    border-radius: 8px;
+}
+
 .dojoxGrid {
     font-family: inherit;
 }
