@@ -42,17 +42,22 @@ export function Owner(props) {
     } = props;
 
     const ownerName = ownerIfKnown(artifact);
+    let title = null;
+    if (artifact?.Owner && artifact.Owner._refObjectUUID === '2b6db043-4cca-4a90-9b7d-c00b15925a07') {
+        title = 'A software engineer currently from Elk Grove Village, and an Alumnus of Western Illinois University. In 2018 Joe was awarded the W. Garry Johnson Award for Excellence in Student Governance.';
+    }
 
     if (artifact?.Owner && artifact.Owner._refObjectUUID === user._refObjectUUID && new Date().getHours() !== 9) {
         let meClass = 'me';
         if (artifact.Owner._refObjectUUID === '275cb8d4-d665-4b34-8fc4-4c153e49e40b') {
             meClass = 'matt';
         }
-        return <span className={meClass}> {ownerName} </span>;
+
+        return <span title={title} className={meClass}> {ownerName} </span>;
     }
 
     return (
-        <span> {ownerName} </span>
+        <span title={title} > {ownerName} </span>
     );
 }
 
