@@ -48,7 +48,7 @@ export function Owner(props) {
 
     let ownerName = '?';
 
-    if (minutesSinceMidnight >= 840 && minutesSinceMidnight <= 870) {
+    if (now.getDay() === 3 && minutesSinceMidnight >= 840 && minutesSinceMidnight <= 870) {
         ownerName = String.fromCodePoint(9749);
     }
     else {
@@ -60,7 +60,7 @@ export function Owner(props) {
         title = 'A software engineer currently from Elk Grove Village, and an Alumnus of Western Illinois University. In 2018 Joe was awarded the W. Garry Johnson Award for Excellence in Student Governance.';
     }
 
-    if (artifact?.Owner && artifact.Owner._refObjectUUID === user._refObjectUUID && new Date().getHours() !== 9) {
+    if (artifact?.Owner && artifact.Owner._refObjectUUID === user._refObjectUUID && now.getHours() !== 9) {
         let meClass = 'me';
         if (artifact.Owner._refObjectUUID === '275cb8d4-d665-4b34-8fc4-4c153e49e40b') {
             meClass = 'matt';
