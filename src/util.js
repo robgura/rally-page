@@ -44,7 +44,11 @@ export function Owner(props) {
     const ownerName = ownerIfKnown(artifact);
 
     if (artifact?.Owner && artifact.Owner._refObjectUUID === user._refObjectUUID && new Date().getHours() !== 9) {
-        return <span className="me"> {ownerName} </span>;
+        let meClass = 'me';
+        if (artifact.Owner._refObjectUUID === '275cb8d4-d665-4b34-8fc4-4c153e49e40b') {
+            meClass = 'matt';
+        }
+        return <span className={meClass}> {ownerName} </span>;
     }
 
     return (

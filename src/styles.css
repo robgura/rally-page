@@ -12,6 +12,10 @@ body {
     border-radius: 8px;
 }
 
+.matt {
+    color: olive;
+}
+
 .dojoxGrid {
     font-family: inherit;
 }
