@@ -64,6 +64,12 @@ h4#UserNameHeader {
     padding-top: 15px;
 }
 
+.thing {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
 .defect-display {
     margin-bottom: 2em;
     padding: 2em;

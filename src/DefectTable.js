@@ -70,7 +70,9 @@ export default function DefectTable(props) {
                             {rr.data.Name}
                         </td>
                         <td>
-                            {thing}
+                            <div className="thing">
+                                {thing}
+                            </div>
                         </td>
                         <td>
                             {rr.data.Priority}
