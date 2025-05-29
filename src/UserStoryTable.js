@@ -57,6 +57,7 @@ export default function UserStoryTable(props) {
                             <span className="release-name">{rr.data.Release.Name}</span>
                             <span className={artClassName}>{rr.data.FormattedID}</span>
                             <span className="artifact-title"> <a href={getLink(rr)}> {rr.data.Name} </a> </span>
+                            <span className="lifecycle"> {rr.data.c_Lifecycle} </span>
                             {getEstimate()}
                             {getBlockedHtml(rr.data)}
                             <span className="story-owner">

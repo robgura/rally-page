@@ -30,6 +30,7 @@ function MainElement(props) {
                     'Blocked',
                     'BlockedReason',
                     'c_IsCustomer',
+                    'c_Lifecycle',
                     'CreationDate',
                     'DisplayName',
                     'FormattedID',
