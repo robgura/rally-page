@@ -19,6 +19,12 @@ export default function TaskTable(props) {
         records: [],
     });
 
+    const NumberForm = new Intl.NumberFormat(undefined, {
+        style: 'decimal',
+        minimumIntegerDigits: 1,
+        minimumFractionDigits: 1,
+    });
+
     React.useEffect(() => {
         if (tasks.state === 'init' && model.canHaveTasks() && model.data.Tasks.Count > 0) {
             setTasks({
@@ -73,8 +79,8 @@ export default function TaskTable(props) {
                         <td>
                             {tt.data.Name}
                         </td>
-                        <td>
-                            {tt.data.Estimate}
+                        <td className="task-estimate">
+                            {NumberForm.format(tt.data.Estimate)}
                         </td>
                         <td>
                             {tt.data.State}

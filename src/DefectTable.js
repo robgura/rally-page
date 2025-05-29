@@ -55,14 +55,37 @@ export default function DefectTable(props) {
                 if (rr.canHaveTasks() && rr.data.Tasks.Count > 0) {
                     className += ' defect-with-tasks';
                 }
+
+                const renderAge = () => {
+                    const age = moment(new Date()).diff(new Date(rr.data.CreationDate), 'days');
+
+                    if (age > 90) {
+                        return (
+                            <td>
+                                <div className="parchment">
+                                    <div className="background">
+                                        {age}
+                                    </div>
+                                    <div className="text">
+                                        {age}
+                                    </div>
+                                </div>
+                            </td>
+                        );
+                    }
+                    return (
+                        <td>
+                            <div className="age">{age}</div>
+                        </td>
+                    );
+                };
+
                 return (
                     <tr className={className} key={rr.data.FormattedID} >
                         <td>
                             {rr.data.Release.Name}
                         </td>
-                        <td>
-                            {moment(new Date()).diff(new Date(rr.data.CreationDate), 'days')}
-                        </td>
+                        {renderAge()}
                         <td>
                             <a href={link}> {rr.data.FormattedID} </a>
                         </td>
