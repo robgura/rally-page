@@ -74,6 +74,50 @@ export function Owner(props) {
     );
 }
 
+function priorityCompare(left, right) {
+    if (left.data.Priority === 'Immediate' && right.data.Priority !== 'Immediate') {
+        return -1;
+    }
+
+    if (left.data.Priority !== 'Immediate' && right.data.Priority === 'Immediate') {
+        return 1;
+    }
+
+    if (left.data.Priority === 'Critical' && right.data.Priority !== 'Critical') {
+        return -1;
+    }
+
+    if (left.data.Priority !== 'Critical' && right.data.Priority === 'Critical') {
+        return 1;
+    }
+
+    if (left.data.Priority === 'High' && right.data.Priority !== 'High') {
+        return -1;
+    }
+
+    if (left.data.Priority !== 'High' && right.data.Priority === 'High') {
+        return 1;
+    }
+
+    if (left.data.Priority === 'Normal' && right.data.Priority !== 'Normal') {
+        return -1;
+    }
+
+    if (left.data.Priority !== 'Normal' && right.data.Priority === 'Normal') {
+        return 1;
+    }
+
+    if (left.data.Priority === 'Low' && right.data.Priority !== 'Low') {
+        return -1;
+    }
+
+    if (left.data.Priority !== 'Low' && right.data.Priority === 'Low') {
+        return 1;
+    }
+
+    return 0;
+}
+
 export function itemSort2(left, right) {
     if (left.isDefect() && !right.isDefect()) {
         return -1;
@@ -97,6 +141,11 @@ export function itemSort2(left, right) {
         if (!left.data.Blocked && right.data.Blocked) {
             return 1;
         }
+
+        const pValue = priorityCompare(left, right);
+        if (pValue !== 0) {
+            return pValue;
+        }
     }
 
     if (left.data.ScheduleState === 'In-Progress' && right.data.ScheduleState !== 'In-Progress') {
@@ -114,46 +163,33 @@ export function itemSort2(left, right) {
         if (!left.data.Blocked && right.data.Blocked) {
             return 1;
         }
+
+        const pValue = priorityCompare(left, right);
+        if (pValue !== 0) {
+            return pValue;
+        }
     }
 
-    if (left.data.Priority === 'Immediate' && right.data.Priority !== 'Immediate') {
+    const pValue = priorityCompare(left, right);
+    if (pValue !== 0) {
+        return pValue;
+    }
+
+    if (left.data.c_IsCustomer && !right.data.c_IsCustomer) {
         return -1;
     }
 
-    if (left.data.Priority !== 'Immediate' && right.data.Priority === 'Immediate') {
-        return -1;
-    }
-
-    if (left.data.Priority === 'Critical' && right.data.Priority !== 'Critical') {
-        return -1;
-    }
-
-    if (left.data.Priority !== 'Critical' && right.data.Priority === 'Critical') {
-        return -1;
-    }
-
-    if (left.data.Priority === 'High' && right.data.Priority !== 'High') {
-        return -1;
-    }
-
-    if (left.data.Priority !== 'High' && right.data.Priority === 'High') {
-        return -1;
-    }
-
-    if (left.data.Priority === 'Normal' && right.data.Priority !== 'Normal') {
-        return -1;
-    }
-
-    if (left.data.Priority !== 'Normal' && right.data.Priority === 'Normal') {
+    if (!left.data.c_IsCustomer && right.data.c_IsCustomer) {
         return 1;
     }
 
-    if (left.data.Priority === 'Low' && right.data.Priority !== 'Low') {
-        return -1;
+    // the return values are swapped because Internal will go at the end
+    if (left.data.Severity === 'Internal' && right.data.Severity !== 'Internal') {
+        return 1;
     }
 
-    if (left.data.Priority !== 'Low' && right.data.Priority === 'Low') {
-        return 1;
+    if (left.data.Severity !== 'Internal' && right.data.Severity === 'Internal') {
+        return -1;
     }
 
     const leftOwner = ownerIfKnown(left.data);
