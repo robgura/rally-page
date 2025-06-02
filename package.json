@@ -6,6 +6,7 @@
   "scripts": {
     "build": "webpack --config=webpack.prod.js",
     "build:dev": "webpack --config=webpack.dev.js",
+    "eslint": "eslint .",
     "watch": "webpack --config=webpack.dev.js --watch --progress"
   },
   "repository": {
@@ -40,6 +41,7 @@
     "@eslint/eslintrc": "^3.1.0",
     "@eslint/js": "^9.10.0",
     "eslint": "^9.27.0",
+    "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-webpack-plugin": "^4.2.0",
