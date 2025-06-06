@@ -31,7 +31,9 @@ function MainElement(props) {
                     'BlockedReason',
                     'c_IsCustomer',
                     'c_Lifecycle',
+                    'Connections',
                     'CreationDate',
+                    'Discussion',
                     'DisplayName',
                     'FormattedID',
                     'Name',
@@ -89,7 +91,8 @@ export function afterrender(app) {
         let root = document.getElementById(extId);
         root.style.overflow = 'visible';
         const user = app.getContext().getUser();
-        ReactDOM.render(<MainElement app={app} user={user} />, root);
+        const reactRoot = ReactDOM.createRoot(root);
+        reactRoot.render(<MainElement app={app} user={user} />);
     }
 }
 
@@ -124,6 +127,7 @@ export function onLoad(app) {
         let root = document.getElementById(extId);
         root.style.overflow = 'visible';
         const user = app.getContext().getUser();
-        ReactDOM.render(<MainElement app={app} user={user} />, root);
+        const reactRoot = ReactDOM.createRoot(root);
+        reactRoot.render(<MainElement app={app} user={user} />);
     }
 }

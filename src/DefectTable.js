@@ -7,6 +7,8 @@ import {
     Owner,
 } from './util.js';
 
+import ArtifactName from './ArtifactName.js';
+
 export default function DefectTable(props) {
 
     const {
@@ -90,7 +92,7 @@ export default function DefectTable(props) {
                             <a href={link}> {rr.data.FormattedID} </a>
                         </td>
                         <td>
-                            {rr.data.Name}
+                            <ArtifactName record={rr} />
                         </td>
                         <td>
                             <div className="thing">

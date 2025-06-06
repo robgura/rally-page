@@ -6,6 +6,7 @@ import {
     Owner,
     taskSort,
 } from './util.js';
+import ArtifactName from './ArtifactName.js';
 
 export default function TaskTable(props) {
 
@@ -36,6 +37,7 @@ export default function TaskTable(props) {
                     'Blocked',
                     'BlockedReason',
                     'DisplayName',
+                    'Description',
                     'Estimate',
                     'Estimate',
                     'FormattedId',
@@ -77,7 +79,7 @@ export default function TaskTable(props) {
                            <a href={getLink(tt)} > {tt.data.FormattedID} </a>
                         </td>
                         <td>
-                            {tt.data.Name}
+                            <ArtifactName record={tt} />
                         </td>
                         <td className="task-estimate">
                             {NumberForm.format(tt.data.Estimate)}
