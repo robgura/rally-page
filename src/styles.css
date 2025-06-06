@@ -301,3 +301,16 @@ td.number {
     margin: 1em;
 }
 
+.artifact-name {
+    display: flex;
+    justify-content: space-between;
+    gap: .2em;
+}
+
+.artifact-name .artifact-name-text {
+    flex-grow: 2;
+}
+
+.icon {
+    width: 1em;
+}
