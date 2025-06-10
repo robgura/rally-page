@@ -49,7 +49,19 @@ export default function DefectTable(props) {
                     className = 'blocked';
                 }
                 let thing = null;
-                if (rr.data.c_IsCustomer) {
+
+                let support = false;
+                if (rr.data.Tags.Count > 0) {
+                    const found = rr.data.Tags._tagsNameArray.find((tg) => tg.Name === 'Engineering Support');
+                    if (found) {
+                        support = true;
+                    }
+                }
+
+                if (support) {
+                    thing = <span style={{ fontSize: '18px' }} > {String.fromCodePoint(128222)} </span>;
+                }
+                else if (rr.data.c_IsCustomer) {
                     thing = <span style={{ fontSize: '18px' }} > {String.fromCodePoint(128556)} </span>;
                 }
                 else if (rr.data.Severity === 'Internal') {

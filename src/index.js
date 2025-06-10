@@ -44,6 +44,7 @@ function MainElement(props) {
                     'ScheduleState',
                     'Severity',
                     'State',
+                    'Tags',
                     'Tasks',
                     'UserName',
                 ],
