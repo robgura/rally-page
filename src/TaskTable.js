@@ -7,12 +7,14 @@ import {
     taskSort,
 } from './util.js';
 import ArtifactName from './ArtifactName.js';
+import Action from './Action.js';
 
 export default function TaskTable(props) {
 
     const {
         model,
         user,
+        onSave,
     } = props;
 
     const [tasks, setTasks] = React.useState({
@@ -94,6 +96,9 @@ export default function TaskTable(props) {
                         <td>
                             <Owner artifact={tt.data} user={user} />
                         </td>
+                        <td>
+                            <Action artifact={tt} user={user} onSave={onSave} />
+                        </td>
                     </tr>
                 );
             });
@@ -110,6 +115,7 @@ export default function TaskTable(props) {
                         <th>State</th>
                         <th>Blocked</th>
                         <th>Owner</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>

@@ -314,3 +314,25 @@ td.number {
 .icon {
     width: 1em;
 }
+
+.action {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.action .button {
+    text-wrap: nowrap;
+    background: lightblue;
+    border-radius: 0.5em;
+    padding: 2px 4px;
+    border: blue;
+    border-width: 3px;
+    border-style: double;
+}
+
+.action .button:hover {
+    cursor: pointer;
+    background: darkblue;
+    color: white;
+}

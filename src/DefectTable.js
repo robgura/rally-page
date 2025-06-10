@@ -6,12 +6,14 @@ import {
     itemSort2,
     Owner,
 } from './util.js';
+import Action from './Action.js';
 
 import ArtifactName from './ArtifactName.js';
 
 export default function DefectTable(props) {
 
     const {
+        onSave,
         records,
         user,
     } = props;
@@ -111,6 +113,9 @@ export default function DefectTable(props) {
                         <td>
                             <Owner artifact={rr.data} user={user} />
                         </td>
+                        <td>
+                            <Action artifact={rr} user={user} onSave={onSave} />
+                        </td>
                     </tr>
                 );
             });
@@ -130,6 +135,7 @@ export default function DefectTable(props) {
                         <th>State</th>
                         <th>Blocked</th>
                         <th>Owner</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>

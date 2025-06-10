@@ -69,6 +69,14 @@ function MainElement(props) {
 
     }, [iteration, setRecords]);
 
+    const onSave = (savedRecs) => {
+        savedRecs.store.reload({
+            load: function(store, _records) {
+                setRecords(_records);
+            }
+        });
+    };
+
     getUpdate = (iterationName, iterationValue) => {
         setIteration({
             iterationName,
@@ -79,8 +87,8 @@ function MainElement(props) {
     return (
         <div className="main-container">
             <DefectSummary records={records} />
-            <DefectTable records={records} user={user} />
-            <UserStoryTable records={records} user={user}/>
+            <DefectTable records={records} user={user} onSave={onSave} />
+            <UserStoryTable records={records} user={user} onSave={onSave}/>
         </div>
     );
 }
