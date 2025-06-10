@@ -1,4 +1,4 @@
-/*global React */
+/*global */
 
 export default function Action(props) {
 
@@ -8,12 +8,17 @@ export default function Action(props) {
         user,
     } = props;
 
-    let buttons = [];
+    const isMine = artifact.data?.Owner && artifact.data.Owner._refObjectUUID === user._refObjectUUID;
 
     const save = () => {
         artifact.save({
             callback: onSave,
         });
+    };
+
+    const unblock = () => {
+        artifact.set('Blocked', false);
+        save();
     };
 
     const blockOnPR = () => {
@@ -53,6 +58,11 @@ export default function Action(props) {
         save();
     };
 
+    const takeOwnerOnly = () => {
+        artifact.set('Owner', user);
+        save();
+    };
+
     const ditch = () => {
         if (artifact.isTask()) {
             artifact.set('State', 'Defined');
@@ -65,66 +75,86 @@ export default function Action(props) {
         save();
     };
 
+    const Mapper = {
+        'Defined': {
+            mine: [
+                {
+                    label: 'Start',
+                    func: take,
+                },
+                {
+                    label: 'Ditch',
+                    func: ditch,
+                }
+            ],
+            other: [
+                {
+                    label: 'Take',
+                    func: take,
+                },
+            ]
+        },
+        'In-Progress': {
+            mine: [
+                {
+                    label: 'Block on PR',
+                    func: blockOnPR,
+                },
+                {
+                    label: 'Ditch',
+                    func: ditch,
+                }
+            ],
+            other: [
+                {
+                    label: 'Take',
+                    func: take,
+                },
+            ]
+        },
+        'Completed': {
+            mine: [
+                {
+                    label: 'Close',
+                    func: closeOut,
+                },
+                {
+                    label: 'Re-Open',
+                    func: take,
+                },
+            ],
+            other: [
+                {
+                    label: 'Take',
+                    func: takeOwnerOnly,
+                },
+            ]
+        }
+    };
+
+    let state;
     if (artifact.isDefect()) {
-        if (artifact?.data?.ScheduleState === 'Defined') {
-            buttons.push(
-                <div key="take" className="button" onClick={take}>
-                    Take
-                </div>
-            );
-        }
-
-        if (artifact?.data?.ScheduleState === 'In-Progress') {
-            buttons.push(
-                <div key="block-on-pr" className="button" onClick={blockOnPR}>
-                    Block on PR
-                </div>
-            );
-            buttons.push(
-                <div key="ditch" className="button" onClick={ditch}>
-                    Ditch
-                </div>
-            );
-        }
-
-        if (artifact?.data?.ScheduleState === 'Completed' && artifact.data.BlockedReason === 'PR') {
-            buttons.push(
-                <div key="close" className="button" onClick={closeOut}>
-                    Close
-                </div>
-            );
-        }
+        state = artifact.data.ScheduleState;
+    }
+    else {
+        state = artifact.data.State;
     }
 
-    if (artifact.isTask()) {
-        if (artifact?.data?.State === 'Defined') {
-            buttons.push(
-                <div key="take" className="button" onClick={take}>
-                    Take
-                </div>
-            );
-        }
+    const buttonConfigs = Mapper[state][isMine ? 'mine' : 'other'] || [];
+    const buttons = buttonConfigs.map((bb) => {
+        return (
+            <div key={bb.label} className="button" onClick={bb.func}>
+                {bb.label}
+            </div>
+        );
+    });
 
-        if (artifact?.data?.State === 'In-Progress') {
-            buttons.push(
-                <div key="block-on-pr" className="button" onClick={blockOnPR}>
-                    Block on PR
-                </div>
-            );
-            buttons.push(
-                <div key="ditch" className="button" onClick={ditch}>
-                    Ditch
-                </div>
-            );
-        }
-
-        if (artifact?.data?.State === 'Completed' && artifact.data.BlockedReason === 'PR') {
-            buttons.push(
-                <div key="close-out" className="button" onClick={closeOut}>
-                    Close
-                </div>
-            );
-        }
+    if (state !== 'Completed' && artifact.data.Blocked) {
+        buttons.push(
+            <div key="unblock" className="button" onClick={unblock}>
+                Unblock
+            </div>
+        );
     }
 
     return (

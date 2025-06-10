@@ -266,7 +266,6 @@ td.number {
 
 .action {
     display: flex;
-    flex-direction: column;
     gap: 2px;
 }
 
@@ -275,9 +274,9 @@ td.number {
     background: lightblue;
     border-radius: 0.5em;
     padding: 2px 4px;
-    border: blue;
-    border-width: 3px;
-    border-style: double;
+    border: darkblue;
+    border-width: 1px;
+    border-style: solid;
 }
 
 .action .button:hover {
