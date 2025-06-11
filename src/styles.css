@@ -18,25 +18,6 @@ body {
     color: olive;
 }
 
-.dojoxGrid {
-    font-family: inherit;
-}
-
-.count {
-    margin-left: 10px;
-    margin-bottom: 5px;
-}
-
-#iterations {
-    float: left;
-}
-
-#wait {
-    float: left;
-    height: 16px;
-    width: 24px;
-}
-
 .parchment {
     position: relative;
 }
@@ -57,11 +38,6 @@ body {
     text-align: center;
     line-height: 100%;
     align-content: center;
-}
-
-h4#UserNameHeader {
-    clear: both;
-    padding-top: 15px;
 }
 
 .thing {
@@ -169,16 +145,6 @@ h4#UserNameHeader {
     font-weight: normal;
 }
 
-.dojoxGridCell {
-    padding: 3px 3px 3px 3px;
-}
-
-td.dojoxGridCell {
-    font-size: 16px;
-    padding-top: 4px;
-    padding-bottom: 4px;
-}
-
 @keyframes blink {
     50% { opacity: 0; }
 }
@@ -192,25 +158,8 @@ td.dojoxGridCell {
     100% { color: green; }
 }
 
-.table-group {
-    float: left;
-    margin-right: 14px;
-}
-
 td.number {
     text-align: right;
-}
-
-.table-stats {
-    border-collapse: collapse;
-    margin-bottom: 10px;
-}
-
-.table-stats td {
-    border: solid grey 1px;
-    padding: 5px;
-    padding-right: 10px;
-    min-width: 100px;
 }
 
 .lifecycle {
