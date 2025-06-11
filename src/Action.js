@@ -29,18 +29,18 @@ export default function Action(props) {
             artifact.set('ScheduleState', 'Completed');
         }
 
-        if (artifact.isDefect()) {
-            artifact.set('State', 'Fixed');
-            artifact.set('Resolution', 'Code Change');
-            artifact.set('Fixed In Build', artifact.data.Release.Name);
-        }
-
         artifact.set('Blocked', true);
         artifact.set('BlockedReason', 'PR');
         save();
     };
 
     const closeOut = () => {
+        if (artifact.isDefect()) {
+            artifact.set('State', 'Fixed');
+            artifact.set('Resolution', 'Code Change');
+            artifact.set('Fixed In Build', artifact.data.Release.Name);
+        }
+
         artifact.set('Blocked', false);
         save();
     };
