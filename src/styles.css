@@ -5,6 +5,17 @@ body {
 
 .me {
     font-weight: bold;
+    color: green;
+}
+
+.dj .me,
+.jack .me,
+.jake .me,
+.jeff .me,
+.joe .me,
+.kristen .me,
+.lauren .me {
+    font-weight: bold;
     border: solid #c83803 4px;
     background-color: #0b162a;
     color: white;
@@ -14,7 +25,17 @@ body {
     display: inline-block;
 }
 
-.matt {
+.rob .me {
+    color: white;
+    background-color: darkorange;
+    font-weight: bold;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    border: solid black 1px;
+    border-radius: 0.5em;
+}
+
+.matt .me {
     color: olive;
 }
 

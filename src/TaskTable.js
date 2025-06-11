@@ -3,9 +3,9 @@
 import {
     getBlockedHtml,
     getLink,
-    Owner,
     taskSort,
 } from './util.js';
+import Owner from './Owner.js';
 import ArtifactName from './ArtifactName.js';
 import Action from './Action.js';
 

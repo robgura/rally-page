@@ -6,6 +6,7 @@ import './styles.css';
 import DefectSummary from './DefectSummary.js';
 import DefectTable from './DefectTable.js';
 import UserStoryTable from './UserStoryTable.js';
+import { who } from './util.js';
 
 let getUpdate = null;
 let extId = null;
@@ -85,8 +86,9 @@ function MainElement(props) {
         });
     };
 
+    const userName = who(user);
     return (
-        <div className="main-container">
+        <div className={`main-container ${userName}`}>
             <DefectSummary records={records} />
             <DefectTable records={records} user={user} onSave={onSave} />
             <UserStoryTable records={records} user={user} onSave={onSave}/>

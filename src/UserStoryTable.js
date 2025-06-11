@@ -8,8 +8,8 @@ import {
     getBlockedHtml,
     getLink,
     itemSort2,
-    Owner,
 } from './util.js';
+import Owner from './Owner.js';
 
 export default function UserStoryTable(props) {
 

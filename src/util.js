@@ -35,45 +35,6 @@ export function ownerIfKnown(arti) {
     return owner;
 }
 
-export function Owner(props) {
-    const {
-        artifact,
-        user,
-    } = props;
-
-    const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    const minutesSinceMidnight = (hours * 60) + minutes;
-
-    let ownerName = '?';
-
-    if (now.getDay() === 3 && minutesSinceMidnight >= 840 && minutesSinceMidnight <= 870) {
-        ownerName = String.fromCodePoint(9749);
-    }
-    else {
-        ownerName = ownerIfKnown(artifact);
-    }
-
-    let title = null;
-    if (artifact?.Owner && artifact.Owner._refObjectUUID === '2b6db043-4cca-4a90-9b7d-c00b15925a07') {
-        title = 'A software engineer currently from Elk Grove Village, and an Alumnus of Western Illinois University. In 2018 Joe was awarded the W. Garry Johnson Award for Excellence in Student Governance.';
-    }
-
-    if (artifact?.Owner && artifact.Owner._refObjectUUID === user._refObjectUUID && now.getHours() !== 9) {
-        let meClass = 'me';
-        if (artifact.Owner._refObjectUUID === '275cb8d4-d665-4b34-8fc4-4c153e49e40b') {
-            meClass = 'matt';
-        }
-
-        return <span title={title} className={meClass}> {ownerName} </span>;
-    }
-
-    return (
-        <span title={title} > {ownerName} </span>
-    );
-}
-
 function priorityCompare(left, right) {
     if (left.data.Priority === 'Immediate' && right.data.Priority !== 'Immediate') {
         return -1;
@@ -258,4 +219,24 @@ export function getBlockedHtml(item) {
 
 export function getLink(model) {
     return Rally.nav.Manager.getDetailUrl(model);
+}
+
+const UserMap = {
+    'dj': 'a375ddac-0210-4b35-a2c7-5a6dc126b4e1',
+    'filipe': '99025ed1-84f6-4141-a6ac-2f14ca381266',
+    'jack': '780d5844-efd8-42ae-be55-1253701babe0',
+    'jake': '4b00aca8-8eb5-4f5e-9a39-1ed9e55ca7e6',
+    'jeff': '32ce4a4b-1976-4cd2-91c0-8dcefa9f254b',
+    'joe': '2b6db043-4cca-4a90-9b7d-c00b15925a07',
+    'kristen': 'bee30687-fc8c-4bfa-996c-c5125ae229c8',
+    'matt': '275cb8d4-d665-4b34-8fc4-4c153e49e40b',
+    'lauren': '53a1b702-a863-4780-a783-76135e6ecb66', // matt k
+    'antonio': '647d23bf-f38a-450a-bf01-8f193c9b3c8b',
+    'rob': '839ab687-1c66-4788-9328-c5d47c74b1bf',
+};
+
+const UserIdMap = Object.entries(UserMap).reduce((acc, [key, value]) => { acc[value] = key; return acc; }, {});
+
+export function who(user) {
+    return UserIdMap[user?._refObjectUUID] || 'unknown';
 }
