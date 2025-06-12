@@ -7,7 +7,7 @@ import TaskTable from './TaskTable.js';
 import {
     getBlockedHtml,
     getLink,
-    itemSort2,
+    storySort,
 } from './util.js';
 import Owner from './Owner.js';
 
@@ -37,7 +37,7 @@ export default function UserStoryTable(props) {
                 }
                 return false;
             })
-            .sort(itemSort2)
+            .sort(storySort)
             .map((rr) => {
                 let artClassName;
                 if (rr.isDefect()) {

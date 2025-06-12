@@ -281,6 +281,10 @@ td.number {
     padding-left: 0.5em;
 }
 
+.story-title > .blocked {
+    color: red;
+}
+
 td .blocked {
     color: red;
     display: flex;

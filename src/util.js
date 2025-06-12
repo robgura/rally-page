@@ -163,6 +163,28 @@ export function itemSort2(left, right) {
     return left.data.FormattedID.localeCompare(right.data.FormattedID);
 }
 
+export function storySort(left, right) {
+    if (left.isDefect() && !right.isDefect()) {
+        return -1;
+    }
+    if (!left.isDefect() && right.isDefect()) {
+        return 1;
+    }
+    if (left.isDefect() && right.isDefect()) {
+        return left.data.FormattedID.localeCompare(right.data.FormattedID);
+    }
+
+    if (left.data.c_Lifecycle === 'Implement' && right.data.c_Lifecycle !== 'Implement') {
+        return -1;
+    }
+
+    if (left.data.c_Lifecycle !== 'Implement' && right.data.c_Lifecycle === 'Implement') {
+        return 1;
+    }
+
+    return left.data.FormattedID.localeCompare(right.data.FormattedID);
+}
+
 export function taskSort(left, right) {
     if (left.data.State === 'Completed' && right.data.State !== 'Completed') {
         return -1;
