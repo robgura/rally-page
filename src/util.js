@@ -206,14 +206,15 @@ export function getBlockedHtml(item) {
         //     const pr = true;
         // }
 
-        const style = {
-            color: 'red',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5em',
-            justifyContent: 'space-evenly',
-        };
-        return <span style={style}> {icon} {item.BlockedReason || null} </span>;
+        if (item.BlockedReason) {
+            return (
+                <div className='blocked'>
+                    <span>{icon}</span>
+                    {item.BlockedReason}
+                </div>
+            );
+        }
+        return <span className='blocked'>{icon}</span>;
     }
 }
 

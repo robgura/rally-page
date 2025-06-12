@@ -240,6 +240,14 @@ td.number {
     padding-left: 0.5em;
 }
 
+td .blocked {
+    color: red;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    max-width: 200px;
+}
+
 .defect-with-tasks {
     color: grey;
 }
