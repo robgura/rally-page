@@ -2,6 +2,15 @@
 
 const regex = /((\[.*?\])|[^[]*)/g;
 
+function simpleHash(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i += 1) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0; // Convert to 32bit integer
+    }
+    return hash;
+}
+
 export default function ArtifactName(props) {
 
     const {
@@ -34,18 +43,21 @@ export default function ArtifactName(props) {
     for (const part of parts) {
         const pp = part[0];
         if (pp[0] === '[') {
-            let cls = 'pill-n';
-            if (idx === 0) {
-                cls = 'pill-1';
-            }
             // remove first and last character and give it some styling
+            let cleanName = pp.slice(1, -1);
+
+            // get a has of the name to use as a color tying all names in common together
+            let hsh = simpleHash(cleanName) % 360;
+            const style = {
+                backgroundColor: `hsl(${hsh}, 100%, 30%)`,
+            };
             name.push(
-                <span className={cls}> {pp.slice(1, -1)} </span>
+                <span key={idx} style={style} className="pill"> {cleanName} </span>
             );
         }
         else {
             name.push(
-                <span> {pp} </span>
+                <span key={idx}> {pp} </span>
             );
         }
         idx += 1;

@@ -185,16 +185,8 @@ body {
     font-weight: bold;
 }
 
-.pill-1 {
+.pill {
     color: white;
-    background-color: rgb(7, 102, 146);
-    border-radius: 6px;
-    padding: 1px 3px;
-}
-
-.pill-n {
-    color: black;
-    background-color: rgb(200, 200, 200);
     border-radius: 6px;
     padding: 1px 3px;
 }
