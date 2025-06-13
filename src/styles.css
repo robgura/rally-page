@@ -185,6 +185,20 @@ body {
     font-weight: bold;
 }
 
+.pill-1 {
+    color: white;
+    background-color: rgb(7, 102, 146);
+    border-radius: 6px;
+    padding: 1px 3px;
+}
+
+.pill-n {
+    color: black;
+    background-color: rgb(200, 200, 200);
+    border-radius: 6px;
+    padding: 1px 3px;
+}
+
 .story-estimate {
     font-size: 18px;
     font-weight: bold;
@@ -332,6 +346,10 @@ td .blocked {
 
 .artifact-name .artifact-name-text {
     flex-grow: 2;
+}
+
+.artifact-name .artifact-name-text span {
+    margin-right: 4px;
 }
 
 .icon {

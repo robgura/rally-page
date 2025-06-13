@@ -1,5 +1,7 @@
 /*global */
 
+const regex = /((\[.*?\])|[^[]*)/g;
+
 export default function ArtifactName(props) {
 
     const {
@@ -26,10 +28,33 @@ export default function ArtifactName(props) {
 
     }
 
+    const parts = record.data.Name.matchAll(regex);
+    let name = [];
+    let idx = 0;
+    for (const part of parts) {
+        const pp = part[0];
+        if (pp[0] === '[') {
+            let cls = 'pill-n';
+            if (idx === 0) {
+                cls = 'pill-1';
+            }
+            // remove first and last character and give it some styling
+            name.push(
+                <span className={cls}> {pp.slice(1, -1)} </span>
+            );
+        }
+        else {
+            name.push(
+                <span> {pp} </span>
+            );
+        }
+        idx += 1;
+    }
+
     return (
         <div className="artifact-name">
             <span className="artifact-name-text">
-                {record.data.Name}
+                {name}
             </span>
             {icons}
         </div>
