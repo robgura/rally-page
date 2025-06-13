@@ -35,6 +35,11 @@ export default function UserStoryTable(props) {
                 else if (rr.data.Blocked && rr.isUserStory()) {
                     return true;
                 }
+
+                if (rr.isUserStory() && rr.data.c_Lifecycle !== 'Demo') {
+                    return true;
+                }
+
                 return false;
             })
             .sort(storySort)
@@ -57,16 +62,33 @@ export default function UserStoryTable(props) {
                     save();
                 };
 
+                const moveToDemo = () => {
+                    rr.set('c_Lifecycle', 'Demo');
+                    save();
+                };
+
                 const getEstimate = () => {
                     if (rr.data.PlanEstimate || rr.data.PlanEstimate === 0) {
                         return <span className="story-estimate">{rr.data.PlanEstimate}</span>;
                     }
                 };
                 const getLifeCycleButton = () => {
+                    if (rr.data.c_Lifecycle === 'Complete') {
+                        return null;
+                    }
+                    if (rr.data.ScheduleState === 'Completed' && !rr.data.Blocked && rr.data.c_Lifecycle !== 'Demo' && rr.data.c_Lifecycle !== 'Complete') {
+                        return (
+                            <span className="action">
+                                <span key="move-to-demo" className="button lifecycle" onClick={moveToDemo}>
+                                    Move to Demo
+                                </span>
+                            </span>
+                        );
+                    }
                     if (rr.data.c_Lifecycle !== 'Implement') {
                         return (
                             <span className="action">
-                                <span key="unblock" className="button lifecycle" onClick={moveToImplement}>
+                                <span key="move-to-implement" className="button lifecycle" onClick={moveToImplement}>
                                     Move to Implement
                                 </span>
                             </span>

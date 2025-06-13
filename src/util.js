@@ -174,6 +174,17 @@ export function storySort(left, right) {
         return left.data.FormattedID.localeCompare(right.data.FormattedID);
     }
 
+    const leftDone = left.data.ScheduleState === 'Completed' && !left.data.Blocked;
+    const rightDone = right.data.ScheduleState === 'Completed' && !right.data.Blocked;
+
+    if (leftDone && !rightDone) {
+        return -1;
+    }
+
+    if (!leftDone && rightDone) {
+        return 1;
+    }
+
     if (left.data.c_Lifecycle === 'Implement' && right.data.c_Lifecycle !== 'Implement') {
         return -1;
     }
