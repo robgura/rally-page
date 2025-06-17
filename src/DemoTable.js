@@ -1,4 +1,4 @@
-/*global React */
+/*global */
 
 // cSpell: ignore Cust
 
@@ -136,11 +136,12 @@ export default function UserStoryTable(props) {
                     return rv;
                 };
 
-                const taskTable = React.useMemo(() => {
+                const renderTaskTable = () => {
                     if (rr.data.ScheduleState !== 'Completed' && rr.data.ScheduleState !== 'Accepted') {
                         return <TaskTable model={rr} user={user} onSave={onSave} />;
                     };
-                }, [rr, user, onSave]);
+                };
+
                 return (
                     <div className="story-chunk" key={rr.data.FormattedID}>
                         <div className="story-title">
@@ -156,7 +157,7 @@ export default function UserStoryTable(props) {
                                 <Owner artifact={rr.data} user={user} />
                             </span>
                         </div>
-                        {taskTable}
+                        {renderTaskTable()}
                     </div>
                 );
             });

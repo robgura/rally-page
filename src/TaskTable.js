@@ -57,7 +57,7 @@ export default function TaskTable(props) {
                 }
             });
         }
-    }, [setTasks, tasks]);
+    }, [model, setTasks, tasks]);
 
     const renderTasks = () => {
         return tasks.records
