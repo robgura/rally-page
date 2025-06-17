@@ -63,26 +63,8 @@ export default function UserStoryTable(props) {
 
     const renderRecords = () => {
         return records
-            .filter((rr) => {
-                if (rr.data.ScheduleState === 'Defined' || rr.data.ScheduleState === 'In-Progress') {
-                    // anything that can and does have tasks will be displayed
-                    if (rr.canHaveTasks() && rr.data.Tasks.Count > 0) {
-                        return true;
-                    }
-                    // all users stories will be displayed regardless of if they have tasks
-                    if (rr.isUserStory()) {
-                        return true;
-                    }
-                }
-                else if (rr.data.Blocked && rr.isUserStory()) {
-                    return true;
-                }
-
-                if (rr.isUserStory() && rr.data.c_Lifecycle !== 'Demo') {
-                    return true;
-                }
-
-                return false;
+            .filter((_rr) => {
+                return true;
             })
             .sort(demoStorySort)
             .map((rr) => {
@@ -166,7 +148,7 @@ export default function UserStoryTable(props) {
                             <span className={artClassName}>{rr.data.FormattedID}</span>
                             <span className="artifact-title"> <a href={getLink(rr)}> {rr.data.Name} </a> </span>
                             <span className=""> {rr.data.Iteration?.Name} </span>
-                            <span className="lifecycle"> {rr.data.c_Lifecycle} </span>
+                            <span className="lifecycle lifecycle-name"> {rr.data.c_Lifecycle} </span>
                             {getLifeCycleButton()}
                             {getEstimate()}
                             {getBlockedHtml(rr.data)}

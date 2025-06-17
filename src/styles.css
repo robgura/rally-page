@@ -236,6 +236,12 @@ td.number {
     font-weight: bold;
 }
 
+.demo-plan .lifecycle-name {
+    font-size: 24px;
+    color: green;
+    font-weight: bold;
+}
+
 .iter-time-left {
     font-size: 32px;
     font-family: "Impact", monospace;

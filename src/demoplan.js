@@ -81,7 +81,7 @@ function MainElement(props) {
 
     const userName = who(user);
     return (
-        <div className={`main-container ${userName}`}>
+        <div className={`main-container demo-plan ${userName}`}>
             <DemoTable records={records} user={user} onSave={onSave}/>
         </div>
     );
