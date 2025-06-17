@@ -17,13 +17,29 @@ module.exports = (env, argv) => {
             library: 'Entry',
         },
 
-        entry: [
-            path.resolve(__dirname, 'src/index.js'),
-        ],
+        entry: {
+            'standup': path.resolve(__dirname, 'src/index.js'),
+            'demoplan': path.resolve(__dirname, 'src/demoplan.js'),
+        },
 
         plugins: [
             new webpack.ProgressPlugin(),
             new HtmlWebpackPlugin({
+                filename: 'standup.html',
+                chunks: ['standup'],
+                template: path.resolve(__dirname, 'src/index.html'),
+                // use a different script tag to load rally script depending on if we're running
+                // locally (dev) or within the rally website
+                custom: isProduction
+                    ? '<script type="text/javascript" src="/apps/2.1/sdk.js"></script>'
+                    : '<script type="text/javascript" src="https://rally1.rallydev.com/apps/2.1/sdk.js"></script>',
+                inlineSource: '.(js|css)$',
+                // needed to npm run watch reloads properly
+                cache: false,
+            }),
+            new HtmlWebpackPlugin({
+                filename: 'demoplan.html',
+                chunks: ['demoplan'],
                 template: path.resolve(__dirname, 'src/index.html'),
                 // use a different script tag to load rally script depending on if we're running
                 // locally (dev) or within the rally website
