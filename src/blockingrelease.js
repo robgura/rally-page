@@ -1,9 +1,8 @@
 /*global isProduction, React, ReactDOM, Ext */
 
-// cSpell: ignore iterationstatus afterrender hierarchicalrequirement rallyiterationcombobox wsapi xtype
+// cSpell: ignore releasestatus afterrender hierarchicalrequirement rallyreleasecombobox wsapi xtype
 
 import './styles.css';
-import DefectSummary from './DefectSummary.js';
 import DefectTable from './DefectTable.js';
 import UserStoryTable from './UserStoryTable.js';
 import { who } from './util.js';
@@ -16,15 +15,15 @@ function MainElement(props) {
         user,
     } = props;
 
-    const [iteration, setIteration] = React.useState({
-        iterationName: '',
-        iterationValue: '',
+    const [release, setRelease] = React.useState({
+        releaseName: '',
+        releaseValue: '',
     });
 
     const [records, setRecords] = React.useState([]);
 
     React.useEffect(() => {
-        if (iteration.iterationValue !== '') {
+        if (release.releaseValue !== '') {
             Ext.create('Rally.data.wsapi.artifact.Store', {
                 models: ['UserStory', 'Defect'],
                 fetch: [
@@ -52,13 +51,13 @@ function MainElement(props) {
                 autoLoad: true,
                 filters: [
                     {
-                        property: 'Iteration',
-                        value: iteration.iterationValue,
+                        property: 'Release',
+                        value: release.releaseValue,
                     },
                     {
                         property: 'ScheduleState',
-                        operator: '!=',
-                        value: 'Accepted',
+                        operator: '<=',
+                        value: 'Completed',
                     }
                 ],
                 listeners: {
@@ -69,7 +68,7 @@ function MainElement(props) {
             });
         }
 
-    }, [iteration, setRecords]);
+    }, [release, setRecords]);
 
     const onSave = (savedRecs) => {
         savedRecs.store.reload({
@@ -79,19 +78,59 @@ function MainElement(props) {
         });
     };
 
-    getUpdate = (iterationName, iterationValue) => {
-        setIteration({
-            iterationName,
-            iterationValue,
+    getUpdate = (releaseName, releaseValue) => {
+        setRelease({
+            releaseName,
+            releaseValue,
         });
     };
+
+    const isBlockedDefect = (rr) => {
+        if (rr.data.ScheduleState === 'Completed') {
+            if (rr.data.Blocked) {
+                return rr.data.Priority === 'High' || rr.data.Priority === 'Critical';
+            }
+            return false;
+        }
+        return rr.data.Priority === 'High' || rr.data.Priority === 'Critical';
+    };
+
+    const defectRecords = React.useMemo(() => {
+        return records.filter((rr) => {
+            return rr.isDefect() && isBlockedDefect(rr);
+        });
+    }, [records]);
+
+    const otherDefects = React.useMemo(() => {
+        return records.filter((rr) => {
+            if (rr.isDefect()) {
+                if (rr.data.ScheduleState !== 'Completed' && rr.data.ScheduleState !== 'Accepted') {
+                    return !isBlockedDefect(rr);
+                }
+            }
+        });
+    }, [records]);
+
+    const storyRecords = React.useMemo(() => {
+        return records.filter((rr) => {
+            if (rr.isUserStory()) {
+                if (rr.data.ScheduleState === 'Completed') {
+                    return rr.data.Blocked;
+                }
+                return rr.data.ScheduleState !== 'Completed' && rr.data.ScheduleState !== 'Accepted';
+            }
+        });
+    }, [records]);
 
     const userName = who(user);
     return (
         <div className={`main-container ${userName}`}>
-            <DefectSummary records={records} />
-            <DefectTable records={records} user={user} onSave={onSave} />
-            <UserStoryTable records={records} user={user} onSave={onSave}/>
+            <h2> Blocking Defects </h2>
+            <DefectTable records={defectRecords} user={user} onSave={onSave} />
+            <h2> Stories </h2>
+            <UserStoryTable records={storyRecords} user={user} onSave={onSave}/>
+            <h2> Other Defects </h2>
+            <DefectTable records={otherDefects} user={user} onSave={onSave} />
         </div>
     );
 }
@@ -108,14 +147,14 @@ export function afterrender(app) {
 }
 
 export function onLoad(app) {
-    const iterUpdate = (iterationName, iterationValue) => {
+    const iterUpdate = (releaseName, releaseValue) => {
         if (getUpdate) {
-            getUpdate(iterationName, iterationValue);
+            getUpdate(releaseName, releaseValue);
         }
     };
 
     app.add({
-        xtype: 'rallyiterationcombobox',
+        xtype: 'rallyreleasecombobox',
         listeners: {
             ready: (i) => { iterUpdate(i.rawValue, i.value); },
             select: (i) => { iterUpdate(i.rawValue, i.value); },

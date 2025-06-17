@@ -20,27 +20,6 @@ export default function DefectTable(props) {
 
     const renderRecords = () => {
         return records
-            .filter((rr) => {
-                // don't include any records that have tasks, those will end up being shown in the story tables
-                if (rr.canHaveTasks() && rr.data.Tasks.Count > 0) {
-                    return false;
-                }
-
-                if (rr.isDefect()) {
-                    if (rr.data.ScheduleState === 'Completed' || rr.data.ScheduleState === 'Accepted') {
-                        if (rr.data.Blocked) {
-                            return true;
-                        }
-                        if (rr.data.State !== 'Fixed' && rr.data.State !== 'Closed') {
-                            return true;
-                        }
-                    }
-                    else {
-                        return true;
-                    }
-                }
-                return false;
-            })
             .sort(itemSort2)
             .map((rr) => {
                 const link = getLink(rr);

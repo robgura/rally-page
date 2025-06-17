@@ -21,27 +21,6 @@ export default function UserStoryTable(props) {
 
     const renderRecords = () => {
         return records
-            .filter((rr) => {
-                if (rr.data.ScheduleState === 'Defined' || rr.data.ScheduleState === 'In-Progress') {
-                    // anything that can and does have tasks will be displayed
-                    if (rr.canHaveTasks() && rr.data.Tasks.Count > 0) {
-                        return true;
-                    }
-                    // all users stories will be displayed regardless of if they have tasks
-                    if (rr.isUserStory()) {
-                        return true;
-                    }
-                }
-                else if (rr.data.Blocked && rr.isUserStory()) {
-                    return true;
-                }
-
-                if (rr.isUserStory() && rr.data.c_Lifecycle !== 'Demo') {
-                    return true;
-                }
-
-                return false;
-            })
             .sort(storySort)
             .map((rr) => {
                 let artClassName;

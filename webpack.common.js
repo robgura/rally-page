@@ -18,8 +18,9 @@ module.exports = (env, argv) => {
         },
 
         entry: {
-            'standup': path.resolve(__dirname, 'src/index.js'),
+            'blockingrelease': path.resolve(__dirname, 'src/blockingrelease.js'),
             'demoplan': path.resolve(__dirname, 'src/demoplan.js'),
+            'standup': path.resolve(__dirname, 'src/standup.js'),
         },
 
         plugins: [
@@ -40,6 +41,19 @@ module.exports = (env, argv) => {
             new HtmlWebpackPlugin({
                 filename: 'demoplan.html',
                 chunks: ['demoplan'],
+                template: path.resolve(__dirname, 'src/index.html'),
+                // use a different script tag to load rally script depending on if we're running
+                // locally (dev) or within the rally website
+                custom: isProduction
+                    ? '<script type="text/javascript" src="/apps/2.1/sdk.js"></script>'
+                    : '<script type="text/javascript" src="https://rally1.rallydev.com/apps/2.1/sdk.js"></script>',
+                inlineSource: '.(js|css)$',
+                // needed to npm run watch reloads properly
+                cache: false,
+            }),
+            new HtmlWebpackPlugin({
+                filename: 'blockingrelease.html',
+                chunks: ['blockingrelease'],
                 template: path.resolve(__dirname, 'src/index.html'),
                 // use a different script tag to load rally script depending on if we're running
                 // locally (dev) or within the rally website
