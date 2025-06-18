@@ -38,7 +38,7 @@ export default function Action(props) {
         if (artifact.isDefect()) {
             artifact.set('State', 'Fixed');
             artifact.set('Resolution', 'Code Change');
-            artifact.set('Fixed In Build', artifact.data.Release.Name);
+            artifact.set('Fixed In Build', artifact.data.Release?.Name);
         }
 
         artifact.set('Blocked', false);

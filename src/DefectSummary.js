@@ -11,11 +11,11 @@ export default function DefectSummary(props) {
             if (rec.isDefect()) {
                 if (rec.data.ScheduleState !== 'Completed' && rec.data.ScheduleState !== 'Accepted') {
                     const priority = rec.data.Priority === 'High' || rec.data.Priority === 'Critical' ? 'high' : 'low';
-                    if (acc[priority][rec.data.Release.Name]) {
-                        acc[priority][rec.data.Release.Name] += 1;
+                    if (acc[priority][rec.data.Release?.Name]) {
+                        acc[priority][rec.data.Release?.Name] += 1;
                     }
                     else {
-                        acc[priority][rec.data.Release.Name] = 1;
+                        acc[priority][rec.data.Release?.Name] = 1;
                     }
                 }
             }

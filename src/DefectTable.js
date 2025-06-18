@@ -78,7 +78,7 @@ export default function DefectTable(props) {
                 return (
                     <tr className={className} key={rr.data.FormattedID} >
                         <td>
-                            {rr.data.Release.Name}
+                            {rr.data.Release?.Name}
                         </td>
                         {renderAge()}
                         <td>

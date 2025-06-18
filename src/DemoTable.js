@@ -45,9 +45,11 @@ export function demoStorySort(left, right) {
         return remaining;
     }
 
-    let iteration = left.data.Iteration.Name.localeCompare(right.data.Iteration.Name);
-    if (iteration !== 0) {
-        return iteration;
+    if (left.data.Iteration?.Name) {
+        let iteration = left.data.Iteration.Name.localeCompare(right.data.Iteration?.Name);
+        if (iteration !== 0) {
+            return iteration;
+        }
     }
 
     return left.data.FormattedID.localeCompare(right.data.FormattedID);
@@ -145,7 +147,7 @@ export default function UserStoryTable(props) {
                 return (
                     <div className="story-chunk" key={rr.data.FormattedID}>
                         <div className="story-title">
-                            <span className="release-name">{rr.data.Release.Name}</span>
+                            <span className="release-name">{rr.data.Release?.Name}</span>
                             <span className={artClassName}>{rr.data.FormattedID}</span>
                             <span className="artifact-title"> <a href={getLink(rr)}> {rr.data.Name} </a> </span>
                             <span className=""> {rr.data.Iteration?.Name} </span>
