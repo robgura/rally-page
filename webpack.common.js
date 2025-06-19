@@ -5,6 +5,7 @@ const webpack = require('webpack');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlInlineScriptPlugin = require('html-inline-script-webpack-plugin');
+const HtmlMinimizerPlugin = require('html-minimizer-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = (env, argv) => {
@@ -79,6 +80,27 @@ module.exports = (env, argv) => {
                 'isProduction': isProduction,
             }),
         ],
+
+        // slightly more minimization, mostly gets rid of the whitespace and new lines in the original html file
+        // caution, setting all of the minimizerOptions values causes odd behavior when deployed
+        optimization: {
+            minimize: true,
+            minimizer: [
+                new HtmlMinimizerPlugin({
+                    minimizerOptions: {
+                        collapseWhitespace: true,
+                        caseSensitive: false,
+                        conservativeCollapse: true,
+                        keepClosingSlash: false,
+                        minifyCSS: true,
+                        minifyJS: true,
+                        removeComments: false,
+                        removeScriptTypeAttributes: false,
+                        removeStyleLinkTypeAttributes: false,
+                    }
+                }),
+            ],
+        },
 
         module: {
             rules: [
