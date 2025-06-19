@@ -4,6 +4,7 @@ import {
     getBlockedHtml,
     getLink,
     itemSort2,
+    isSupport,
 } from './util.js';
 import Owner from './Owner.js';
 import Action from './Action.js';
@@ -29,13 +30,7 @@ export default function DefectTable(props) {
                 }
                 let thing = null;
 
-                let support = false;
-                if (rr.data.Tags.Count > 0) {
-                    const found = rr.data.Tags._tagsNameArray.find((tg) => tg.Name === 'Engineering Support');
-                    if (found) {
-                        support = true;
-                    }
-                }
+                const support = isSupport(rr);
 
                 if (support) {
                     thing = <span style={{ fontSize: '18px' }} > {String.fromCodePoint(128222)} </span>;

@@ -274,3 +274,13 @@ const UserIdMap = Object.entries(UserMap).reduce((acc, [key, value]) => { acc[va
 export function who(user) {
     return UserIdMap[user?._refObjectUUID] || 'unknown';
 }
+
+export function isSupport(artifact) {
+    if (artifact.data.Tags.Count > 0) {
+        const found = artifact.data.Tags._tagsNameArray.find((tg) => tg.Name === 'Engineering Support');
+        if (found) {
+            return true;
+        }
+    }
+    return false;
+}
