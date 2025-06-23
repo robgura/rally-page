@@ -356,6 +356,7 @@ td .blocked {
 
 .action {
     display: flex;
+    flex-wrap: wrap;
     gap: 2px;
 }
 
