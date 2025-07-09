@@ -8,6 +8,7 @@ import {
 } from './util.js';
 import Owner from './Owner.js';
 import Action from './Action.js';
+import HashedColor from './HashedColor.js';
 
 import ArtifactName from './ArtifactName.js';
 
@@ -73,7 +74,7 @@ export default function DefectTable(props) {
                 return (
                     <tr className={className} key={rr.data.FormattedID} >
                         <td>
-                            {rr.data.Release?.Name}
+                            <HashedColor lightness='50%' text={rr.data.Release?.Name} />
                         </td>
                         {renderAge()}
                         <td>

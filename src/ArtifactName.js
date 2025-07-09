@@ -1,15 +1,8 @@
 /*global */
 
-const regex = /((\[.*?\])|[^[]*)/g;
+import HashedColor from './HashedColor.js';
 
-function simpleHash(str) {
-    let hash = 0;
-    for (let i = 0; i < str.length; i += 1) {
-        hash = ((hash << 5) - hash) + str.charCodeAt(i);
-        hash |= 0; // Convert to 32bit integer
-    }
-    return hash;
-}
+const regex = /((\[.*?\])|[^[]*)/g;
 
 export default function ArtifactName(props) {
 
@@ -46,13 +39,8 @@ export default function ArtifactName(props) {
             // remove first and last character and give it some styling
             let cleanName = pp.slice(1, -1);
 
-            // get a has of the name to use as a color tying all names in common together
-            let hsh = simpleHash(cleanName) % 360;
-            const style = {
-                backgroundColor: `hsl(${hsh}, 100%, 30%)`,
-            };
             name.push(
-                <span key={idx} style={style} className="pill"> {cleanName} </span>
+                <HashedColor key={idx} text={cleanName} />
             );
         }
         else {

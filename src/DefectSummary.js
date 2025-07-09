@@ -1,5 +1,7 @@
 /*global React */
 
+import HashedColor from './HashedColor.js';
+
 export default function DefectSummary(props) {
 
     const {
@@ -30,7 +32,7 @@ export default function DefectSummary(props) {
             let pp = pri === 'high' ? 'High' : 'Low';
             return (
                 <div key={key} className="defect-total-container">
-                    <div>{pp} {key}</div>
+                    <div>{pp} <HashedColor text={key} lightness='50%' /> </div>
                     <div className="big-defect"> {value} </div>
                 </div>
             );
