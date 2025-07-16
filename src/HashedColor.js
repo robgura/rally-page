@@ -12,6 +12,13 @@ export default function HashedColor(props) {
     } = props;
 
     let hsh = simpleHash(text) % 360;
+    if (text === 'api') {
+        hsh = 90;
+    }
+    else if (text === 'web') {
+        hsh = 210;
+    }
+
     const _lightness = lightness || '20%';
     const style = {
         backgroundColor: `hsl(${hsh}, 100%, ${_lightness})`,
