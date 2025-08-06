@@ -142,10 +142,13 @@ body {
     padding: 2em;
     border: solid black 2px;
     border-radius: 8px;
+
+    display: flex;
+    gap: 24px;
+    flex-direction: column;
 }
 
 .story-title {
-    margin-bottom: 1em;
     display: flex;
     align-items: center;
     font-size: 24px;
