@@ -17,7 +17,7 @@ export default function TaskTable(props) {
         onSave,
     } = props;
 
-    const [tasks, setTasks] = React.useState({
+    const [taskResponse, setTaskResponse] = React.useState({
         state: 'init',
         records: [],
     });
@@ -29,9 +29,9 @@ export default function TaskTable(props) {
     });
 
     React.useEffect(() => {
-        if (tasks.state === 'init' && model.canHaveTasks() && model.data.Tasks.Count > 0) {
-            setTasks({
-                ...tasks,
+        if (taskResponse.state === 'init' && model.canHaveTasks() && model.data.Tasks.Count > 0) {
+            setTaskResponse({
+                ...taskResponse,
                 state: 'pending',
             });
             model.getCollection('Tasks').load({
@@ -50,17 +50,18 @@ export default function TaskTable(props) {
                     'UserName',
                 ],
                 callback: function(records, _operation, _success) {
-                    setTasks({
+                    setTaskResponse({
                         state: 'success',
                         records,
                     });
                 }
             });
         }
-    }, [model, setTasks, tasks]);
+    }, [model, setTaskResponse, taskResponse]);
 
-    const renderTasks = () => {
-        return tasks.records
+    // process the response tasks from rally to what is actually going to be displayed
+    const tasks = React.useMemo(() => {
+        return taskResponse.records
             .filter((tt) => {
                 if (tt.data.State === 'Defined' || tt.data.State === 'In-Progress') {
                     return true;
@@ -70,39 +71,46 @@ export default function TaskTable(props) {
                 }
                 return false;
             })
-            .sort(taskSort)
-            .map((tt) => {
-                let className = '';
-                if (tt.data.Blocked) {
-                    className = 'blocked';
-                }
-                return (
-                    <tr className={className} key={tt.data.FormattedID} >
-                        <td>
-                           <a href={getLink(tt)} > {tt.data.FormattedID} </a>
-                        </td>
-                        <td>
-                            <ArtifactName record={tt} />
-                        </td>
-                        <td className="task-estimate">
-                            {NumberForm.format(tt.data.Estimate)}
-                        </td>
-                        <td>
-                            {tt.data.State}
-                        </td>
-                        <td>
-                            {getBlockedHtml(tt.data)}
-                        </td>
-                        <td>
-                            <Owner artifact={tt.data} user={user} />
-                        </td>
-                        <td>
-                            <Action artifact={tt} user={user} onSave={onSave} />
-                        </td>
-                    </tr>
-                );
-            });
+            .sort(taskSort);
+    }, [taskResponse.records]);
+
+    const renderTasks = () => {
+        return tasks.map((tt) => {
+            let className = '';
+            if (tt.data.Blocked) {
+                className = 'blocked';
+            }
+            return (
+                <tr className={className} key={tt.data.FormattedID} >
+                    <td>
+                        <a href={getLink(tt)} > {tt.data.FormattedID} </a>
+                    </td>
+                    <td>
+                        <ArtifactName record={tt} />
+                    </td>
+                    <td className="task-estimate">
+                        {NumberForm.format(tt.data.Estimate)}
+                    </td>
+                    <td>
+                        {tt.data.State}
+                    </td>
+                    <td>
+                        {getBlockedHtml(tt.data)}
+                    </td>
+                    <td>
+                        <Owner artifact={tt.data} user={user} />
+                    </td>
+                    <td>
+                        <Action artifact={tt} user={user} onSave={onSave} />
+                    </td>
+                </tr>
+            );
+        });
     };
+
+    if (tasks.length === 0) {
+        return null;
+    }
 
     return (
         <div>
