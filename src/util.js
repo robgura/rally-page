@@ -21,6 +21,33 @@ export function simpleHash(str, seed = 0) {
     return 4294967296 * (2097151 & h2) + (h1 >>> 0);
 }
 
+const UserMap = {
+    'dj': 'a375ddac-0210-4b35-a2c7-5a6dc126b4e1',
+    'filipe': '99025ed1-84f6-4141-a6ac-2f14ca381266',
+    'jack': '780d5844-efd8-42ae-be55-1253701babe0',
+    'jake': '4b00aca8-8eb5-4f5e-9a39-1ed9e55ca7e6',
+    'jeff': '32ce4a4b-1976-4cd2-91c0-8dcefa9f254b',
+    'joe': '2b6db043-4cca-4a90-9b7d-c00b15925a07',
+    'kristen': 'bee30687-fc8c-4bfa-996c-c5125ae229c8',
+    'matt': '275cb8d4-d665-4b34-8fc4-4c153e49e40b',
+    'lauren': '53a1b702-a863-4780-a783-76135e6ecb66', // matt k
+    'antonio': '647d23bf-f38a-450a-bf01-8f193c9b3c8b',
+    'rob': '839ab687-1c66-4788-9328-c5d47c74b1bf',
+};
+
+const UserIdMap = Object.entries(UserMap).reduce((acc, [key, value]) => { acc[value] = key; return acc; }, {});
+
+export function who(user) {
+    return UserIdMap[user?._refObjectUUID] || 'unknown';
+}
+
+export function whoPriority(user) {
+    if (who(user) === 'filipe' || who(user) === 'antonio') {
+        return 5;
+    }
+    return 1;
+};
+
 export function ownerIfKnown(arti) {
     let owner = '';
     let hasDisplay = false;
@@ -210,6 +237,11 @@ export function storySort(left, right) {
         return 1;
     }
 
+    const ownerPriority = whoPriority(left.data.Owner) - whoPriority(right.data.Owner);
+    if (ownerPriority !== 0) {
+        return ownerPriority;
+    }
+
     return left.data.FormattedID.localeCompare(right.data.FormattedID);
 }
 
@@ -270,26 +302,6 @@ export function getBlockedHtml(item) {
 
 export function getLink(model) {
     return Rally.nav.Manager.getDetailUrl(model);
-}
-
-const UserMap = {
-    'dj': 'a375ddac-0210-4b35-a2c7-5a6dc126b4e1',
-    'filipe': '99025ed1-84f6-4141-a6ac-2f14ca381266',
-    'jack': '780d5844-efd8-42ae-be55-1253701babe0',
-    'jake': '4b00aca8-8eb5-4f5e-9a39-1ed9e55ca7e6',
-    'jeff': '32ce4a4b-1976-4cd2-91c0-8dcefa9f254b',
-    'joe': '2b6db043-4cca-4a90-9b7d-c00b15925a07',
-    'kristen': 'bee30687-fc8c-4bfa-996c-c5125ae229c8',
-    'matt': '275cb8d4-d665-4b34-8fc4-4c153e49e40b',
-    'lauren': '53a1b702-a863-4780-a783-76135e6ecb66', // matt k
-    'antonio': '647d23bf-f38a-450a-bf01-8f193c9b3c8b',
-    'rob': '839ab687-1c66-4788-9328-c5d47c74b1bf',
-};
-
-const UserIdMap = Object.entries(UserMap).reduce((acc, [key, value]) => { acc[value] = key; return acc; }, {});
-
-export function who(user) {
-    return UserIdMap[user?._refObjectUUID] || 'unknown';
 }
 
 export function isSupport(artifact) {
