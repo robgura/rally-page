@@ -313,3 +313,57 @@ export function isSupport(artifact) {
     }
     return false;
 }
+
+export function getLifeCycleButton(rr, save) {
+    const moveToImplement = () => {
+        rr.set('c_Lifecycle', 'Implement');
+        save();
+    };
+
+    const moveToComplete = () => {
+        rr.set('c_Lifecycle', 'Complete');
+        save();
+    };
+
+    const moveToDemo = () => {
+        rr.set('c_Lifecycle', 'Demo');
+        save();
+    };
+
+    let rv = [];
+    if (rr.data.c_Lifecycle === 'Complete') {
+        return null;
+    }
+
+    if (rr.data.ScheduleState === 'Completed' && !rr.data.Blocked && rr.data.c_Lifecycle !== 'Demo' && rr.data.c_Lifecycle !== 'Complete') {
+        rv.push(
+            <span key='move-to-demo' className="action">
+                <span key="move-to-demo" className="button lifecycle" onClick={moveToDemo}>
+                    Move to Demo
+                </span>
+            </span>
+        );
+    }
+
+    if (rr.data.c_Lifecycle !== 'Implement') {
+        rv.push(
+            <span key="move-to-implement" className="action">
+                <span key="move-to-implement" className="button lifecycle" onClick={moveToImplement}>
+                    Move to Implement
+                </span>
+            </span>
+        );
+    }
+
+    if (rr.data.c_Lifecycle === 'Demo') {
+        rv.push(
+            <span key="move-to-complete" className="action">
+                <span key="move-to-implement" className="button lifecycle" onClick={moveToComplete}>
+                    Move to Complete
+                </span>
+            </span>
+        );
+    }
+
+    return rv;
+};

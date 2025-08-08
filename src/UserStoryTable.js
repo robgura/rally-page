@@ -7,6 +7,7 @@ import TaskTable from './TaskTable.js';
 
 import {
     getBlockedHtml,
+    getLifeCycleButton,
     getLink,
     storySort,
 } from './util.js';
@@ -37,42 +38,9 @@ export default function UserStoryTable(props) {
                     });
                 };
 
-                const moveToImplement = () => {
-                    rr.set('c_Lifecycle', 'Implement');
-                    save();
-                };
-
-                const moveToDemo = () => {
-                    rr.set('c_Lifecycle', 'Demo');
-                    save();
-                };
-
                 const getEstimate = () => {
                     if (rr.data.PlanEstimate || rr.data.PlanEstimate === 0) {
                         return <span className="story-estimate">{rr.data.PlanEstimate}</span>;
-                    }
-                };
-                const getLifeCycleButton = () => {
-                    if (rr.data.c_Lifecycle === 'Complete') {
-                        return null;
-                    }
-                    if (rr.data.ScheduleState === 'Completed' && !rr.data.Blocked && rr.data.c_Lifecycle !== 'Demo' && rr.data.c_Lifecycle !== 'Complete') {
-                        return (
-                            <span className="action">
-                                <span key="move-to-demo" className="button lifecycle" onClick={moveToDemo}>
-                                    Move to Demo
-                                </span>
-                            </span>
-                        );
-                    }
-                    if (rr.data.c_Lifecycle !== 'Implement') {
-                        return (
-                            <span className="action">
-                                <span key="move-to-implement" className="button lifecycle" onClick={moveToImplement}>
-                                    Move to Implement
-                                </span>
-                            </span>
-                        );
                     }
                 };
 
@@ -83,7 +51,7 @@ export default function UserStoryTable(props) {
                             <span className={artClassName}>{rr.data.FormattedID}</span>
                             <span className="artifact-title"> <a href={getLink(rr)}> {rr.data.Name} </a> </span>
                             <span className="lifecycle"> {rr.data.c_Lifecycle} </span>
-                            {getLifeCycleButton()}
+                            {getLifeCycleButton(rr, save)}
                             {getEstimate()}
                             {getBlockedHtml(rr.data)}
                             <span className="story-owner">

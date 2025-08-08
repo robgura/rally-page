@@ -6,6 +6,7 @@ import TaskTable from './TaskTable.js';
 
 import {
     getBlockedHtml,
+    getLifeCycleButton,
     getLink,
 } from './util.js';
 import Owner from './Owner.js';
@@ -83,59 +84,10 @@ export default function UserStoryTable(props) {
                     });
                 };
 
-                const moveToImplement = () => {
-                    rr.set('c_Lifecycle', 'Implement');
-                    save();
-                };
-
-                const moveToComplete = () => {
-                    rr.set('c_Lifecycle', 'Complete');
-                    save();
-                };
-
-                const moveToDemo = () => {
-                    rr.set('c_Lifecycle', 'Demo');
-                    save();
-                };
-
                 const getEstimate = () => {
                     if (rr.data.PlanEstimate || rr.data.PlanEstimate === 0) {
                         return <span className="story-estimate">{rr.data.PlanEstimate}</span>;
                     }
-                };
-                const getLifeCycleButton = () => {
-                    let rv = [];
-                    if (rr.data.c_Lifecycle === 'Complete') {
-                        return null;
-                    }
-                    if (rr.data.ScheduleState === 'Completed' && !rr.data.Blocked && rr.data.c_Lifecycle !== 'Demo' && rr.data.c_Lifecycle !== 'Complete') {
-                        rv.push(
-                            <span key='move-to-demo' className="action">
-                                <span key="move-to-demo" className="button lifecycle" onClick={moveToDemo}>
-                                    Move to Demo
-                                </span>
-                            </span>
-                        );
-                    }
-                    if (rr.data.c_Lifecycle !== 'Implement') {
-                        rv.push(
-                            <span key="move-to-implement" className="action">
-                                <span key="move-to-implement" className="button lifecycle" onClick={moveToImplement}>
-                                    Move to Implement
-                                </span>
-                            </span>
-                        );
-                    }
-                    if (rr.data.c_Lifecycle === 'Demo') {
-                        rv.push(
-                            <span key="move-to-complete" className="action">
-                                <span key="move-to-implement" className="button lifecycle" onClick={moveToComplete}>
-                                    Move to Complete
-                                </span>
-                            </span>
-                        );
-                    }
-                    return rv;
                 };
 
                 const renderTaskTable = () => {
@@ -152,7 +104,7 @@ export default function UserStoryTable(props) {
                             <span className="artifact-title"> <a href={getLink(rr)}> {rr.data.Name} </a> </span>
                             <span className=""> {rr.data.Iteration?.Name} </span>
                             <span className="lifecycle lifecycle-name"> {rr.data.c_Lifecycle} </span>
-                            {getLifeCycleButton()}
+                            {getLifeCycleButton(rr, save)}
                             {getEstimate()}
                             {getBlockedHtml(rr.data)}
                             <span className="story-owner">
