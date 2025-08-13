@@ -17,15 +17,29 @@ export default function Owner(props) {
     const minutesSinceMidnight = (hours * 60) + minutes;
 
     let ownerName = '?';
+    let title = null;
 
     if (now.getDay() === 3 && minutesSinceMidnight >= 840 && minutesSinceMidnight <= 870) {
-        ownerName = String.fromCodePoint(9749);
+        ownerName = ownerIfKnown(artifact);
+        // if there is no ownerName, just leave it blank
+        if (ownerName) {
+            title = ownerName;
+            if (who(artifact?.Owner) === 'lauren') {
+                title = 'Lauren';
+            }
+            else if (who(artifact?.Owner) === 'rob') {
+                title = 'Bert';
+            }
+            else if (who(artifact?.Owner) === 'dj') {
+                title = 'David';
+            }
+            ownerName = String.fromCodePoint(9749);
+        }
     }
     else {
         ownerName = ownerIfKnown(artifact);
     }
 
-    let title = null;
     if (who(artifact?.Owner) === 'joe') {
         title = 'A software engineer currently from Elk Grove Village, and an Alumnus of Western Illinois University. In 2018 Joe was awarded the W. Garry Johnson Award for Excellence in Student Governance.';
     }
