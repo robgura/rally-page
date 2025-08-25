@@ -91,7 +91,7 @@ export default function UserStoryTable(props) {
                 };
 
                 const renderTaskTable = () => {
-                    if (rr.data.ScheduleState !== 'Completed' && rr.data.ScheduleState !== 'Accepted') {
+                    if ((rr.data.ScheduleState !== 'Completed' && rr.data.ScheduleState !== 'Accepted') || rr.data.Blocked) {
                         return <TaskTable model={rr} user={user} onSave={onSave} />;
                     };
                 };
