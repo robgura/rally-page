@@ -315,6 +315,10 @@ export function isSupport(artifact) {
 }
 
 export function getLifeCycleButton(rr, save) {
+    if (!rr.isUserStory()) {
+        return;
+    }
+
     const moveToImplement = () => {
         rr.set('c_Lifecycle', 'Implement');
         save();
