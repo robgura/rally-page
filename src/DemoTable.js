@@ -10,6 +10,7 @@ import {
     getLink,
 } from './util.js';
 import Owner from './Owner.js';
+import ReleaseName from './ReleaseName.js';
 
 export function demoStorySort(left, right) {
     if (left.isDefect() && !right.isDefect()) {
@@ -99,7 +100,7 @@ export default function UserStoryTable(props) {
                 return (
                     <div className="story-chunk" key={rr.data.FormattedID}>
                         <div className="story-title">
-                            <span className="release-name">{rr.data.Release?.Name}</span>
+                            <ReleaseName artifact={rr} />
                             <span className={artClassName}>{rr.data.FormattedID}</span>
                             <span className="artifact-title"> <a href={getLink(rr)}> {rr.data.Name} </a> </span>
                             <span className=""> {rr.data.Iteration?.Name} </span>

@@ -1,6 +1,6 @@
 /*global React */
 
-import HashedColor from './HashedColor.js';
+import ReleaseName from './ReleaseName.js';
 
 export default function DefectSummary(props) {
 
@@ -10,9 +10,11 @@ export default function DefectSummary(props) {
 
     const {
         defectSummary,
+        labels,
         total,
     } = React.useMemo(() => {
         let _total = 0;
+        let _labels = {};
         const rv = records.reduce((acc, rec) => {
             if (rec.isDefect()) {
                 if (rec.data.ScheduleState !== 'Completed' && rec.data.ScheduleState !== 'Accepted') {
@@ -24,6 +26,10 @@ export default function DefectSummary(props) {
                     else {
                         acc[priority][rec.data.Release?.Name] = 1;
                     }
+
+                    if (!_labels[rec.data.Release?.Name]) {
+                        _labels[rec.data.Release?.Name] = <ReleaseName artifact={rec} />;
+                    }
                 }
             }
             return acc;
@@ -31,6 +37,7 @@ export default function DefectSummary(props) {
         return {
             defectSummary: rv,
             total: _total,
+            labels: _labels,
         };
     }, [records]);
 
@@ -49,7 +56,7 @@ export default function DefectSummary(props) {
             let pp = pri === 'high' ? 'High' : 'Low';
             return (
                 <div key={key} className="defect-total-container">
-                    <div>{pp} <HashedColor text={key} lightness='50%' /> </div>
+                    <div>{pp} {labels[key]} </div>
                     <div className="big-defect"> {value} </div>
                 </div>
             );
