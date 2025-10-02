@@ -11,6 +11,7 @@ export default function Action(props) {
     const {
         artifact,
         onSave,
+        startBlockOn,
         user,
     } = props;
 
@@ -91,6 +92,12 @@ export default function Action(props) {
         save();
     };
 
+    const blockOn = () => {
+        if (artifact.isTask()) {
+            startBlockOn(artifact);
+        }
+    };
+
     let myCloseOutOpts = React.useMemo(() => {
         let rv = [];
         if (isSupport(artifact)) {
@@ -128,13 +135,25 @@ export default function Action(props) {
                     label: 'Ditch',
                     title: 'Set to no owner',
                     func: ditch,
-                }
+                },
+                {
+                    label: 'Block On',
+                    title: 'Select another task from the story to block this task on',
+                    func: blockOn,
+                    type: 'task',
+                },
             ],
             other: [
                 {
                     label: 'Take',
                     title: 'State to In-Progress, owner to you and unblock',
                     func: take,
+                },
+                {
+                    label: 'Block On',
+                    title: 'Select another task from the story to block this task on',
+                    func: blockOn,
+                    type: 'task',
                 },
             ]
         },
@@ -192,7 +211,15 @@ export default function Action(props) {
     }
 
     const buttonConfigs = Mapper[state][isMine ? 'mine' : 'other'] || [];
-    const buttons = buttonConfigs.map((bb) => {
+    const buttons = buttonConfigs.filter((bb) => {
+        if (bb.type) {
+            if (bb.type === 'task') {
+                return artifact.isTask();
+            }
+            console.error('unimplemented');
+        }
+        return true;
+    }).map((bb) => {
         return (
             <div key={bb.label} title={bb.title} className="button" onClick={bb.func}>
                 {bb.label}

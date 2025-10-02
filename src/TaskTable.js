@@ -22,11 +22,17 @@ export default function TaskTable(props) {
         records: [],
     });
 
+    const [activeBlockOnTask, setActiveBlockOnTask] = React.useState(false);
+
     const NumberForm = new Intl.NumberFormat(undefined, {
         style: 'decimal',
         minimumIntegerDigits: 1,
         minimumFractionDigits: 1,
     });
+
+    const startBlockOn = (artifact) => {
+        setActiveBlockOnTask(artifact);
+    };
 
     React.useEffect(() => {
         if (taskResponse.state === 'init' && model.canHaveTasks() && model.data.Tasks.Count > 0) {
@@ -80,10 +86,39 @@ export default function TaskTable(props) {
             if (tt.data.Blocked) {
                 className = 'blocked';
             }
+
+            const assignBlockReason = () => {
+                let blockedReason = activeBlockOnTask.data.BlockedReason;
+                if (blockedReason.length > 0) {
+                    blockedReason = `${blockedReason}, ${tt.data.FormattedID}`;
+                }
+                else {
+                    blockedReason = `${tt.data.FormattedID}`;
+                }
+                activeBlockOnTask.set('Blocked', true);
+                activeBlockOnTask.set('BlockedReason', blockedReason);
+                activeBlockOnTask.save({
+                    callback: onSave,
+                });
+                setActiveBlockOnTask(false);
+            };
+
+            const renderTaskId = () => {
+                if (activeBlockOnTask) {
+                    if (tt.data._ref === activeBlockOnTask.data._ref) {
+                        return <span> {tt.data.FormattedID} </span>;
+                    }
+                    return <span className="button" onClick={assignBlockReason}> {tt.data.FormattedID} </span>;
+
+                }
+
+                return <a href={getLink(tt)} > {tt.data.FormattedID} </a>;
+            };
+
             return (
                 <tr className={className} key={tt.data.FormattedID} >
                     <td>
-                        <a href={getLink(tt)} > {tt.data.FormattedID} </a>
+                        {renderTaskId()}
                     </td>
                     <td>
                         <ArtifactName record={tt} />
@@ -101,7 +136,7 @@ export default function TaskTable(props) {
                         <Owner artifact={tt.data} user={user} />
                     </td>
                     <td>
-                        <Action artifact={tt} user={user} onSave={onSave} />
+                        <Action artifact={tt} user={user} onSave={onSave} startBlockOn={startBlockOn} />
                     </td>
                 </tr>
             );

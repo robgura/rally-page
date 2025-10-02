@@ -372,7 +372,7 @@ td .blocked {
     gap: 2px;
 }
 
-.action .button {
+.button {
     text-wrap: nowrap;
     background: lightblue;
     border-radius: 0.5em;
@@ -382,7 +382,7 @@ td .blocked {
     border-style: solid;
 }
 
-.action .button:hover {
+.button:hover {
     cursor: pointer;
     background: darkblue;
     color: white;
