@@ -6,7 +6,6 @@ Color Palette I generated from somewhere
  rgb(7, 102, 146);
 */
 
-
 body {
     font-size: 10pt;
     font-family: sans-serif;
@@ -38,6 +37,7 @@ body {
     padding-left: 0.5em;
     padding-right: 0.5em;
     border: solid black 1px;
+    text-wrap-mode: nowrap;
     border-radius: 0.5em;
 }
 
@@ -385,5 +385,25 @@ td .blocked {
 .button:hover {
     cursor: pointer;
     background: darkblue;
+    color: white;
+}
+
+.state-view-container {
+    display: flex;
+    gap: 0.2em;
+}
+
+.box-letter {
+    background-color: lightblue;
+    color: white;
+    padding: 0.2em;
+    border-radius: 0.3em;
+    text-align: center;
+    width: 1.3em;
+    cursor: pointer;
+}
+
+.box-letter.yes {
+    background-color: blue;
     color: white;
 }

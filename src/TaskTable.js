@@ -8,6 +8,7 @@ import {
 import Owner from './Owner.js';
 import ArtifactName from './ArtifactName.js';
 import Action from './Action.js';
+import StateView from './StateView.js';
 
 export default function TaskTable(props) {
 
@@ -127,7 +128,7 @@ export default function TaskTable(props) {
                         {NumberForm.format(tt.data.Estimate)}
                     </td>
                     <td>
-                        {tt.data.State}
+                        <StateView item={tt} onSave={onSave} />
                     </td>
                     <td>
                         {getBlockedHtml(tt.data)}

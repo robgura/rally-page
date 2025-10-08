@@ -9,6 +9,7 @@ import {
 import Owner from './Owner.js';
 import Action from './Action.js';
 import ReleaseName from './ReleaseName.js';
+import StateView from './StateView.js';
 
 import ArtifactName from './ArtifactName.js';
 
@@ -92,7 +93,7 @@ export default function DefectTable(props) {
                             {rr.data.Priority}
                         </td>
                         <td>
-                            {rr.data.ScheduleState}
+                            <StateView item={rr} onSave={onSave} />
                         </td>
                         <td>
                             {getBlockedHtml(rr.data)}
