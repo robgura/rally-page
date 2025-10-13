@@ -11,7 +11,10 @@ export default function HashedColor(props) {
         lightness,
     } = props;
 
-    let hsh = simpleHash(text) % 360;
+    let hsh = 0;
+    if (text) {
+        hsh = simpleHash(text) % 360;
+    }
     if (text === 'api') {
         hsh = 90;
     }
