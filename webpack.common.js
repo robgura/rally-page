@@ -71,6 +71,7 @@ module.exports = (env, argv) => {
             new ESLintPlugin({
                 configType: 'flat',
                 threads: true,
+                cache: false,
                 // fix: true,
                 exclude: [
                     'node_modules',

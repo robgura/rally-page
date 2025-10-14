@@ -3,6 +3,7 @@
 // cSpell: ignore iterationstatus afterrender hierarchicalrequirement rallyiterationcombobox wsapi xtype
 
 import './styles.css';
+import TimeLeft from './TimeLeft.js';
 import DefectSummary from './DefectSummary.js';
 import DefectTable from './DefectTable.js';
 import UserStoryTable from './UserStoryTable.js';
@@ -19,6 +20,7 @@ function MainElement(props) {
     const [iteration, setIteration] = React.useState({
         iterationName: '',
         iterationValue: '',
+        raw: null,
     });
 
     const [records, setRecords] = React.useState([]);
@@ -79,10 +81,11 @@ function MainElement(props) {
         });
     };
 
-    getUpdate = (iterationName, iterationValue) => {
+    getUpdate = (iterationName, iterationValue, raw) => {
         setIteration({
             iterationName,
             iterationValue,
+            raw,
         });
     };
 
@@ -134,9 +137,12 @@ function MainElement(props) {
         });
     }, [records]);
 
+    const data = iteration?.raw?.data;
+
     const userName = who(user);
     return (
         <div className={`main-container ${userName}`}>
+            <TimeLeft date={data?.EndDate} />
             <DefectSummary records={records} />
             <DefectTable records={defectRecords} user={user} onSave={onSave} />
             <UserStoryTable records={storyRecords} user={user} onSave={onSave}/>
@@ -156,17 +162,26 @@ export function afterrender(app) {
 }
 
 export function onLoad(app) {
-    const iterUpdate = (iterationName, iterationValue) => {
+    const iterUpdate = (iterationName, iterationValue, xx) => {
         if (getUpdate) {
-            getUpdate(iterationName, iterationValue);
+            let iteration;
+            xx.store?.data?.items.some((ii) => {
+                if (ii.data._ref === iterationValue) {
+                    iteration = ii;
+                    return true;
+                }
+                return false;
+            });
+
+            getUpdate(iterationName, iterationValue, iteration);
         }
     };
 
     app.add({
         xtype: 'rallyiterationcombobox',
         listeners: {
-            ready: (i) => { iterUpdate(i.rawValue, i.value); },
-            select: (i) => { iterUpdate(i.rawValue, i.value); },
+            ready: (i) => { iterUpdate(i.rawValue, i.value, i); },
+            select: (i) => { iterUpdate(i.rawValue, i.value, i); },
         }
     });
 

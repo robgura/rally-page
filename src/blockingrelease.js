@@ -5,6 +5,7 @@
 import './styles.css';
 import DefectTable from './DefectTable.js';
 import UserStoryTable from './UserStoryTable.js';
+import TimeLeft from './TimeLeft.js';
 import { who } from './util.js';
 
 let getUpdate = null;
@@ -18,6 +19,7 @@ function MainElement(props) {
     const [release, setRelease] = React.useState({
         releaseName: '',
         releaseValue: '',
+        raw: null,
     });
 
     const [records, setRecords] = React.useState([]);
@@ -78,10 +80,11 @@ function MainElement(props) {
         });
     };
 
-    getUpdate = (releaseName, releaseValue) => {
+    getUpdate = (releaseName, releaseValue, raw) => {
         setRelease({
             releaseName,
             releaseValue,
+            raw,
         });
     };
 
@@ -122,9 +125,11 @@ function MainElement(props) {
         });
     }, [records]);
 
+    const data = release?.raw?.data;
     const userName = who(user);
     return (
         <div className={`main-container ${userName}`}>
+            <TimeLeft date={data?.ReleaseDate} />
             <h2> Blocking Defects </h2>
             <DefectTable records={defectRecords} user={user} onSave={onSave} />
             <h2> Stories </h2>
@@ -147,17 +152,25 @@ export function afterrender(app) {
 }
 
 export function onLoad(app) {
-    const iterUpdate = (releaseName, releaseValue) => {
+    const iterUpdate = (releaseName, releaseValue, xx) => {
         if (getUpdate) {
-            getUpdate(releaseName, releaseValue);
+            let release;
+            xx.store?.data?.items.some((ii) => {
+                if (ii.data._ref === releaseValue) {
+                    release = ii;
+                    return true;
+                }
+                return false;
+            });
+            getUpdate(releaseName, releaseValue, release);
         }
     };
 
     app.add({
         xtype: 'rallyreleasecombobox',
         listeners: {
-            ready: (i) => { iterUpdate(i.rawValue, i.value); },
-            select: (i) => { iterUpdate(i.rawValue, i.value); },
+            ready: (i) => { iterUpdate(i.rawValue, i.value, i); },
+            select: (i) => { iterUpdate(i.rawValue, i.value, i); },
         }
     });
 

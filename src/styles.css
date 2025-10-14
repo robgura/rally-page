@@ -345,7 +345,7 @@ td .blocked {
 }
 
 .main-container > div {
-    margin: 1em;
+    margin: 11px;
 }
 
 .artifact-name {
@@ -406,4 +406,10 @@ td .blocked {
 .box-letter.yes {
     background-color: blue;
     color: white;
+}
+
+.time-left {
+    font-size: 32px;
+    font-family: "Impact", monospace;
+    margin: 0;
 }
