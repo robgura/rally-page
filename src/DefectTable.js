@@ -1,4 +1,4 @@
-/*global moment */
+/*global moment React */
 
 import {
     getBlockedHtml,
@@ -20,6 +20,8 @@ export default function DefectTable(props) {
         records,
         user,
     } = props;
+
+    const tableRef = React.useRef(null);
 
     const renderRecords = () => {
         return records
@@ -109,6 +111,50 @@ export default function DefectTable(props) {
             });
     };
 
+    const handleCopy = async () => {
+        const htmlContent = tableRef.current.innerHTML;
+        const plainTextContent = tableRef.current.innerText;
+        const clipboardItem = new ClipboardItem({
+            'text/html': new Blob([htmlContent], { type: 'text/html' }),
+            'text/plain': new Blob([plainTextContent], { type: 'text/plain' }),
+        });
+        await navigator.clipboard.write([clipboardItem]);
+
+    };
+
+    const renderHiddenTable = () => {
+        const renderHiddenRecord = () => {
+            return records
+                .sort(itemSort2)
+                .map((rr) => {
+                    const link = getLink(rr);
+                    return (
+                        <li key={rr.data.FormattedID} >
+                            <a href={link}> {rr.data.FormattedID} </a>
+                            {rr.data.Name}
+                        </li>
+                    );
+                });
+        };
+
+        const style = {
+            position: 'absolute',
+            left: '-9999px', // Hides the element off-screen
+            opacity: 0,      // Makes it invisible
+            height: 0,       // Prevents it from taking up space
+            overflow: 'hidden', // Hides any overflow content
+        };
+
+        return (
+            <ul
+                ref={tableRef}
+                style={style}
+            >
+                {renderHiddenRecord()}
+            </ul>
+        );
+    };
+
     return (
         <div className="defect-display">
             <table className="mytable">
@@ -130,6 +176,8 @@ export default function DefectTable(props) {
                     {renderRecords()}
                 </tbody>
             </table>
+            {renderHiddenTable()}
+            <button onClick={handleCopy}>Copy as list</button>
         </div>
     );
 }
