@@ -25,6 +25,23 @@ function MainElement(props) {
     const [records, setRecords] = React.useState([]);
 
     React.useEffect(() => {
+
+        let blockedOnComplete = Ext.create('Rally.data.wsapi.Filter', {
+            property: 'ScheduleState',
+            operator: '=',
+            value: 'Completed',
+        }).and({
+            property: 'Blocked',
+            operator: '=',
+            value: true,
+        });
+
+        let notDone = Ext.create('Rally.data.wsapi.Filter', {
+            property: 'ScheduleState',
+            operator: '<',
+            value: 'Completed',
+        }).or(blockedOnComplete);
+
         if (release.releaseValue !== '') {
             Ext.create('Rally.data.wsapi.artifact.Store', {
                 models: ['UserStory', 'Defect'],
@@ -51,16 +68,13 @@ function MainElement(props) {
                     'UserName',
                 ],
                 autoLoad: true,
+                limit: Infinity,
                 filters: [
                     {
                         property: 'Release',
                         value: release.releaseValue,
                     },
-                    {
-                        property: 'ScheduleState',
-                        operator: '<=',
-                        value: 'Completed',
-                    }
+                    notDone,
                 ],
                 listeners: {
                     load: function(store, _records) {
@@ -130,11 +144,11 @@ function MainElement(props) {
     return (
         <div className={`main-container ${userName}`}>
             <TimeLeft date={data?.ReleaseDate} />
-            <h2> Blocking Defects </h2>
+            <h2> Blocking Defects ({defectRecords.length}) </h2>
             <DefectTable records={defectRecords} user={user} onSave={onSave} />
-            <h2> Stories </h2>
+            <h2> Stories ({storyRecords.length})</h2>
             <UserStoryTable records={storyRecords} user={user} onSave={onSave}/>
-            <h2> Other Defects </h2>
+            <h2> Other Defects ({otherDefects.length})</h2>
             <DefectTable records={otherDefects} user={user} onSave={onSave} />
         </div>
     );

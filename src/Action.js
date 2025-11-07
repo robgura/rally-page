@@ -199,6 +199,10 @@ export default function Action(props) {
                     func: takeOwnerOnly,
                 },
             ]
+        },
+        'Accepted': {
+            mine: [],
+            other: []
         }
     };
 
