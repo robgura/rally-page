@@ -8,6 +8,7 @@ import {
 import Owner from './Owner.js';
 import ArtifactName from './ArtifactName.js';
 import Action from './Action.js';
+import TaskEstimate from './TaskEstimate.js';
 import StateView from './StateView.js';
 
 export default function TaskTable(props) {
@@ -24,12 +25,6 @@ export default function TaskTable(props) {
     });
 
     const [activeBlockOnTask, setActiveBlockOnTask] = React.useState(false);
-
-    const NumberForm = new Intl.NumberFormat(undefined, {
-        style: 'decimal',
-        minimumIntegerDigits: 1,
-        minimumFractionDigits: 1,
-    });
 
     const startBlockOn = (artifact) => {
         setActiveBlockOnTask(artifact);
@@ -125,7 +120,7 @@ export default function TaskTable(props) {
                         <ArtifactName record={tt} />
                     </td>
                     <td className="task-estimate">
-                        {NumberForm.format(tt.data.Estimate)}
+                        <TaskEstimate item={tt} onSave={onSave} />
                     </td>
                     <td>
                         <StateView item={tt} onSave={onSave} />
