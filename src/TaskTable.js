@@ -14,9 +14,10 @@ import StateView from './StateView.js';
 export default function TaskTable(props) {
 
     const {
+        editMode,
         model,
-        user,
         onSave,
+        user,
     } = props;
 
     const [taskResponse, setTaskResponse] = React.useState({
@@ -120,7 +121,7 @@ export default function TaskTable(props) {
                         <ArtifactName record={tt} />
                     </td>
                     <td className="task-estimate">
-                        <TaskEstimate item={tt} onSave={onSave} />
+                        <TaskEstimate item={tt} onSave={onSave} editMode={editMode} />
                     </td>
                     <td>
                         <StateView item={tt} onSave={onSave} />

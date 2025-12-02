@@ -6,6 +6,7 @@ const ESTIMATES = [0.1, 0.2, 0.3, 0.5, 1, 2, 3, 5];
 export default function TaskEstimate(props) {
 
     const {
+        editMode,
         item,
         onSave,
     } = props;
@@ -71,10 +72,15 @@ export default function TaskEstimate(props) {
         );
     }, [item.data.Estimate]);
 
-    return (
-        <div className="task-estimate-grid">
-            {buttons}
-            {number}
-        </div>
-    );
+    if (editMode) {
+        return (
+            <div className="task-estimate-grid">
+                {buttons}
+                {number}
+            </div>
+        );
+    }
+
+    return <span> {item.data.Estimate} </span>;
+
 }
